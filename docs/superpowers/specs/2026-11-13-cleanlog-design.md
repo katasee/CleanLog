@@ -77,6 +77,14 @@ Shows the selected day; it is today on launch.
   Day plan) and **Як учора · N квартир**, which copies the most recent working day's plan, unticked.
 - Unticked apartments are not carried over; they are simply not counted and not reported.
 
+### A future day
+
+The same screen for any later date, reached by › or the calendar — for planning ahead.
+
+- Apartments can be added and removed; ticking and the timer are disabled, since nothing can be
+  cleaned in advance. The empty state offers the same two buttons as today.
+- Future entries are never counted in Statistics or the report until they are ticked on their day.
+
 ### A past day
 
 The same screen for any earlier date, reached by ‹ or the calendar.
@@ -94,8 +102,8 @@ The same screen for any earlier date, reached by ‹ or the calendar.
 - A month grid, weeks starting on the locale's first weekday (Monday for pl/uk). Each worked day
   shows its earnings in small type; today is ringed; the selected day is filled. Month paging ‹ ›.
 - A card for the selected day (weekday, date, count, earnings) with **Відкрити день**.
-- Future days: **open question** — disabled in the mockup, but planning tonight for tomorrow needs at
-  least tomorrow to be selectable.
+- Future days are selectable (the canvas still shows them disabled; the spec wins): the list for
+  tomorrow usually arrives the evening before.
 
 ### Day plan (sheet)
 
@@ -152,7 +160,8 @@ The real October report this must reproduce:
 
 - Only days with at least one cleaned apartment; only cleaned entries.
 - A line is `{d}.{M}-({names, comma-separated, no spaces})={count}`, then `+{name}` for each
-  apartment marked "окремо у звіті" (one with a different rate, like `155`).
+  apartment marked "окремо у звіті" — one with a different rate, like `155` in the example or
+  `106` (56 zł against 28 zł for the rest) in the test data.
   - The date has no leading zeros: `1.10`, `13.11`.
   - Inside the brackets: entries in template order.
   - `{count}` counts the entries inside the brackets only.
