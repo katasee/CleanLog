@@ -63,8 +63,14 @@ All `struct`/`enum`, `Sendable`, `Equatable`, Foundation only.
   `var storageValue: Int` (`yyyymmdd`) and `init?(storageValue:)` for persistence.
 - **`MonthKey`** — `year`, `month`; `Comparable`, `Hashable`; `previous`, `next`,
   `func days(in calendar: Calendar) -> [DayKey]`, `contains(_ day: DayKey)`.
-- **`Apartment`** — `id: UUID`, `name`, `price: Money`, `isReportedSeparately`, `sortOrder`,
-  `isArchived`, `createdAt`.
+- **`Apartment`** — `id: UUID`, `name`, `price: Money`, `accessCode: String?`,
+  `isReportedSeparately`, `sortOrder`, `isArchived`, `createdAt`. The access code is the door or
+  key-box code shown on the Today rows; it is permanent per apartment, free text (`1234#`), trimmed,
+  and an empty string is stored as `nil`.
+- **The access code is not snapshotted into `DayEntry`.** It is a fact about the apartment now, not
+  about the day: a code changed in the template must show on today's rows at once. The Today view
+  model looks it up by `apartmentID` from the apartments stream; an archived apartment's code is
+  still found (the fetch includes archived ones for that lookup).
 - **`DayEntry`** — `id`, `apartmentID: UUID`, snapshots `name`, `price`, `isReportedSeparately`,
   `sortOrder`; `isCleaned`, `cleanedAt: Date?`. `init(planning apartment: Apartment)` takes the
   snapshot.
@@ -126,8 +132,8 @@ Protocols speak domain types only; `@MainActor`.
 
 ```swift
 protocol ApartmentRepository {
-    func apartments() -> AsyncStream<[Apartment]>          // active, by sortOrder
-    func add(name: String, price: Money, isReportedSeparately: Bool) async throws -> Apartment
+    func apartments(includingArchived: Bool) -> AsyncStream<[Apartment]>  // by sortOrder
+    func add(_ draft: ApartmentDraft) async throws -> Apartment
     func update(_ apartment: Apartment) async throws
     func archive(_ id: UUID) async throws
     func reorder(_ ids: [UUID]) async throws
@@ -145,6 +151,9 @@ protocol WorkDayRepository {
   saves the result. View models call
   `repository.update(day) { try $0.settingCleaned(id, true, now: now, today: today) }` — every
   rule stays in `WorkDay`, the repository never grows a method per action.
+- `ApartmentDraft` — `name`, `price`, `accessCode`, `isReportedSeparately`: what the form edits,
+  validated by `ApartmentDraft.validated(against existing: [Apartment]) throws` in `Models/`, so the
+  rule is shared by the repository, the fake and the form's view model.
 - `ApartmentRepository.add`/`update` throw `ApartmentError.duplicateName` (case- and
   edge-whitespace-insensitive among active apartments) and `.emptyName`; a name is trimmed before
   it is stored.

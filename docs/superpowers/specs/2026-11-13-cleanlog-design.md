@@ -72,7 +72,8 @@ Shows the selected day; it is today on launch.
 - **Two summary cards**: today `earned / planned zł` with a progress bar; this month's total and
   count.
 - **Apartment list**: one row per planned apartment — check circle, name, an "окремо" badge if it is
-  reported separately, price. Tapping a row toggles cleaned. Swipe to remove it from the day.
+  reported separately, and the apartment's access code with a key glyph (`🔑 4821`) instead of the
+  price: on site the code is what matters; the money is in the summary cards. Tapping a row toggles cleaned. Swipe to remove it from the day.
 - **Empty state** (nothing planned yet): "Які квартири сьогодні?" with **Додати квартири** (opens
   Day plan) and **Як учора · N квартир**, which copies the most recent working day's plan, unticked.
 - Unticked apartments are not carried over; they are simply not counted and not reported.
@@ -134,6 +135,8 @@ The same screen for any earlier date, reached by ‹ or the calendar.
 ### Apartments (template)
 
 - The list: name, price, an "окремо у звіті" badge. Add, edit, reorder, archive.
+- An apartment has an optional, permanent **access code** (free text, e.g. `4821` or `1234#`),
+  edited in the template and shown on the Today rows.
 - Names are unique among active apartments (case- and edge-whitespace-insensitive).
 - A price change applies to new entries only; the footnote says so.
 
@@ -178,7 +181,7 @@ Domain value types (`Models/`), mirrored by SwiftData records (`Persistence/`) t
 CloudKit-compatible: every attribute optional or defaulted, relationships optional, no unique
 constraints (uniqueness is enforced in code).
 
-- **Apartment**: `id`, `name`, `price: Money`, `isReportedSeparately`, `sortOrder`, `isArchived`,
+- **Apartment**: `id`, `name`, `price: Money`, `accessCode?`, `isReportedSeparately`, `sortOrder`, `isArchived`,
   `createdAt`.
 - **WorkDay**: `id`, `day: DayKey`, `entries`, `sessions`, `manualDuration: Duration?`.
 - **DayEntry**: `id`, `apartmentID?`, snapshots `name`, `price`, `isReportedSeparately`,
