@@ -49,13 +49,25 @@ Xcode's DerivedData makes both builds fail with "database is locked".
 
 Every feature goes through the same pipeline without being asked:
 
-1. `superpowers:brainstorming` — agree on the design, unless the spec already settles it.
+1. `superpowers:brainstorming` — always, for every feature, even when the spec covers most of it:
+   confirm what the spec settles and agree on what it leaves open.
 2. `superpowers:writing-plans` — the plan goes to `docs/superpowers/plans/`.
-3. `swiftui-pro` (and `swift-concurrency-pro` for anything async) — review the plan's code and fold
-   the accepted fixes in before implementation starts.
+3. **Plan review** — before any code is written, review the plan's code with the skills that fit it
+   and fold the accepted fixes into the plan:
+   - `swiftui-pro` for anything with SwiftUI views or view models;
+   - `swift-concurrency-pro` for anything with `async`, streams, tasks, actors or the timer;
+   - both when the plan touches both.
 4. Implementation, test-first for domain logic and view models (`superpowers:test-driven-development`).
    Claude writes the code; the user reads it.
-5. Build, test and lint green, then commit, push and a short PR description (below).
+5. **Code review** — after implementation, on the actual diff:
+   - the same skill(s) as step 3 again, because the code drifts from the plan;
+   - a **SOLID and clean-code pass**: single responsibility per type, dependencies on protocols
+     (not concrete repositories), no type that has to change for an unrelated reason, small
+     functions with one level of abstraction, intention-revealing names, no duplication, no dead
+     code, and every rule in `.claude/conventions/`.
+   Fix what the reviews find, then build, test and lint again.
+6. Build, test and lint green, then commit, push and a short PR description (below). The PR
+   description lists what each review found and what was fixed.
 
 **A complex feature is split into separate logic and UI tasks — and, when it is big enough,
 separate plans and branches.** Logic comes first: domain types, calculations, repository work and
