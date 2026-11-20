@@ -57,6 +57,13 @@ Every feature goes through the same pipeline without being asked:
    Claude writes the code; the user reads it.
 5. Build, test and lint green, then commit, push and a short PR description (below).
 
+**A complex feature is split into separate logic and UI tasks — and, when it is big enough,
+separate plans and branches.** Logic comes first: domain types, calculations, repository work and
+the view model, each test-driven, with no SwiftUI view in the diff. The UI task then builds the
+screen on a view model that already works and is tested, and adds no logic of its own beyond
+layout and bindings. A task that needs both is two tasks. "Complex" is anything with more than one
+screen state, a calculation, or a write; a pure layout tweak stays one task.
+
 A feature's plan file is a working artifact: delete it once the feature is merged. The product
 spec and `docs/plan.md` stay.
 
