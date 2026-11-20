@@ -122,7 +122,9 @@ Features: `Today` (the day screen, today or any past day), `DayPlan` (the add-ap
 
 - **Swift 6 language mode, default actor isolation `MainActor`, approachable concurrency on.**
   Everything is main-actor unless it says otherwise; there is no background work in this app worth
-  the ceremony. Mark something `nonisolated` only with a reason in the same line of the diff.
+  the ceremony. **The exception is pure values: every type in `Models/` and `Formatting/` is declared
+  `nonisolated`**, so neither the type nor its `Equatable`/`Hashable` conformances are bound to the
+  main actor. Anything else marked `nonisolated` carries its reason in the same diff.
 - **No `DispatchQueue`, no completion handlers, no Combine.** `async`/`await`, `AsyncStream`,
   `Task`, structured concurrency.
 - A timer is `Clock`-driven (`ContinuousClock`/`Task.sleep(for:)`) or `TimelineView` for display;

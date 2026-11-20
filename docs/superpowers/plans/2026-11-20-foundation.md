@@ -25,6 +25,10 @@ One contract test suite per repository runs against both the fake and the SwiftD
 - A calendar day is `DayKey`, never a midnight `Date`. No `Date()` and no `Calendar.current` inside
   `Models/` or `Formatting/` — `now`, `today` and calendars are parameters.
 - Every Swift file passes `xcrun swift-format lint --strict` (the PostToolUse hook runs it).
+- **Types in `Models/` and `Formatting/` are declared `nonisolated`** (plan review, swift-concurrency-pro):
+  under default `MainActor` isolation a plain struct and its `Equatable`/`Hashable` conformances would
+  be main-actor-bound, which pure values have no reason to be — and a future widget or `@concurrent`
+  calculation could not use them. Repositories, records, `StoreObservers` and the app stay main-actor.
 - Tests use `Calendar.warsaw` (Gregorian, `Europe/Warsaw`, `en_US_POSIX`) from `CleanLogTests/Support/`.
 - Branch `feature/foundation`; one commit per task, imperative English subject, **no
   `Co-Authored-By` or any attribution line**. Push when a remote exists (none yet).
@@ -360,9 +364,12 @@ One contract test suite per repository runs against both the fake and the SwiftD
     with 12.11 stored but emptied, 11.11 and 10.11 with entries, `latestDayWithEntries(before: 13.11)` is
     the 11.11 day; with no earlier entries it is `nil`.
   - Streams: two observers of the same day both receive the update; a cancelled consumer task does not crash later writes.
+    Read with `var iterator = stream.makeAsyncIterator()`: take the initial value **before** writing —
+    with `.bufferingNewest(1)` a write before the first read replaces the initial value, by design.
 - [ ] **Step 2:** Run — FAIL.
 - [ ] **Step 3: Implement** protocols (`@MainActor` by default isolation), `StoreObservers` (continuations
-  keyed by `UUID`; `stream` yields `read()` immediately; `onTermination` hops with
+  keyed by `UUID`, each stream from `AsyncStream.makeStream(of:bufferingPolicy: .bufferingNewest(1))` —
+  every value is the full current state, so a slow consumer needs only the latest; `stream` yields `read()` immediately; `onTermination` hops with
   `Task { @MainActor in self?.remove(id) }`; `notify()` yields `read()` to each), and the fakes
   (`[UUID: Apartment]`, `[DayKey: WorkDay]`; same validation via `ApartmentDraft.validated`; a day is
   stored on `update` when the result has entries or sessions or it was already stored).
@@ -398,7 +405,10 @@ One contract test suite per repository runs against both the fake and the SwiftD
   same `DayKey` leaves one `WorkDayRecord` with that `dayValue`; a change producing an empty day with no
   record creates none.
 - [ ] **Step 2:** Run — FAIL.
-- [ ] **Step 3: Implement.** `SchemaV1.versionIdentifier = Schema.Version(1, 0, 0)`; migration plan with
+- [ ] **Step 3: Implement.** First check how `@Model` records behave under default `MainActor`
+  isolation: if `#Predicate` or the macro expansion reports isolation errors, declare the record classes
+  `nonisolated` (they are confined to the main `ModelContext` either way; never `@unchecked Sendable`).
+  `SchemaV1.versionIdentifier = Schema.Version(1, 0, 0)`; migration plan with
   `[SchemaV1.self]` and no stages; factory builds `Schema(versionedSchema: SchemaV1.self)` with the plan and
   `ModelConfiguration(isStoredInMemoryOnly:)`. Repositories fetch with `#Predicate` on `id`/`dayValue`
   (`dayValue` between `month.firstDayStorageValue` and `lastDayStorageValue` for a month), map through
