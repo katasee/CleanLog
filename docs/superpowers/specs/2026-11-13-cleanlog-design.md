@@ -1,139 +1,144 @@
-# CleanLog — дизайн
+# CleanLog — product spec
 
-Дата: 2026-11-13
+Started 2026-11-13. The product-wide spec: keep it current with every scope decision.
+Visual reference: https://claude.ai/artifact/SjjoWCGv15bAQJmGVeRCbM (Claude Design canvas).
 
-## Навіщо
+## Why
 
-Мама прибирає квартири. Квартири щодня ті самі (з невеликого набору), список на день вона отримує ввечері попереднього дня. Раз на місяць вона вручну складає звіт — які квартири прибрала в які дні — і надсилає начальству у WhatsApp. Зараз це нотатки + ручний підрахунок, з помилками (пропущені коми, дужки, неправильні суми).
+The developer's mother cleans apartments. She cleans mostly the same small set of apartments; she
+learns the next day's list in the evening. Once a month she writes down by hand which apartments she
+cleaned on which day and sends that report to her boss over WhatsApp. Today that is notes plus
+manual counting, with mistakes (missing commas and brackets, wrong counts).
 
-CleanLog — журнал прибирань для клінерів: план на день → галочки протягом дня → заробіток рахується сам → місячний звіт одним тапом у WhatsApp у тому форматі, який начальство вже знає. Плюс статистика заробітку і часу.
+CleanLog is a work log for cleaners: plan the day → tick apartments off → earnings add up by
+themselves → the monthly report goes to WhatsApp in one tap, in the exact format the boss already
+knows. Plus statistics on earnings and time worked.
 
-Спершу застосунок для мами (TestFlight), потім публічний у App Store як загальний інструмент для клінерів. У розробника вже є Apple Developer акаунт.
+First for her (TestFlight), then on the App Store as a general tool for cleaners. The developer has
+an Apple Developer account.
 
-## Цілі
+## Goals
 
-- Щоденне використання швидше за нотатки: позначити квартиру = один тап.
-- Звіт для начальства генерується автоматично, точно у форматі з прикладу нижче, без помилок.
-- Заробіток за день і місяць видно одразу.
-- Облік часу роботи → години та ставка за годину.
-- Достатньо функціональності, щоб пройти App Store review (Guideline 4.2).
+- Daily use is faster than notes: marking an apartment done is one tap.
+- The report is generated in exactly the format below, with no mistakes.
+- Today's and this month's earnings are always visible.
+- Time worked → hours and earnings per hour.
+- Enough substance to pass App Store review (Guideline 4.2, minimum functionality).
 
-## Не-цілі (v1)
+## Non-goals (v1)
 
-- Акаунти, сервер, синхронізація між користувачами, кабінет начальника.
-- Адреси / будинки (номер квартири — довільний текст, цього досить).
-- Типи прибирання (звичайне/генеральне).
-- Таймер на кожну квартиру окремо.
-- Android.
-- iCloud-синхронізація (але модель даних має бути сумісна з CloudKit, щоб увімкнути пізніше без міграційного болю).
+- Accounts, a server, sharing between users, a boss-side view.
+- Addresses or buildings (an apartment name is free text; that is enough).
+- Cleaning types (regular / deep).
+- A timer per apartment.
+- Android, iPad, landscape.
+- iCloud sync — but the store must be CloudKit-compatible so it can be switched on later.
+- Charts in Statistics (removed after the design review: the numbers are what matters).
 
-## Анти-цілі
+## Anti-goals
 
-- Щоденний флоу повільніший або складніший, ніж записати в нотатки.
-- Звіт, який відрізняється від того, до чого звикло начальство.
-- Втрата даних (наприклад, видалення квартири з шаблону стирає історію; зміна ціни перераховує минулі місяці).
-- Будь-що захардкоджене під конкретну людину чи фірму.
+- A daily flow slower or more complicated than writing it in notes.
+- A report that differs from what the boss is used to.
+- Losing data: archiving an apartment erases history, or a price change rewrites past months.
+- Anything hard-coded to one person or company.
 
-## Обмеження
+## Constraints
 
-- iOS 17+, SwiftUI, SwiftData, Swift Charts, ActivityKit (Live Activity).
-- Усі дані локально на пристрої. Жодного збору даних (потрібна лише сторінка privacy policy для App Store).
-- Мови: українська, польська, англійська. Валюта за замовчуванням — PLN (zł), змінюється в налаштуваннях.
+- iOS 18.0+, iPhone only, portrait. SwiftUI, SwiftData, Swift Testing, Swift 6.
+- Liquid Glass on iOS 26 (system bars and sheets, plus our own controls), material fallback on 18.
+- All data on the device. No data collection (the App Store still needs a privacy policy page).
+- Languages: Ukrainian, Polish, English. Złoty (zł) only for now; no currency setting.
 
-## Підходи (розглянуті)
+## Approaches considered
 
-| | Підхід | Плюси | Мінуси |
+| | Approach | Pros | Cons |
 |---|---|---|---|
-| **A (обрано)** | SwiftUI + SwiftData, iOS 17+ | найменше коду, Swift Charts, CloudKit пізніше без переписування | не працює на iOS ≤16 |
-| B | SwiftUI + Core Data, iOS 15+ | старіші iPhone | більше й старомодніший код |
-| C | Flutter / React Native | Android | ціль — App Store, нативне простіше зробити якісно й пройти review |
+| **A (chosen)** | SwiftUI + SwiftData | least code, CloudKit later without a rewrite | needs iOS 17+ (we target 18) |
+| B | SwiftUI + Core Data, iOS 15+ | older iPhones | more and older code |
+| C | Flutter / React Native | Android | the target is the App Store; native is easier to make good and to get through review |
 
-Користувач обрав **A**.
+## Screens
 
-## Структура застосунку
+A system `TabView` with three tabs — **Today**, **Statistics**, **Apartments** — and a floating
+add button beside the tab bar. Settings open from a toolbar button on Apartments.
 
-TabView з трьома вкладками + налаштування за іконкою шестерні (на вкладці «Квартири»):
+### Today
 
-1. **Сьогодні**
-2. **Статистика**
-3. **Квартири** (шаблон)
+Shows the selected day; it is today on launch.
 
-### 1. Квартири (шаблон)
+- **Header**: the date with ‹ › to step one day, and a calendar button.
+- **Timer card**: idle shows `0:00:00` and **Start**; running shows the elapsed time, the start time,
+  **Pause/Resume** and **Stop**.
+- **Two summary cards**: today `earned / planned zł` with a progress bar; this month's total and
+  count.
+- **Apartment list**: one row per planned apartment — check circle, name, an "окремо" badge if it is
+  reported separately, price. Tapping a row toggles cleaned. Swipe to remove it from the day.
+- **Empty state** (nothing planned yet): "Які квартири сьогодні?" with **Додати квартири** (opens
+  Day plan) and **Як учора · N квартир**, which copies the most recent working day's plan, unticked.
+- Unticked apartments are not carried over; they are simply not counted and not reported.
 
-Список квартир користувача. Кожна квартира:
+### A past day
 
-- **Назва/номер** — довільний текст (`54`, `155`, `6piw`, `133kol`).
-- **Ціна** — десяткове число у валюті застосунку.
-- **Окремо у звіті** — перемикач (див. формат звіту). Для мами: увімкнено для `155`.
+The same screen for any earlier date, reached by ‹ or the calendar.
 
-Дії: додати, редагувати, видалити, змінити порядок. Видалення = архівування (квартира зникає з шаблону, але історія лишається). Назви унікальні серед неархівованих (без урахування регістру й пробілів по краях).
+- The title is the date ("12 листопада"), the subtitle the weekday and "минулий день", and a
+  **Сьогодні** button jumps back.
+- The timer card shows the day's total ("5:10", "07:30 – 13:05 · пауза 25 хв") with **Змінити** to
+  set the duration by hand (for a forgotten timer).
+- Rows can be ticked and unticked; **+ Додати квартиру** adds one that was forgotten.
+- Changes flow into Statistics and the report at once.
 
-Зміна ціни діє лише на нові записи; минулі записи зберігають свою ціну (снапшот).
+### Calendar (sheet)
 
-### 2. Сьогодні
+- Quick buttons: **Сьогодні**, **Учора**, **Тиждень тому**.
+- A month grid, weeks starting on the locale's first weekday (Monday for pl/uk). Each worked day
+  shows its earnings in small type; today is ringed; the selected day is filled. Month paging ‹ ›.
+- A card for the selected day (weekday, date, count, earnings) with **Відкрити день**.
+- Future days: **open question** — disabled in the mockup, but planning tonight for tomorrow needs at
+  least tomorrow to be selectable.
 
-```
-┌───────────────────────────────┐
-│ ‹  Пт, 13 листопада  ›        │
-│ ⏱ 3:42     [⏸ Пауза] [■ Стоп] │
-│                               │
-│ ☑ 100              150 zł     │
-│ ☑ 101              220 zł     │
-│ ☐ 105              180 zł     │
-│                               │
-│ Сьогодні: 370 / 550 zł        │
-│ За місяць: 4 820 zł · 31 кв   │
-│                               │
-│ [ + Додати квартири ]         │
-└───────────────────────────────┘
-```
+### Day plan (sheet)
 
-- **Додати квартири** → sheet з шаблоном, мультивибір (уже додані на цей день недоступні) + «Нова квартира» (назва + ціна + «окремо у звіті»), яка зберігається в шаблон і одразу додається в день.
-- Тап по рядку перемикає «прибрано». Свайп — видалити з дня.
-- Одна квартира може бути в дні лише раз; у різні дні — скільки завгодно.
-- «Сьогодні: X / Y» — X сума прибраних, Y сума запланованих.
-- «За місяць» — сума і кількість прибраних за поточний календарний місяць.
-- Стрілки ‹ › і тап по даті (календар) — перехід на інші дні, щоб виправити забуту галочку чи додати пропущений день. Майбутні дні теж доступні (можна внести план звечора).
-- Непозначені квартири нікуди не переносяться: вони просто не рахуються і не потрапляють у звіт.
+- A grid of template apartments (name + price), multi-select; apartments already on the day are
+  shown selected. A search field filters by name.
+- **Нова** creates an apartment (name, price, "окремо у звіті"), saves it to the template and adds it
+  to the day.
+- The confirm button sums the selection: "Додати 7 квартир · 224 zł".
 
-### Таймер
+### Statistics
 
-Один таймер на день:
+- Month switcher.
+- The month's earnings as one large number, with the change against the previous month (hidden
+  when the previous month is zero).
+- Cards: apartments cleaned (all, including separately reported ones), hours worked, earnings per
+  hour (only over days with recorded time; "—" when none), average per working day (a day with at
+  least one cleaned apartment).
+- Most frequent apartments with their counts.
+- A **Звіт** button opens the report for the shown month.
 
-- **▶ Почати** → іде час. **⏸ Пауза / ▶ Продовжити**. **■ Завершити**.
-- Зберігається як інтервали з timestamp (start, end), тож переживає закриття/вбивство застосунку і перезавантаження телефону.
-- Тривалість дня = сума інтервалів. Інтервал, що перетинає північ, належить дню, в якому почався.
-- Ручне виправлення: на дні можна задати тривалість вручну (перекриває суму інтервалів) — на випадок, якщо забули зупинити.
-- Під час роботи — **Live Activity** на заблокованому екрані / Dynamic Island з поточним часом і кнопкою паузи (якщо кнопка в Live Activity ускладнює v1 — допустимо лише відображення часу).
-- Таймер необов'язковий: без нього все інше працює, просто немає годин і ставки.
+### Report (sheet)
 
-### 3. Статистика
+- A monospaced preview of the report text.
+- **Надіслати у WhatsApp** → `whatsapp://send?text=<percent-encoded>` (`whatsapp` in
+  `LSApplicationQueriesSchemes`); without WhatsApp, the system share sheet.
+- **Копіювати** → the pasteboard.
 
-```
-┌───────────────────────────────┐
-│ ‹  Листопад 2026  ›           │
-│ 4 820 zł        31 квартира   │
-│ 52 год          92 zł/год     │
-│ ▁▃▅▂▇▄▆  заробіток по днях    │
-│ Жовтень: 4 310 zł   ↑ 12%     │
-│ Середньо за робочий день: …   │
-│ Найчастіші: 100 (18), 54 (16) │
-│ [ Надіслати звіт у WhatsApp ] │
-│ [ Копіювати звіт ]            │
-└───────────────────────────────┘
-```
+### Apartments (template)
 
-- Перемикач місяців.
-- Заробіток, кількість прибраних (усі, включно з «окремо у звіті»), години, zł/год (лише по днях, де є час; якщо годин нема — «—»).
-- Графік заробітку по днях (Swift Charts).
-- Порівняння з попереднім місяцем.
-- Середній заробіток за робочий день (день з ≥1 прибраною).
-- Топ квартир за кількістю.
-- Кнопки звіту для обраного місяця.
+- The list: name, price, an "окремо у звіті" badge. Add, edit, reorder, archive.
+- Names are unique among active apartments (case- and edge-whitespace-insensitive).
+- A price change applies to new entries only; the footnote says so.
 
-### Звіт для начальства
+### Settings
 
-Реальний приклад (жовтень), який має відтворюватися:
+- Reminder on the last day of the month at 18:00 to send the report (permission asked only when
+  switched on).
+- Optional morning reminder to plan the day, with a time (off by default).
+- Privacy policy link, version.
+
+## Report format
+
+The real October report this must reproduce:
 
 ```
 1.10-(54,96,100,105,115,116,138)=7
@@ -145,56 +150,55 @@ TabView з трьома вкладками + налаштування за ік�
 ...
 ```
 
-Правила:
+- Only days with at least one cleaned apartment; only cleaned entries.
+- A line is `{d}.{M}-({names, comma-separated, no spaces})={count}`, then `+{name}` for each
+  apartment marked "окремо у звіті" (one with a different rate, like `155`).
+  - The date has no leading zeros: `1.10`, `13.11`.
+  - Inside the brackets: entries in template order.
+  - `{count}` counts the entries inside the brackets only.
+  - A day with only separate apartments: `{d}.{M}-()=0+155`. *(assumed; confirm with the boss's
+    expectations)*
+- Weeks are separated by one blank line; the first weekday follows the locale (Monday for pl/uk —
+  the October example breaks after Sunday the 4th, which matches).
+- No header and no total line, exactly like the example.
+- Names and the separate flag come from the entry's snapshot.
 
-- Лише дні з ≥1 прибраною квартирою; лише прибрані записи.
-- Рядок: `{д}.{м}-({назви через кому без пробілів})={кількість}` + для кожної квартири з «окремо у звіті»: `+{назва}`.
-  - Дата без ведучих нулів: `1.10`, `13.11`.
-  - У дужках — квартири без прапорця, порядок — порядок у шаблоні (sortOrder).
-  - `{кількість}` — кількість квартир у дужках (без «окремих»).
-  - Якщо в дні лише «окремі»: `{д}.{м}-()=0+155`. *(рішення білдера, можна поміняти)*
-- Тижні розділені порожнім рядком; перший день тижня — `Calendar.current.firstWeekday` (для pl/uk = понеділок; у прикладі жовтня 2026 це збігається: розрив після 4.10 (нд)).
-- Без заголовка й підсумку — точно як у прикладі. *(рішення білдера)*
-- Прапорець «окремо у звіті» і назва — снапшот на момент запису.
+## Data model
 
-Надсилання:
+Domain value types (`Models/`), mirrored by SwiftData records (`Persistence/`) that are
+CloudKit-compatible: every attribute optional or defaulted, relationships optional, no unique
+constraints (uniqueness is enforced in code).
 
-- «Надіслати у WhatsApp» → `whatsapp://send?text=<percent-encoded>` (додати `whatsapp` у `LSApplicationQueriesSchemes`); якщо WhatsApp не встановлено — системний ShareLink.
-- «Копіювати» → у буфер обміну.
+- **Apartment**: `id`, `name`, `price: Money`, `isReportedSeparately`, `sortOrder`, `isArchived`,
+  `createdAt`.
+- **WorkDay**: `id`, `day: DayKey`, `entries`, `sessions`, `manualDuration: Duration?`.
+- **DayEntry**: `id`, `apartmentID?`, snapshots `name`, `price`, `isReportedSeparately`,
+  `sortOrder`; `isCleaned`, `cleanedAt?`.
+- **WorkSession**: `id`, `start: Date`, `end: Date?`.
+- **Money**: integer grosze (28 zł = 2800); złoty only.
+- **DayKey**: year, month, day — a calendar day independent of time zone.
 
-### Налаштування
+Timer rules: a day's duration is the sum of its sessions, or `manualDuration` when set; pausing ends a
+session and resuming starts a new one; a session crossing midnight belongs to the day it started; the
+state is timestamps, so it survives the app being killed. A Live Activity with the running time is
+planned for after v1's core screens.
 
-- Валюта (за замовчуванням PLN).
-- Нагадування в останній день місяця о 18:00: «Надішли звіт за {місяць}» (вмикається; запит дозволу на сповіщення лише при вмиканні).
-- Ранкове нагадування «Додай квартири на сьогодні» з вибором часу (вимкнено за замовчуванням).
-- Посилання на privacy policy, версія.
+## Testing
 
-## Модель даних (SwiftData)
+- Unit tests for the report builder (the October example, including `6piw`, `133kol`, `+155` and the
+  week breaks), the money and duration arithmetic (pauses, midnight, manual duration, per-hour rate),
+  and the month totals.
+- View models against fake repositories; SwiftData repositories against an in-memory container.
+- A manual pass on a device through TestFlight.
 
-Сумісна з CloudKit: усі властивості опціональні або з дефолтами, без `@Attribute(.unique)`, зв'язки опціональні.
+## Left to the builder
 
-- **Apartment**: `id: UUID`, `name: String`, `price: Decimal`, `reportSeparately: Bool`, `sortOrder: Int`, `isArchived: Bool`, `createdAt: Date`.
-- **WorkDay**: `id`, `date: Date` (початок дня), `entries: [DayEntry]`, `sessions: [WorkSession]`, `manualDuration: TimeInterval?`.
-- **DayEntry**: `id`, `apartment: Apartment?`, `nameSnapshot: String`, `priceSnapshot: Decimal`, `reportSeparatelySnapshot: Bool`, `sortOrderSnapshot: Int`, `isCleaned: Bool`, `cleanedAt: Date?`, `day: WorkDay?`.
-- **WorkSession**: `id`, `start: Date`, `end: Date?`, `day: WorkDay?`.
+- Bundle ID (decided later), project and target structure, the widget extension for the Live Activity.
+- Onboarding: the first launch should lead to "add your apartments".
 
-Унікальність WorkDay за датою і DayEntry за (день, квартира) забезпечується в коді.
+## Later (not v1)
 
-## Тестування
-
-- Unit-тести генератора звіту, обов'язково з жовтневим прикладом (включно з `6piw`, `133kol`, `+155`, розривами тижнів).
-- Unit-тести підрахунків: заробіток, кількість, тривалість з паузами і північчю, manualDuration, zł/год.
-- Ручна перевірка флоу на пристрої через TestFlight.
-
-## Залишено на розсуд білдера
-
-- Візуальний стиль, іконка, кольори, анімації (простий, великі тап-зони, Dynamic Type).
-- Bundle ID, структура проєкту/таргетів (застосунок + widget extension для Live Activity).
-- Порожні стани й онбординг (рекомендовано: перший запуск → «Додай свої квартири»).
-
-## Пізніше (не v1)
-
-- iCloud-синхронізація.
-- Публікація в App Store: скріншоти, опис, privacy policy сторінка.
-- Віджет на головному екрані.
-- Експорт у PDF/CSV.
+- iCloud sync.
+- App Store submission: screenshots, description, privacy policy page.
+- Home-screen widget, Live Activity.
+- PDF/CSV export.
