@@ -12,8 +12,8 @@
       "Bash(xcrun simctl list *)"
     ],
     "deny": [
-      "Bash(git push --force *)",
-      "Bash(git push -f *)"
+      "Bash(git push *)",
+      "Bash(git push)"
     ]
   },
   "hooks": {

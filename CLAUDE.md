@@ -66,7 +66,7 @@ Every feature goes through the same pipeline without being asked:
      functions with one level of abstraction, intention-revealing names, no duplication, no dead
      code, and every rule in `.claude/conventions/`.
    Fix what the reviews find, then build, test and lint again.
-6. Build, test and lint green, then commit, push and a short PR description (below). The PR
+6. Build, test and lint green, then commit and a short PR description (below). The PR
    description lists what each review found and what was fixed.
 
 **A complex feature is split into separate logic and UI tasks — and, when it is big enough,
@@ -76,14 +76,35 @@ screen on a view model that already works and is tested, and adds no logic of it
 layout and bindings. A task that needs both is two tasks. "Complex" is anything with more than one
 screen state, a calculation, or a write; a pure layout tweak stays one task.
 
+## Branches and sessions
+
+**Every branch is 300–500 changed lines, tests included** (`git diff --shortstat <base>...HEAD`).
+A plan is split into branches before implementation starts, and the split is written into
+`docs/plan.md`. A branch smaller than 300 lines is fine only when it is the natural end of a
+feature; a branch growing past 500 stops and is split.
+
+**Every branch is done in a fresh session (`/clear`, zero context).** A session works on exactly one
+branch: read `docs/plan.md` first, find the branch marked next, read its plan section and spec, do
+it, and stop. Everything the next session needs goes into `docs/plan.md` and the plan file — never
+rely on conversation memory. Start Claude Code in the repo folder so the project hooks load.
+
+**Every branch gets a thorough code review before it is handed over** — the review step of the
+feature workflow, on that branch's diff only: the matching skills (`swift-concurrency-pro`,
+`swiftui-pro`) and the SOLID / clean-code pass. Fix what it finds, re-run build, tests and lint,
+and record the result in `docs/plan.md`.
+
+**Branches are stacked** while the one below is not merged yet: each starts from the previous
+branch of the same feature, and its PR targets that branch (or `main` once it is merged).
+
 A feature's plan file is a working artifact: delete it once the feature is merged. The product
 spec and `docs/plan.md` stay.
 
 ## Git
 
-**Claude creates branches, commits and pushes.** One feature per branch (`feature/<short-name>`),
-small commits with an imperative English subject. **Never add a `Co-Authored-By` trailer or any
-other attribution line** to commits or PRs. Never force-push and never rewrite pushed history.
+**Claude creates branches and commits; the user pushes and opens the PRs.** Branch names
+`feature/<feature>-<n>-<short-name>`, small commits with an imperative English subject.
+**Never add a `Co-Authored-By` trailer or any other attribution line** to commits or PRs. Never
+run `git push`, never force anything, never rewrite history the user has pushed.
 
 At the end of every PR, give a PR description in English, ready to paste: a one-line title, what
 the user gets, the key changes as bullets, how it was verified. No attribution line.
