@@ -67,8 +67,8 @@ One contract test suite per repository runs against both the fake and the SwiftD
   build phases, a `PBXTargetDependency` + `PBXContainerItemProxy` on `CleanLog`, and Debug/Release
   `XCBuildConfiguration`s with: `BUNDLE_LOADER = "$(TEST_HOST)"`,
   `TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CleanLog.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CleanLog"`,
-  `PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER_BASE).CleanLogTests"` → use the app's id
-  with `Tests` appended, `IPHONEOS_DEPLOYMENT_TARGET = 18.0`, `TARGETED_DEVICE_FAMILY = 1`,
+  `PRODUCT_BUNDLE_IDENTIFIER` = the app's id with `Tests` appended (`-.CleanLogTests` until the real
+  Bundle ID is chosen), `IPHONEOS_DEPLOYMENT_TARGET = 18.0`, `TARGETED_DEVICE_FAMILY = 1`,
   `SWIFT_VERSION = 6.0`, `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`,
   `SWIFT_APPROACHABLE_CONCURRENCY = YES`, `GENERATE_INFOPLIST_FILE = YES`. Add it to the project's
   `targets` list.
@@ -223,9 +223,8 @@ One contract test suite per repository runs against both the fake and the SwiftD
   - Empty input → earned `.zero`, counts 0, `workedDuration == .zero`, both optionals `nil`, `topApartments == []`.
   - Three days: A (100, 101 ticked, 106 ticked, sessions 2 h), B (100 ticked, no time), C (only 102 unticked, manual 1 h):
     `earned == 11200` (28+56 + 28), `cleanedCount == 3`, `workingDays == 2` (C has nothing ticked),
-    `workedDuration == 3 h`, `earningsPerHour == Money(grosze: 4200)` (A: 8400 over 2 h; C has time but
-    0 earned → included: 8400 / 3 h = 2800 — **decide by the rule "earned on days with recorded time ÷
-    their hours"**: A and C have time → 8400 / 3 h = `Money(grosze: 2800)`), `averagePerWorkingDay == Money(grosze: 5600)`.
+    `workedDuration == 3 h`, `earningsPerHour == Money(grosze: 2800)` (days with recorded time are A and C:
+    8400 earned over 3 h; B's 2800 has no hours and is left out), `averagePerWorkingDay == Money(grosze: 5600)`.
   - Rounding half-up: earned 1000 grosze over 3 h → `Money(grosze: 333)`; 1001 over 2 h (half) → `501`.
   - `topApartments`: `100` ticked on 3 days, `101` on 2, `102` on 2, `103` on 1 → `[100 (3), 101 (2), 102 (2)]`
     (ties by name); the name is the snapshot from the latest day.
@@ -358,8 +357,8 @@ One contract test suite per repository runs against both the fake and the SwiftD
   - Work days: `day(13.11)` first yields `.empty(13.11)` with no entries; `update(13.11) { $0.planning([a]) }` →
     the stream yields the planned day; `update` whose change throws → error rethrown, the stream yields
     nothing new, a later read is unchanged; `days(in: November)` returns only November days, ascending;
-    `latestDayWithEntries(before: 13.11)` returns the 11.11 day when 12.11 is empty-but-stored and 10.11
-    has entries → **11.11 if it has entries**, else the nearest earlier one with entries; `nil` when none.
+    with 12.11 stored but emptied, 11.11 and 10.11 with entries, `latestDayWithEntries(before: 13.11)` is
+    the 11.11 day; with no earlier entries it is `nil`.
   - Streams: two observers of the same day both receive the update; a cancelled consumer task does not crash later writes.
 - [ ] **Step 2:** Run — FAIL.
 - [ ] **Step 3: Implement** protocols (`@MainActor` by default isolation), `StoreObservers` (continuations
