@@ -38,7 +38,12 @@ struct WorkDayRepositoryContractTests {
 
         await #expect(throws: WorkDayError.futureDay) {
             try await repository.update(key(14)) { day in
-                try day.settingCleaned(day.entries[0].id, true, now: .warsaw(2026, 11, 13, 9), today: today)
+                try day.settingCleaned(
+                    day.entries[0].id,
+                    to: true,
+                    now: .warsaw(2026, 11, 13, 9),
+                    today: today
+                )
             }
         }
 
@@ -52,7 +57,12 @@ struct WorkDayRepositoryContractTests {
         try await repository.update(today) { $0.planning([a100]) }
         try await repository.update(today) { $0.planning([a101]) }
         try await repository.update(today) { day in
-            try day.settingCleaned(day.entries[0].id, true, now: .warsaw(2026, 11, 13, 9), today: today)
+            try day.settingCleaned(
+                day.entries[0].id,
+                to: true,
+                now: .warsaw(2026, 11, 13, 9),
+                today: today
+            )
         }
 
         var stream = repository.day(today).makeAsyncIterator()
