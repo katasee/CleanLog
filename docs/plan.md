@@ -161,9 +161,20 @@ Notes for the sessions:
 
 ## Feature 3 — Apartments
 
-Spec: `docs/superpowers/specs/2026-11-21-apartments-design.md` · Plan: being written.
+Plan: `docs/superpowers/plans/2026-11-21-apartments.md` · Spec: `docs/superpowers/specs/2026-11-21-apartments-design.md`
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 10 | `feature/CL-10-apartment-delete-name-order` | `main` | 1–3 | ~350 est. | **NEXT** — spec and plan committed, code not started | concurrency (repositories) + SOLID |
+| 11 | `feature/CL-11-apartment-view-models` | CL-10 | 4–6 | ~450 est. | not started | SwiftUI + concurrency + SOLID |
+| 12 | `feature/CL-12-apartments-screen` | CL-11 | 7–8 | ~400 est. (end of feature) | not started | SwiftUI + SOLID |
 
 Notes for the sessions:
+
+- Plan review (2026-11-21), before code: `swiftui-pro` — alerts bind to settable flags
+  (`isConfirmingDeletion`, `isShowingError`), not optionals; `swift-concurrency-pro` — clear the
+  pending deletion before its `await`, refuse a second `save()` while one runs. Details and what was
+  kept are at the end of the plan file.
 
 - Brainstorming (2026-11-21): no archive — an apartment is deleted (history is safe: entries keep
   snapshots); no manual order — apartments sort by name (digit-only names numerically first, then the
@@ -172,7 +183,7 @@ Notes for the sessions:
 - **For Feature 4:** «Як учора» must not copy apartments deleted since that day — filter the copy by
   the current template.
 
-Next free branch number: **CL-11** (CL-10 is `feature/CL-10-apartment-delete-name-order`).
+Next free branch number: **CL-13** (CL-10…12 are reserved above).
 
 ## Roadmap (v1)
 
