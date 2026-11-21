@@ -28,9 +28,9 @@ Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowe
 | 2 | `feature/CL-2-apartment-workday` | `main` | 3–4 | 469 | merged (PR #2) | done — concurrency clean; SOLID: 5 fixes (below) |
 | 3 | `feature/CL-3-timer-stats` | `main` | 5–6 | 353 | merged (PR #3) | done — concurrency clean; SOLID: 6 fixes (below) |
 | 4 | `feature/CL-4-report-formatters` | `main` | 7–8 | 294 | merged (PR #4) | done — concurrency clean; SOLID: 5 fixes + spec sync (below) |
-| 5 | `feature/CL-5-repositories` | `main` | 9 | 504 | reviewed, PR open | done — concurrency: 1 test fix; SOLID: 1 fix (below) |
-| 6 | `feature/CL-6-swiftdata` | 5 | 10 | ~450 est. | to do (create from 5) | **NEXT** — after build — `swift-concurrency-pro` (`@Model` isolation) + SOLID |
-| 7 | `feature/CL-7-app-wiring` | 6 | 11 | ~150 est. (end of feature) | to do (create from 6) | after build — `swiftui-pro` + SOLID |
+| 5 | `feature/CL-5-repositories` | `main` | 9 | 504 | merged (PR #5) | done — concurrency: 1 test fix; SOLID: 1 fix (below) |
+| 6 | `feature/CL-6-swiftdata` | `main` | 10 | 563 | reviewed, PR open | done — concurrency clean; SOLID: 3 fixes (below) |
+| 7 | `feature/CL-7-app-wiring` | 6 | 11 | ~150 est. (end of feature) | to do (create from 6, or `main` once 6 is merged) | **NEXT** — after build — `swiftui-pro` + SOLID |
 
 Notes for the sessions:
 
@@ -87,6 +87,24 @@ Notes for the sessions:
   literals stay packed like the rest of the tests. Size 504: 4 over the cap only from that formatting,
   not split. Kept: apartments with equal `sortOrder` (an archived one after a partial `reorder`) have no
   tie-break — the UI always reorders the whole active list; revisit in the Apartments feature.
+- CL-6 (2026-11-21): PR #5 was merged, so CL-6 starts from `main` and its PR targets `main`.
+  Deviations from the plan (plan file and `architecture.md` updated): the SwiftData repositories take
+  the `ModelContainer`, not a `ModelContext` — a context does not keep its container alive, and the
+  contract tests (`kind.makeStore().workDays`) dropped the store at once and crashed in `fetch`, so
+  `StoreUnderTest.keepAlive` is gone; `DayEntryRecord` and `WorkSessionRecord` carry `position`,
+  because a to-many relationship comes back unordered; `ModelContainerFactory` sets
+  `cloudKitDatabase: .none` until sync is a decision. A failed save rolls the context back
+  (`ModelContext.saveOrRollBack`). A failed read in a stream is logged and yields the empty value
+  (`[]`, `.empty(day)`); writes still throw. Concurrency review: the `@Model` records and their
+  mapping extensions come out nonisolated under default `MainActor` isolation (the compiler said so),
+  so the `ModelContext` sync and insert helpers are `nonisolated` too; records are only touched
+  through the main context by main-actor repositories, nothing is `Sendable`-forced; no `await`
+  inside the repositories, so no reentrancy. No findings. SOLID / clean code: the next sort order was
+  computed in both apartment repositories → `Apartment.nextSortOrder(after:)`, test-first; "create a
+  record and insert it" in three places → `ModelContext.inserted(_:)`; 3-argument calls (`synced`,
+  `WorkSession` in tests) put one argument per line. Kept: the do/catch-log-fallback in the three
+  stream reads — each has its own fallback and message. Size 563 (about 540 code and tests): over
+  the cap, kept as one branch by the user's decision — one feature, partly from formatting.
 - Branch 4 is under 300 lines on purpose: it closes the pure-logic half of the foundation.
 - After branch 7 merges: delete the foundation plan and design files (`CLAUDE.md`), mark the feature
   done here.
