@@ -128,7 +128,7 @@ Plan: `docs/superpowers/plans/2026-11-21-design-system.md` · Spec: `docs/superp
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 8 | `feature/CL-8-design-system` | `main` | 1–3 | ~320 | in progress | — |
+| 8 | `feature/CL-8-design-system` | `main` | 1–3 | 634 | reviewed, PR open | done — SwiftUI clean; SOLID clean; 1 convention fix (below) |
 | 9 | `feature/CL-9-tab-shell` | CL-8 (or `main` once merged) | 4–5 | ~250 (end of feature) | **NEXT** after CL-8 | `swiftui-pro` + SOLID |
 
 Notes for the sessions:
@@ -138,6 +138,15 @@ Notes for the sessions:
   blurred blobs behind the screens: the flat `Background` token. Plan reviewed with `swiftui-pro`
   before code (no blocking findings, see the plan file).
 - Sizes leave out the deleted foundation docs (a pure deletion of ~440 lines in CL-8).
+- CL-8 (2026-11-21): the `Separator` colorset collided with `UIColor.separator` (Xcode skipped its
+  generated symbol with a warning) → renamed `Hairline`; `code-style.md` table and its naming rule
+  updated in the same commit. `AccentColor` generates `Color.accent` as well as `Color.accentColor`.
+  Glass: compiled for iOS 18 and 26, Debug and Release; not yet seen on screen, since nothing uses the
+  modifiers — check the iOS 18.6 fallback on the simulator when the first screen uses them. Review:
+  `swiftui-pro` no findings; SOLID / clean code no findings (the modifiers are unused until Feature 3
+  by design). Size 634 is over the cap from the format, not the code: ~400 lines are the eight
+  colorset JSON files and ~250 the new spec, plan and `docs/plan.md`; the Swift is ~55 lines. Kept as
+  one branch.
 
 Next free branch number: **CL-10**.
 
