@@ -21,9 +21,7 @@ struct ApartmentsView: View {
             .navigationTitle(Text(.tabApartmentsTitle))
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        viewModel.add()
-                    } label: {
+                    Button(action: viewModel.add) {
                         Label {
                             Text(.apartmentsActionAdd)
                         } icon: {
@@ -97,9 +95,7 @@ private struct ApartmentsEmptyState: View {
                     .foregroundStyle(Color.inkSecondary)
             }
         } actions: {
-            Button {
-                viewModel.add()
-            } label: {
+            Button(action: viewModel.add) {
                 Text(.apartmentsEmptyAction)
             }
             .buttonStyle(.borderedProminent)
@@ -121,9 +117,7 @@ private struct DeletionConfirmation: ViewModifier {
             } label: {
                 Text(.apartmentsDeleteAction)
             }
-            Button(role: .cancel) {
-                viewModel.cancelDeletion()
-            } label: {
+            Button(role: .cancel, action: viewModel.cancelDeletion) {
                 Text(.commonActionCancel)
             }
         } message: { _ in

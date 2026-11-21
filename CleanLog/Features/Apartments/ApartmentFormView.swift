@@ -42,6 +42,22 @@ private struct PriceField: View {
     }
 }
 
+private struct AccessCodeField: View {
+    @Binding var accessCode: String
+
+    var body: some View {
+        LabeledContent {
+            TextField(text: $accessCode, prompt: Text(.apartmentsFormPlaceholderOptional)) {
+                Text(.apartmentsFormFieldAccessCode)
+            }
+            .multilineTextAlignment(.trailing)
+            .autocorrectionDisabled()
+        } label: {
+            Text(.apartmentsFormFieldAccessCode)
+        }
+    }
+}
+
 struct ApartmentFormView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: ApartmentFormViewModel
@@ -56,15 +72,7 @@ struct ApartmentFormView: View {
                 Section {
                     NameField(viewModel: viewModel)
                     PriceField(priceText: $viewModel.priceText)
-                    LabeledContent {
-                        TextField(text: $viewModel.accessCode, prompt: Text(.apartmentsFormPlaceholderOptional)) {
-                            Text(.apartmentsFormFieldAccessCode)
-                        }
-                        .multilineTextAlignment(.trailing)
-                        .autocorrectionDisabled()
-                    } label: {
-                        Text(.apartmentsFormFieldAccessCode)
-                    }
+                    AccessCodeField(accessCode: $viewModel.accessCode)
                     Toggle(isOn: $viewModel.isReportedSeparately) {
                         Text(.apartmentsFormFieldSeparate)
                     }
@@ -85,11 +93,7 @@ struct ApartmentFormView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        Task {
-                            if await viewModel.save() {
-                                dismiss()
-                            }
-                        }
+                        Task { await save() }
                     } label: {
                         Text(.commonActionSave)
                     }
@@ -99,6 +103,12 @@ struct ApartmentFormView: View {
             .alert(viewModel.errorMessage ?? "", isPresented: $viewModel.isShowingError) {}
         }
         .presentationDetents([.medium, .large])
+    }
+
+    private func save() async {
+        if await viewModel.save() {
+            dismiss()
+        }
     }
 }
 
