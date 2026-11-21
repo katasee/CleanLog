@@ -11,25 +11,17 @@ struct ApartmentsView: View {
         NavigationStack {
             Group {
                 if viewModel.showsEmptyState {
-                    ApartmentsEmptyState(viewModel: viewModel)
+                    ApartmentsEmptyState()
                 } else {
                     ApartmentList(viewModel: viewModel)
                 }
             }
+            .safeAreaInset(edge: .bottom) {
+                AddApartmentButton(action: viewModel.add)
+            }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.background)
             .navigationTitle(Text(.tabApartmentsTitle))
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button(action: viewModel.add) {
-                        Label {
-                            Text(.apartmentsActionAdd)
-                        } icon: {
-                            Image(systemName: "plus")
-                        }
-                    }
-                }
-            }
             .modifier(DeletionConfirmation(viewModel: viewModel))
             .alert(viewModel.errorMessage ?? "", isPresented: $viewModel.isShowingError) {}
             .sheet(item: $viewModel.sheet) { sheet in
@@ -83,8 +75,6 @@ private struct ApartmentList: View {
 }
 
 private struct ApartmentsEmptyState: View {
-    let viewModel: ApartmentsViewModel
-
     var body: some View {
         ContentUnavailableView {
             Label {
@@ -94,12 +84,34 @@ private struct ApartmentsEmptyState: View {
                 Image(systemName: "building.2")
                     .foregroundStyle(Color.inkSecondary)
             }
-        } actions: {
-            Button(action: viewModel.add) {
-                Text(.apartmentsEmptyAction)
-            }
-            .buttonStyle(.borderedProminent)
         }
+    }
+}
+
+private struct AddApartmentButton: View {
+    private enum Layout {
+        static let horizontalPadding: CGFloat = 16
+        static let bottomPadding: CGFloat = 8
+    }
+
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label {
+                Text(.apartmentsActionAdd)
+            } icon: {
+                Image(systemName: "plus")
+            }
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .buttonBorderShape(.capsule)
+        .controlSize(.extraLarge)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+        .padding(.horizontal, Layout.horizontalPadding)
+        .padding(.bottom, Layout.bottomPadding)
     }
 }
 
