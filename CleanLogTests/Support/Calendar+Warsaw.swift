@@ -2,10 +2,11 @@ import Foundation
 
 extension Calendar {
     static let warsaw: Calendar = {
-        var calendar = Calendar(identifier: .gregorian)
-        if let timeZone = TimeZone(identifier: "Europe/Warsaw") {
-            calendar.timeZone = timeZone
+        guard let timeZone = TimeZone(identifier: "Europe/Warsaw") else {
+            preconditionFailure("Europe/Warsaw time zone is missing")
         }
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
         calendar.locale = Locale(identifier: "en_US_POSIX")
         return calendar
     }()

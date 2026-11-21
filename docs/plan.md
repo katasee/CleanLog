@@ -21,15 +21,15 @@ that branch only, updates this file, and stops. Rules: `CLAUDE.md` (Branches and
 
 Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowers/specs/2026-11-20-foundation-design.md`
 
-| # | Branch | Base | Plan tasks | Size | Status | Review |
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 1 | `feature/foundation-1-test-target-day-keys` | `main` | 1–2 | ~495 | built, tests green | **NEXT** — `swift-concurrency-pro` (nonisolated value types) + SOLID |
-| 2 | `feature/foundation-2-apartment-workday` | 1 | 3–4 | ~455 | built, tests green | to do — `swift-concurrency-pro` + SOLID |
-| 3 | `feature/foundation-3-timer-stats` | 2 | 5–6 | ~335 | built, tests green | to do — `swift-concurrency-pro` + SOLID |
-| 4 | `feature/foundation-4-report-formatters` | 3 | 7–8 | ~275 | built, tests green | to do — SOLID (pure formatting) |
-| 5 | `feature/foundation-5-repositories` | 4 | 9 | ~450 est. | contract tests drafted and committed (red); implementation to do | after build — `swift-concurrency-pro` (streams, `StoreObservers`) + SOLID |
-| 6 | `feature/foundation-6-swiftdata` | 5 | 10 | ~450 est. | to do (create from 5) | after build — `swift-concurrency-pro` (`@Model` isolation) + SOLID |
-| 7 | `feature/foundation-7-app-wiring` | 6 | 11 | ~150 est. (end of feature) | to do (create from 6) | after build — `swiftui-pro` + SOLID |
+| 1 | `feature/CL-1-test-target-day-keys` | `main` | 1–2 | ~495 | built, tests green | **NEXT** — `swift-concurrency-pro` (nonisolated value types) + SOLID |
+| 2 | `feature/CL-2-apartment-workday` | 1 | 3–4 | ~455 | built, tests green | to do — `swift-concurrency-pro` + SOLID |
+| 3 | `feature/CL-3-timer-stats` | 2 | 5–6 | ~335 | built, tests green | to do — `swift-concurrency-pro` + SOLID |
+| 4 | `feature/CL-4-report-formatters` | 3 | 7–8 | ~275 | built, tests green | to do — SOLID (pure formatting) |
+| 5 | `feature/CL-5-repositories` | 4 | 9 | ~450 est. | contract tests drafted and committed (red); implementation to do | after build — `swift-concurrency-pro` (streams, `StoreObservers`) + SOLID |
+| 6 | `feature/CL-6-swiftdata` | 5 | 10 | ~450 est. | to do (create from 5) | after build — `swift-concurrency-pro` (`@Model` isolation) + SOLID |
+| 7 | `feature/CL-7-app-wiring` | 6 | 11 | ~150 est. (end of feature) | to do (create from 6) | after build — `swiftui-pro` + SOLID |
 
 Notes for the sessions:
 
@@ -41,6 +41,8 @@ Notes for the sessions:
   plan's Task 9, Step 2.
 - After branch 7 merges: delete the foundation plan and design files (`CLAUDE.md`), mark the feature
   done here.
+
+Next free branch number: **CL-8**.
 
 ## Roadmap (v1)
 

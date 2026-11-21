@@ -46,6 +46,9 @@ has 'DispatchQueue'       && add 'DispatchQueue -> async/await, Task, MainActor'
 has 'try!'                && add 'try! -> handle the error (or preconditionFailure with a reason)'
 matches '(^|[^A-Za-z0-9_.])print\(' && add 'print( -> Logger from os'
 
+# No comments in code.
+matches '^[[:space:]]*//' && add 'comment line -> no comments in code; say it with a name or put the why in the commit'
+
 # Deprecated or discouraged SwiftUI.
 has 'NavigationView'      && add 'NavigationView -> NavigationStack'
 has '.foregroundColor('   && add '.foregroundColor( -> .foregroundStyle('
