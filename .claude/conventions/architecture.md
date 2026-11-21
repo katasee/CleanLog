@@ -23,7 +23,7 @@ source folders.
 | `App/` | `CleanLogApp`, `RootView` (the `TabView`), `AppDependencies` (builds the container and the real repositories) | everything |
 | `Features/<Feature>/` | one feature's view, view model, subviews, presentation models, `<Feature>Layout` | `Models/`, `Repositories/`, `UICommons/`, `Formatting/` |
 | `Models/` | domain value types and pure domain logic | Foundation only |
-| `Repositories/` | repository protocols and their in-memory fakes | `Models/` |
+| `Repositories/` | repository protocols, their in-memory fakes and `StoreObservers` (the stream helper both implementations share) | `Models/` |
 | `Persistence/` | `@Model` records, record ↔ domain mapping, SwiftData repositories, `ModelContainer` setup | SwiftData, `Models/`, `Repositories/` |
 | `Formatting/` | every formatter: dates, money, durations, the report text | Foundation, `Models/` |
 | `UICommons/` | views and modifiers used by two or more features | SwiftUI only |
@@ -87,8 +87,11 @@ Features: `Today` (the day screen, today or any past day), `DayPlan` (the add-ap
 - **Reads are observable streams**: `func days(in month: MonthKey) -> AsyncStream<[WorkDay]>`.
   The SwiftData implementation yields again after every save it performs (and, once sync exists,
   on remote change), so every screen showing the same day stays in step without manual refreshes.
-- Writes are `async throws` and say what they do (`markCleaned(_:on:)`, `plan(_:on:)`), not
-  `save(_:)` of a whole object.
+- Writes are `async throws`. Apartments have one write per intent (`add`, `update`, `archive`,
+  `reorder`). A day has a single write path, `update(_:_:)`, which hands the stored day (or an empty
+  one) to a change closure and saves what it returns: the rules (`planning`, `settingCleaned`, the
+  timer) live on `WorkDay` as pure functions, so a refused change throws its typed error and leaves
+  the stored day untouched.
 
 ## View models
 
