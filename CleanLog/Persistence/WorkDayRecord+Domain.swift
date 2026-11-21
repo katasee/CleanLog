@@ -24,12 +24,16 @@ extension WorkDayRecord {
         dayValue = workDay.day.storageValue
         manualDurationSeconds = workDay.manualDuration.map { Int($0.components.seconds) }
         isTimerFinished = workDay.isTimerFinished
-        entries = modelContext.synced(entries ?? [], to: workDay.entries, make: DayEntryRecord.init) {
-            $0.apply($1, position: $2)
-        }
-        sessions = modelContext.synced(sessions ?? [], to: workDay.sessions, make: WorkSessionRecord.init) {
-            $0.apply($1, position: $2)
-        }
+        entries = modelContext.synced(
+            entries ?? [],
+            to: workDay.entries,
+            make: DayEntryRecord.init
+        ) { $0.apply($1, position: $2) }
+        sessions = modelContext.synced(
+            sessions ?? [],
+            to: workDay.sessions,
+            make: WorkSessionRecord.init
+        ) { $0.apply($1, position: $2) }
     }
 }
 
@@ -90,10 +94,5 @@ extension ModelContext {
             apply(record, value, position)
             return record
         }
-    }
-
-    private nonisolated func inserted<Record: PersistentModel>(_ record: Record) -> Record {
-        insert(record)
-        return record
     }
 }

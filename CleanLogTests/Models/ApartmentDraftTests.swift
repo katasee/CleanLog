@@ -101,4 +101,10 @@ struct ApartmentDraftTests {
         #expect(edited.sortOrder == archived.sortOrder)
         #expect(edited.createdAt == archived.createdAt)
     }
+
+    @Test func sortsANewApartmentAfterEveryOther() {
+        let apartments = [Apartment.fixture("101", sortOrder: 4), .fixture("102", sortOrder: 1)]
+        #expect(Apartment.nextSortOrder(after: apartments) == 5)
+        #expect(Apartment.nextSortOrder(after: []) == 0)
+    }
 }

@@ -52,7 +52,7 @@ final class SwiftDataWorkDayRepository: WorkDayRepository {
         let stored = try storedRecord(day)
         let changed = try change(stored?.domain ?? .empty(day))
         guard stored != nil || !changed.isBlank else { return }
-        let record = stored ?? insertedRecord()
+        let record = stored ?? context.inserted(WorkDayRecord())
         record.apply(changed)
         try context.saveOrRollBack()
         observers.notify()
@@ -66,11 +66,5 @@ final class SwiftDataWorkDayRepository: WorkDayRepository {
         let value = day.storageValue
         let descriptor = FetchDescriptor<WorkDayRecord>(predicate: #Predicate { $0.dayValue == value })
         return try context.fetch(descriptor).first
-    }
-
-    private func insertedRecord() -> WorkDayRecord {
-        let record = WorkDayRecord()
-        context.insert(record)
-        return record
     }
 }

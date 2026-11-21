@@ -393,8 +393,10 @@ One contract test suite per repository runs against both the fake and the SwiftD
 - Consumes: Task 9 protocols and `StoreObservers`, domain types, `Apartment(_:sortOrder:createdAt:)`,
   `Apartment.applying(_:)` and `WorkDay.isBlank` (store a day only when it was stored or is not blank — as the fake).
 - Produces: `enum ModelContainerFactory { static func make(inMemory: Bool) throws -> ModelContainer }`;
-  `final class SwiftDataApartmentRepository: ApartmentRepository { init(context: ModelContext, now: @escaping () -> Date = Date.init) }`;
-  `final class SwiftDataWorkDayRepository: WorkDayRepository { init(context: ModelContext) }`.
+  `final class SwiftDataApartmentRepository: ApartmentRepository { init(container: ModelContainer, now: @escaping () -> Date = Date.init) }`;
+  `final class SwiftDataWorkDayRepository: WorkDayRepository { init(container: ModelContainer) }` — they own the
+  container (a `ModelContext` does not keep it alive) and work on its `mainContext`.
+  Child records carry `position` so entry and session order survives the unordered to-many relationship.
   Records: `ApartmentRecord` (`id: UUID`, `name: String`, `priceMinorUnits: Int`, `accessCode: String?`,
   `isReportedSeparately`, `sortOrder`, `isArchived`, `createdAt`), `WorkDayRecord` (`id`, `dayValue: Int`,
   `manualDurationSeconds: Int?`, `isTimerFinished`, `entries: [DayEntryRecord]?`, `sessions: [WorkSessionRecord]?`,

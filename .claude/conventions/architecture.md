@@ -75,8 +75,9 @@ Features: `Today` (the day screen, today or any past day), `DayPlan` (the add-ap
   repository.
 - **Schema changes go through `VersionedSchema` + `SchemaMigrationPlan`** from the first release
   that reaches TestFlight. Never change a shipped record in place.
-- **One `ModelContainer`, created in `AppDependencies`.** Repositories receive a `ModelContext` (the
-  container's `mainContext`); previews and tests use `ModelConfiguration(isStoredInMemoryOnly: true)`.
+- **One `ModelContainer`, created in `AppDependencies`.** Repositories receive the container and
+  work on its `mainContext` (a `ModelContext` does not keep its container alive); previews and
+  tests use `ModelConfiguration(isStoredInMemoryOnly: true)`.
 
 ## Repositories (`Repositories/`)
 

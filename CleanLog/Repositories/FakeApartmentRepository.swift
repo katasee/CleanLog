@@ -21,7 +21,11 @@
 
         func add(_ draft: ApartmentDraft) async throws -> Apartment {
             let valid = try draft.validated(against: Array(stored.values))
-            let apartment = Apartment(valid, sortOrder: nextSortOrder, createdAt: now())
+            let apartment = Apartment(
+                valid,
+                sortOrder: Apartment.nextSortOrder(after: Array(stored.values)),
+                createdAt: now()
+            )
             stored[apartment.id] = apartment
             observers.notify()
             return apartment
@@ -48,10 +52,6 @@
                 stored[apartment.id] = apartment
             }
             observers.notify()
-        }
-
-        private var nextSortOrder: Int {
-            (stored.values.map(\.sortOrder).max() ?? -1) + 1
         }
 
         private func storedApartment(_ id: UUID) throws(ApartmentError) -> Apartment {

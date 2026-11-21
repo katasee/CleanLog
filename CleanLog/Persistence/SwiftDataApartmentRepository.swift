@@ -29,11 +29,12 @@ final class SwiftDataApartmentRepository: ApartmentRepository {
     func add(_ draft: ApartmentDraft) async throws -> Apartment {
         let existing = try storedRecords().map(\.domain)
         let valid = try draft.validated(against: existing)
-        let nextSortOrder = (existing.map(\.sortOrder).max() ?? -1) + 1
-        let apartment = Apartment(valid, sortOrder: nextSortOrder, createdAt: now())
-        let record = ApartmentRecord()
-        context.insert(record)
-        record.apply(apartment)
+        let apartment = Apartment(
+            valid,
+            sortOrder: Apartment.nextSortOrder(after: existing),
+            createdAt: now()
+        )
+        context.inserted(ApartmentRecord()).apply(apartment)
         try save()
         return apartment
     }

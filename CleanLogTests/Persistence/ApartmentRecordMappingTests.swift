@@ -19,8 +19,7 @@ struct ApartmentRecordMappingTests {
             isArchived: true,
             createdAt: .warsaw(2026, 11, 1, 9)
         )
-        let record = ApartmentRecord()
-        container.mainContext.insert(record)
+        let record = container.mainContext.inserted(ApartmentRecord())
 
         record.apply(apartment)
 

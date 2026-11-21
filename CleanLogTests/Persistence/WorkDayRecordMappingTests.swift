@@ -18,24 +18,26 @@ struct WorkDayRecordMappingTests {
         var day = WorkDay.fixture(today, ticked: [a100], unticked: [a101])
         day.entries[0].cleanedAt = .warsaw(2026, 11, 13, 10)
         day.sessions = [
-            WorkSession(id: UUID(), start: .warsaw(2026, 11, 13, 8), end: .warsaw(2026, 11, 13, 12)),
-            WorkSession(id: UUID(), start: .warsaw(2026, 11, 13, 13), end: nil),
+            WorkSession(
+                id: UUID(),
+                start: .warsaw(2026, 11, 13, 8),
+                end: .warsaw(2026, 11, 13, 12)
+            ),
+            WorkSession(
+                id: UUID(),
+                start: .warsaw(2026, 11, 13, 13),
+                end: nil
+            ),
         ]
         day.manualDuration = .seconds(4 * 3600)
         day.isTimerFinished = true
         return day
     }
 
-    private func insertedRecord() -> WorkDayRecord {
-        let record = WorkDayRecord()
-        context.insert(record)
-        return record
-    }
-
     @Test
     func roundTripsEveryField() {
         let day = recordedDay()
-        let record = insertedRecord()
+        let record = context.inserted(WorkDayRecord())
 
         record.apply(day)
 
@@ -44,7 +46,7 @@ struct WorkDayRecordMappingTests {
 
     @Test
     func syncsEntriesByID() throws {
-        let record = insertedRecord()
+        let record = context.inserted(WorkDayRecord())
         let day = recordedDay()
         record.apply(day)
         try context.save()
