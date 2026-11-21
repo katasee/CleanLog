@@ -30,6 +30,40 @@ past month.
    sheet. The `+` in the toolbar works too.
 6. **No Settings button yet.** It appears with Feature 9; a button that leads nowhere is dead UI.
 
+## Revision after the first screen review (2026-11-21)
+
+The user saw the built screen (CL-12) and changed three things; these replace decisions 3 and 5 and
+the Screen and Sheet sections where they disagree.
+
+1. **One big «Додати квартиру» button, always.** A full-width accent button (capsule, `+` icon, the
+   style of the canvas's «Додати квартири» on Today), pinned at the bottom of the Apartments screen
+   above the tab bar, in the empty state and over the list alike. The list scrolls under it and its
+   last row stays reachable. The toolbar `+` goes: one action, one button. The empty state keeps its
+   icon and «Додай свої квартири» but loses its own button.
+2. **The form is a centered popup over a blurred screen**, not a bottom sheet. It covers the whole
+   app, the tab bar included, so nothing behind it can be tapped. The card fades and scales in and
+   out; the keyboard pushes it up; at the largest text sizes it scrolls. A tap on the blurred
+   backdrop does nothing (a stray touch must not discard what was typed); there is no swipe to
+   dismiss — «Скасувати» is the way out.
+3. **No title.** Neither «Нова квартира» nor the apartment's name: the name field already says which
+   apartment it is. «Скасувати» and «Зберегти» move to the bottom of the card, side by side (stacked
+   at accessibility text sizes), «Зберегти» the accent button, disabled until the form is valid.
+
+Approaches considered for the popup: (A, chosen) a full-screen cover with a clear presentation
+background, the system slide turned off, the card's own fade and scale — covers the tab bar and
+keeps the existing `sheet` route and form view model; (B) an app-level popup presenter in the root
+view — also covers everything, but the shell would have to know about a feature's popup, or a
+general popup mechanism be built for one user; (C) an overlay inside the Apartments screen — the
+simplest, but the tab bar stays sharp and tappable, which is what the user wants gone.
+
+Builder's calls (correctable): the backdrop is the system thin material; the card sits on `Card`
+with the card corner radius; adding focuses the name field, editing does not; the form view model's
+`title` and the `apartments.form.title.new` string are deleted; `apartments.action.add` becomes the
+big button's «Додати квартиру» and `apartments.empty.action` is deleted.
+
+Not in this change: the gradient background from the canvas — a separate branch right after this
+one, for every screen.
+
 ## The name order
 
 `ApartmentNameOrder` (in `Models/`), a pure comparison over two names:
