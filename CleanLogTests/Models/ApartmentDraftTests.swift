@@ -73,7 +73,11 @@ struct ApartmentDraftTests {
 
     @Test func createsAnActiveApartmentFromADraft() {
         let createdAt = Date.warsaw(2026, 11, 13, 9)
-        let apartment = Apartment(draft("102", code: "4821"), sortOrder: 3, createdAt: createdAt)
+        let apartment = Apartment(
+            draft("102", code: "4821"),
+            sortOrder: 3,
+            createdAt: createdAt
+        )
         #expect(apartment.name == "102")
         #expect(apartment.accessCode == "4821")
         #expect(apartment.sortOrder == 3)
@@ -82,7 +86,13 @@ struct ApartmentDraftTests {
     }
 
     @Test func applyingADraftChangesOnlyTheEditableFields() {
-        let edited = archived.applying(draft("206", minorUnits: 3000, code: "1#"))
+        let edited = archived.applying(
+            draft(
+                "206",
+                minorUnits: 3000,
+                code: "1#"
+            )
+        )
         #expect(edited.id == archived.id)
         #expect(edited.name == "206")
         #expect(edited.price == Money(minorUnits: 3000))

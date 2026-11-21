@@ -12,7 +12,11 @@ nonisolated struct Apartment: Sendable, Hashable, Identifiable {
 }
 
 extension Apartment {
-    nonisolated init(_ draft: ApartmentDraft, sortOrder: Int, createdAt: Date) {
+    nonisolated init(
+        _ draft: ApartmentDraft,
+        sortOrder: Int,
+        createdAt: Date
+    ) {
         self.init(
             id: UUID(),
             name: draft.name,

@@ -123,10 +123,10 @@ struct WorkDayRepositoryContractTests {
     @Test(arguments: RepositoryKind.allCases)
     func survivesACancelledObserver(kind: RepositoryKind) async throws {
         let repository = kind.makeStore().workDays
+        let observed = repository.day(today)
         let observer = Task {
-            for await _ in repository.day(today) {}
+            for await _ in observed {}
         }
-        await Task.yield()
         observer.cancel()
         await observer.value
 

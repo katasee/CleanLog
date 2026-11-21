@@ -7,7 +7,12 @@ struct ApartmentRepositoryContractTests {
     private let now = Date.warsaw(2026, 11, 13, 9)
 
     private func draft(_ name: String, code: String? = nil) -> ApartmentDraft {
-        ApartmentDraft(name: name, price: Money(minorUnits: 2800), accessCode: code, isReportedSeparately: false)
+        ApartmentDraft(
+            name: name,
+            price: Money(minorUnits: 2800),
+            accessCode: code,
+            isReportedSeparately: false
+        )
     }
 
     @Test(arguments: RepositoryKind.allCases)
