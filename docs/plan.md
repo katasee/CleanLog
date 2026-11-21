@@ -128,8 +128,8 @@ Plan: `docs/superpowers/plans/2026-11-21-design-system.md` · Spec: `docs/superp
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 8 | `feature/CL-8-design-system` | `main` | 1–3 | 634 | reviewed, PR open | done — SwiftUI clean; SOLID clean; 1 convention fix (below) |
-| 9 | `feature/CL-9-tab-shell` | CL-8 (or `main` once merged) | 4–5 | ~250 (end of feature) | **NEXT** after CL-8 | `swiftui-pro` + SOLID |
+| 8 | `feature/CL-8-design-system` | `main` | 1–3 | 634 | merged (PR #8) | done — SwiftUI clean; SOLID clean; 1 convention fix (below) |
+| 9 | `feature/CL-9-tab-shell` | `main` | 4–5 | 178 (end of feature) | reviewed, PR open | done — SwiftUI: 1 tidy-up; SOLID: 1 fix (below) |
 
 Notes for the sessions:
 
@@ -147,6 +147,21 @@ Notes for the sessions:
   by design). Size 634 is over the cap from the format, not the code: ~400 lines are the eight
   colorset JSON files and ~250 the new spec, plan and `docs/plan.md`; the Swift is ~55 lines. Kept as
   one branch.
+- CL-9 (2026-11-21): PR #8 was merged, so CL-9 starts from `main` and its PR targets `main`. The
+  `Tab` initializer that takes a `LocalizedStringResource` title is iOS 26-only, so the tabs keep the
+  `Tab(value:content:label:)` form with a `Label` holding `Text(.tab…Title)`. Launched on the iPhone 16
+  simulator (iOS 26): light, dark and Ukrainian (`-AppleLanguages (uk)`) all show three tabs with
+  Today selected and the token colours. The iOS 18 glass fallback is still unseen — nothing uses
+  `.glassSurface` yet. Review: `swiftui-pro` — `value: AppTab.today` shortened to `value: .today`,
+  nothing else. SOLID / clean code: `AppTab` only serves `RootView` → a private supporting type in
+  `RootView.swift` instead of its own file (deviation from the plan's file list). Kept: the three
+  placeholder screens repeat the same `NavigationStack` + background + title; each is replaced by
+  its feature's real screen, so a shared placeholder would be dead code then.
+- **Next: Feature 3 (Apartments).** Once PR #9 merges, start a fresh session with
+  `superpowers:brainstorming` for the template screen; delete this feature's plan and spec files
+  (`docs/superpowers/plans/2026-11-21-design-system.md`,
+  `docs/superpowers/specs/2026-11-21-design-system-design.md`) and mark Feature 2 done in the same
+  first commit, as CL-8 did for the foundation.
 
 Next free branch number: **CL-10**.
 
@@ -156,7 +171,7 @@ Each feature: brainstorm → plan (split into 300–500-line branches, written h
 branches as above.
 
 1. Foundation — done.
-2. Design system — in progress (above): colour tokens, `.glassSurface`, `.cardSurface`, String Catalog, the `TabView` shell.
+2. Design system — built, CL-9 in review (above): colour tokens, `.glassSurface`, `.cardSurface`, String Catalog, the `TabView` shell.
 3. Apartments (template) — list, form, reorder, archive. Logic, then UI.
 4. Today — plan, ticks, timer, empty state, "as yesterday", past and future days. Logic, then UI.
 5. Day plan sheet, and the floating add button beside the tab bar. Logic, then UI.

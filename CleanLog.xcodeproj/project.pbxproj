@@ -138,9 +138,11 @@
 				};
 			};
 			buildConfigurationList = 6E16EE5030A760EC003A521F /* Build configuration list for PBXProject "CleanLog" */;
-			developmentRegion = en;
+			developmentRegion = uk;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				uk,
+				pl,
 				en,
 				Base,
 			);
