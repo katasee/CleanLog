@@ -8,7 +8,6 @@ nonisolated enum TimerState: Sendable, Equatable {
 }
 
 extension WorkDay {
-    /// Derived from the sessions, so it survives the app being killed mid-session.
     nonisolated var timerState: TimerState {
         if let open = sessions.last(where: { $0.end == nil }) {
             return .running(since: open.start)
@@ -23,8 +22,6 @@ extension WorkDay {
         !sessions.isEmpty || manualDuration != nil
     }
 
-    /// The manual duration when set, otherwise every session — an open one counts up to `now`.
-    /// A session that runs past midnight stays on the day it started.
     nonisolated func workedDuration(now: Date) -> Duration {
         manualDuration ?? sessions.reduce(.zero) { $0 + $1.duration(now: now) }
     }
@@ -56,7 +53,6 @@ extension WorkDay {
         }
     }
 
-    /// `nil` returns to the measured sessions.
     nonisolated func settingManualDuration(_ duration: Duration?) -> WorkDay {
         var copy = self
         copy.manualDuration = duration
