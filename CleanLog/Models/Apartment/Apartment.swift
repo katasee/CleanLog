@@ -37,4 +37,8 @@ extension Apartment {
         copy.isReportedSeparately = draft.isReportedSeparately
         return copy
     }
+
+    nonisolated static func nextSortOrder(after apartments: [Apartment]) -> Int {
+        (apartments.map(\.sortOrder).max() ?? -1) + 1
+    }
 }
