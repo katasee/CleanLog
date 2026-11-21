@@ -13,7 +13,8 @@ that branch only, updates this file, and stops. Rules: `CLAUDE.md` (Branches and
    Fix findings in new commits on the same branch.
 5. Build, test, `xcrun swift-format lint --strict --recursive CleanLog CleanLogTests` — all green.
 6. If the review changed code, merge this branch into every later branch of the stack that already
-   exists (`git switch <later> && git merge <this>`), re-run its tests. Never rebase.
+   exists (`git switch <later> && git merge <this>`) and build it; its tests run in its own session.
+   Never rebase.
 7. Update the table below (status, review result), push the branch, open its PR with `gh pr create`
    (base = the branch's base; description as in `CLAUDE.md` → Git), stop.
 
