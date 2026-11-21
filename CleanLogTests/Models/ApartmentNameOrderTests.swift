@@ -23,4 +23,9 @@ struct ApartmentNameOrderTests {
         #expect(sorted(["54", "054"]) == ["054", "54"])
         #expect(sorted(["6piw", "6PIW"]) == ["6PIW", "6piw"])
     }
+
+    @Test func sortsValuesByTheirName() {
+        let apartments = [Apartment.fixture("6piw"), .fixture("100"), .fixture("54")]
+        #expect(ApartmentNameOrder.sorted(apartments, by: \.name).map(\.name) == ["54", "100", "6piw"])
+    }
 }

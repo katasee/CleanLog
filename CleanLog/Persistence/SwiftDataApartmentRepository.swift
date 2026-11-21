@@ -16,9 +16,7 @@ final class SwiftDataApartmentRepository: ApartmentRepository {
     func apartments() -> AsyncStream<[Apartment]> {
         observers.stream { [unowned self] in
             do {
-                return try storedRecords()
-                    .map(\.domain)
-                    .sorted { ApartmentNameOrder.areInIncreasingOrder($0.name, $1.name) }
+                return ApartmentNameOrder.sorted(try storedRecords().map(\.domain), by: \.name)
             } catch {
                 logger.error("Could not read apartments: \(error)")
                 return []

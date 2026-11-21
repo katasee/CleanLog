@@ -1,6 +1,10 @@
 import Foundation
 
 nonisolated enum ApartmentNameOrder {
+    static func sorted<Values: Sequence>(_ values: Values, by name: (Values.Element) -> String) -> [Values.Element] {
+        values.sorted { areInIncreasingOrder(name($0), name($1)) }
+    }
+
     static func areInIncreasingOrder(_ lhs: String, _ rhs: String) -> Bool {
         let lhsRank = rank(of: lhs)
         let rhsRank = rank(of: rhs)

@@ -13,7 +13,7 @@
 
         func apartments() -> AsyncStream<[Apartment]> {
             observers.stream { [unowned self] in
-                stored.values.sorted { ApartmentNameOrder.areInIncreasingOrder($0.name, $1.name) }
+                ApartmentNameOrder.sorted(stored.values, by: \.name)
             }
         }
 
