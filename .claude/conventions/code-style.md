@@ -24,8 +24,10 @@
 - No `print`. Diagnostics go through `Logger(subsystem:category:)` from `os`, one `Logger` per type.
 - Names say what, not how: `markCleaned(_:)`, not `toggle()`; `isPlanned`, not `flag`. Booleans
   read as assertions (`isRunning`, `hasEntries`, `canSave`).
-- **Comments explain why, never what**, in English, only where the code cannot say it itself. No
-  commented-out code, no `// MARK:` banners in files short enough not to need them.
+- **No comments in code** — no `//`, no `///` doc comments, no `// MARK:`, no commented-out code,
+  in the app and in tests. Names, types and small functions carry the meaning; a reason worth
+  keeping goes into the commit message, the plan or `.claude/conventions/`. The guard hook blocks
+  comment lines in Swift files.
 - Modern API only: `foregroundStyle` (not `foregroundColor`), `clipShape(.rect(cornerRadius:))`
   (not `cornerRadius`), `NavigationStack`, `onChange(of:) { old, new in }`, `Tab(…)`,
   `sensoryFeedback` / `UIFeedbackGenerator`, `Text(_:format:)` over string interpolation of numbers.
