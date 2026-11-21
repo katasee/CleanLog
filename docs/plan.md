@@ -29,8 +29,8 @@ Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowe
 | 3 | `feature/CL-3-timer-stats` | `main` | 5–6 | 353 | merged (PR #3) | done — concurrency clean; SOLID: 6 fixes (below) |
 | 4 | `feature/CL-4-report-formatters` | `main` | 7–8 | 294 | merged (PR #4) | done — concurrency clean; SOLID: 5 fixes + spec sync (below) |
 | 5 | `feature/CL-5-repositories` | `main` | 9 | 504 | merged (PR #5) | done — concurrency: 1 test fix; SOLID: 1 fix (below) |
-| 6 | `feature/CL-6-swiftdata` | `main` | 10 | 563 | reviewed, PR open | done — concurrency clean; SOLID: 3 fixes (below) |
-| 7 | `feature/CL-7-app-wiring` | 6 | 11 | ~150 est. (end of feature) | to do (create from 6, or `main` once 6 is merged) | **NEXT** — after build — `swiftui-pro` + SOLID |
+| 6 | `feature/CL-6-swiftdata` | `main` | 10 | 563 | merged (PR #6) | done — concurrency clean; SOLID: 3 fixes (below) |
+| 7 | `feature/CL-7-app-wiring` | `main` | 11 | ~95 (end of feature) | reviewed, PR open | done — SwiftUI: 1 fix; SOLID clean (below) |
 
 Notes for the sessions:
 
@@ -105,9 +105,25 @@ Notes for the sessions:
   `WorkSession` in tests) put one argument per line. Kept: the do/catch-log-fallback in the three
   stream reads — each has its own fallback and message. Size 563 (about 540 code and tests): over
   the cap, kept as one branch by the user's decision — one feature, partly from formatting.
+- CL-7 (2026-11-21): PR #6 was merged, so CL-7 starts from `main` and its PR targets `main`.
+  Deviation from the plan: `AppDependencies` does not keep the `ModelContainer` — since CL-6 the
+  SwiftData repositories hold it, so a third reference would be dead state. Of the docs step, the
+  `DayKey`/`Date` sentence (CL-1) and the Monday weeks in the product spec (CL-4) were already done;
+  this branch rewrote the repository-writes bullet (one write per intent for apartments, the single
+  `update(_:_:)` path for days) and put `StoreObservers` in the `Repositories/` row. Launched on the
+  iPhone 16 simulator: the template screen shows and `default.store` is created. SwiftUI review:
+  `#Preview` compiles in Release too, so `ContentView`'s preview calling the debug-only
+  `AppDependencies.preview()` broke the Release build → the template preview no longer injects
+  dependencies (it reads none). **Every later `#Preview` that uses fakes or `preview()` must sit
+  inside `#if DEBUG`**, and a Release build belongs to the pre-PR check for UI branches. Kept: the
+  template `ContentView` with its "Hello, world!" literal stays until the shell replaces it (the
+  foundation spec allows it; there is no String Catalog yet). SOLID / clean code: no findings —
+  `AppDependencies` only composes, and exposes the repositories as protocols.
 - Branch 4 is under 300 lines on purpose: it closes the pure-logic half of the foundation.
 - After branch 7 merges: delete the foundation plan and design files (`CLAUDE.md`), mark the feature
   done here.
+- **NEXT, once PR #7 is merged:** in one session, delete the foundation plan and design files, mark
+  Feature 1 done, then start Feature 2 (Design system) with `superpowers:brainstorming`.
 
 Next free branch number: **CL-8**.
 
