@@ -326,23 +326,6 @@
         }
       }
     },
-    "apartments.form.title.new" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New apartment"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Нова квартира"
-          }
-        }
-      }
-    },
     "common.action.cancel" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -28,7 +28,7 @@ struct ApartmentFormViewModelTests {
     @Test func startsBlankForANewApartment() {
         let form = makeForm(editing: nil)
 
-        #expect(form.title == String(localized: .apartmentsFormTitleNew))
+        #expect(form.isAdding)
         #expect(form.name.isEmpty)
         #expect(form.priceText.isEmpty)
         #expect(form.accessCode.isEmpty)
@@ -42,7 +42,7 @@ struct ApartmentFormViewModelTests {
 
         let form = makeForm(editing: apartment)
 
-        #expect(form.title == "100")
+        #expect(!form.isAdding)
         #expect(form.name == "100")
         #expect(form.priceText == "28,50")
         #expect(form.accessCode == "4821")

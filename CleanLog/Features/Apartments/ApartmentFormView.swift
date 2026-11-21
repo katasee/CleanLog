@@ -81,7 +81,6 @@ struct ApartmentFormView: View {
                 .listRowBackground(Color.card)
             }
             .scrollContentBackground(.hidden)
-            .navigationTitle(viewModel.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
