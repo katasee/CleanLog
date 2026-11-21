@@ -17,19 +17,25 @@ struct ApartmentsView: View {
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                AddApartmentButton(action: viewModel.add)
+                AddApartmentButton(action: add)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.background)
             .navigationTitle(Text(.tabApartmentsTitle))
             .modifier(DeletionConfirmation(viewModel: viewModel))
             .alert(viewModel.errorMessage ?? "", isPresented: $viewModel.isShowingError) {}
-            .sheet(item: $viewModel.sheet) { sheet in
+            .fullScreenCover(item: $viewModel.sheet) { sheet in
                 ApartmentFormView(viewModel: viewModel.makeFormViewModel(for: sheet))
             }
         }
         .task {
             await viewModel.observe()
+        }
+    }
+
+    private func add() {
+        withTransaction(\.disablesAnimations, true) {
+            viewModel.add()
         }
     }
 }
@@ -42,7 +48,7 @@ private struct ApartmentList: View {
             Section {
                 ForEach(viewModel.rows) { row in
                     Button {
-                        viewModel.edit(row.id)
+                        edit(row.id)
                     } label: {
                         ApartmentRowView(row: row)
                     }
@@ -71,6 +77,12 @@ private struct ApartmentList: View {
             }
         }
         .scrollContentBackground(.hidden)
+    }
+
+    private func edit(_ id: UUID) {
+        withTransaction(\.disablesAnimations, true) {
+            viewModel.edit(id)
+        }
     }
 }
 
