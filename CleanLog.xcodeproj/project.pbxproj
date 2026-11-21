@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		6E16EF0730A760EF003A521F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6E16EE4D30A760EC003A521F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6E16EE5430A760ED003A521F;
+			remoteInfo = CleanLog;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		6E16EE5530A760ED003A521F /* CleanLog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CleanLog.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E16EF0130A760EF003A521F /* CleanLogTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CleanLogTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,9 +27,21 @@
 			path = CleanLog;
 			sourceTree = "<group>";
 		};
+		6E16EF0230A760EF003A521F /* CleanLogTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CleanLogTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6E16EF0430A760EF003A521F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6E16EE5230A760ED003A521F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				6E16EE5730A760ED003A521F /* CleanLog */,
+				6E16EF0230A760EF003A521F /* CleanLogTests */,
 				6E16EE5630A760ED003A521F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				6E16EE5530A760ED003A521F /* CleanLog.app */,
+				6E16EF0130A760EF003A521F /* CleanLogTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +95,29 @@
 			productReference = 6E16EE5530A760ED003A521F /* CleanLog.app */;
 			productType = "com.apple.product-type.application";
 		};
+		6E16EF0630A760EF003A521F /* CleanLogTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6E16EF0B30A760EF003A521F /* Build configuration list for PBXNativeTarget "CleanLogTests" */;
+			buildPhases = (
+				6E16EF0330A760EF003A521F /* Sources */,
+				6E16EF0430A760EF003A521F /* Frameworks */,
+				6E16EF0530A760EF003A521F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6E16EF0830A760EF003A521F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				6E16EF0230A760EF003A521F /* CleanLogTests */,
+			);
+			name = CleanLogTests;
+			packageProductDependencies = (
+			);
+			productName = CleanLogTests;
+			productReference = 6E16EF0130A760EF003A521F /* CleanLogTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -82,6 +130,10 @@
 				TargetAttributes = {
 					6E16EE5430A760ED003A521F = {
 						CreatedOnToolsVersion = 26.1;
+					};
+					6E16EF0630A760EF003A521F = {
+						CreatedOnToolsVersion = 26.1;
+						TestTargetID = 6E16EE5430A760ED003A521F;
 					};
 				};
 			};
@@ -100,11 +152,19 @@
 			projectRoot = "";
 			targets = (
 				6E16EE5430A760ED003A521F /* CleanLog */,
+				6E16EF0630A760EF003A521F /* CleanLogTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6E16EF0530A760EF003A521F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6E16EE5330A760ED003A521F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +175,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6E16EF0330A760EF003A521F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6E16EE5130A760ED003A521F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -123,6 +190,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6E16EF0830A760EF003A521F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6E16EE5430A760ED003A521F /* CleanLog */;
+			targetProxy = 6E16EF0730A760EF003A521F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		6E16EE5E30A760EF003A521F /* Debug */ = {
@@ -304,6 +379,48 @@
 			};
 			name = Release;
 		};
+		6E16EF0930A760EF003A521F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "-.CleanLogTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CleanLog.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CleanLog";
+			};
+			name = Debug;
+		};
+		6E16EF0A30A760EF003A521F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "-.CleanLogTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CleanLog.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CleanLog";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -321,6 +438,15 @@
 			buildConfigurations = (
 				6E16EE6130A760EF003A521F /* Debug */,
 				6E16EE6230A760EF003A521F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6E16EF0B30A760EF003A521F /* Build configuration list for PBXNativeTarget "CleanLogTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6E16EF0930A760EF003A521F /* Debug */,
+				6E16EF0A30A760EF003A521F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -24,17 +24,26 @@ with default `MainActor` isolation. No third-party dependencies without asking f
 
 ## Commands
 
-Build (must succeed before any change is called done):
+Build:
 
 ```bash
 xcodebuild -scheme CleanLog -destination 'generic/platform=iOS Simulator' build
 ```
 
-Test (once `CleanLogTests` exists; must pass before any change is called done):
+Test (a single suite: add `-only-testing:CleanLogTests/MoneyTests`):
 
 ```bash
 xcodebuild -scheme CleanLog -destination 'platform=iOS Simulator,name=iPhone 16' test
 ```
+
+**Check as much as the change can break, not more:**
+
+| Change | Check |
+|---|---|
+| Docs, conventions, `docs/plan.md` | nothing |
+| Mechanical code change: rename, file move, a conflict-free merge up the stack | build |
+| Logic in `Models/`, `Formatting/`, repositories, view models | build + the suites that cover it |
+| Before pushing a branch and opening its PR | build, the full test run and lint, once |
 
 Lint (the PostToolUse hook runs it per file; run it on the tree before handing work over):
 
@@ -66,8 +75,8 @@ Every feature goes through the same pipeline without being asked:
      functions with one level of abstraction, intention-revealing names, no duplication, no dead
      code, and every rule in `.claude/conventions/`.
    Fix what the reviews find, then build, test and lint again.
-6. Build, test and lint green, then commit and a short PR description (below). The PR
-   description lists what each review found and what was fixed.
+6. Build, test and lint green, then commit, push the branch and open its PR (below). What each
+   review found and what was fixed goes into `docs/plan.md`, not the PR description.
 
 **A complex feature is split into separate logic and UI tasks — and, when it is big enough,
 separate plans and branches.** Logic comes first: domain types, calculations, repository work and
@@ -101,21 +110,34 @@ spec and `docs/plan.md` stay.
 
 ## Git
 
-**Claude creates branches and commits; the user pushes and opens the PRs.** Branch names
+**Claude creates branches and commits, pushes `feature/*` branches and opens their PRs** with
+`gh pr create` (base = the branch below in the stack, or `main`). Branch names
 `feature/CL-<n>-<short-name>`, where `CL-<n>` is a project-wide sequence number (the next free one
 is in `docs/plan.md`) and the short name says what the branch adds (`feature/CL-6-swiftdata`).
 Small commits with an imperative English subject.
 **Never add a `Co-Authored-By` trailer or any other attribution line** to commits or PRs. Never
-run `git push`, never force anything, never rewrite history the user has pushed.
+push `main`, never force anything, never delete a remote branch, never rewrite pushed history;
+`.claude/settings.json` allows only `git push [-u] origin feature/*`.
 
-At the end of every PR, give a PR description in English, ready to paste: a one-line title, what
-the user gets, the key changes as bullets, how it was verified. No attribution line.
+The PR description is in English and written for a developer reading it months later without
+this session's context:
+
+- a title that says what the branch adds, in plain words;
+- one or two sentences on why the change is needed;
+- bullets, each opening with a bold short name, saying what appeared and why it is built that way
+  (`**Money.** Stores an amount as a whole number of 1/100 zł … whole numbers add up exactly`);
+- plain sentences, no unexplained jargon, no bare lists of API names.
+
+It covers the app and its code only. No review findings, no "how it was verified" section, no
+attribution line, and nothing about the AI workflow: changes to `CLAUDE.md`, `.claude/` or the
+plan files stay out of the description (they still ship in the branch).
 
 ## Language
 
 **All project documentation, code, comments and commit messages are in English**, whatever language
 the session is in. Ukrainian appears only as data: UI strings quoted verbatim (so they can be
-grepped against the String Catalog) and the report format.
+grepped against the String Catalog) and the report format. Names use English words only, never a
+Polish or Ukrainian word in an identifier or in prose (`Money(minorUnits:)`, not `grosze`).
 
 ## Conventions
 
