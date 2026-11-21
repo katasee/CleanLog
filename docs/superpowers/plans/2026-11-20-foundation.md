@@ -21,7 +21,7 @@ One contract test suite per repository runs against both the fake and the SwiftD
 - iOS 18.0 deployment target, iPhone only, Swift 6 language mode, default actor isolation `MainActor`.
 - No third-party dependencies. No `import SwiftData` outside `Persistence/`, `App/`, `CleanLogTests/Persistence/`.
 - `Models/`, `Repositories/`, `Persistence/`, `Formatting/` never import SwiftUI or UIKit.
-- Money is `Money(grosze: Int)`; złoty only; display `"<number> zł"` with a no-break space (U+00A0).
+- Money is `Money(minorUnits: Int)`; złoty only; display `"<number> zł"` with a no-break space (U+00A0).
 - A calendar day is `DayKey`, never a midnight `Date`. No `Date()` and no `Calendar.current` inside
   `Models/` or `Formatting/` — `now`, `today` and calendars are parameters.
 - Every Swift file passes `xcrun swift-format lint --strict` (the PostToolUse hook runs it).
@@ -93,15 +93,15 @@ One contract test suite per repository runs against both the fake and the SwiftD
 
 **Interfaces:**
 - Produces:
-  - `struct Money: Sendable, Hashable, Comparable, Codable { let grosze: Int; init(grosze: Int); static let zero; static func + - ; static func += ; static func * (Money, Int) -> Money }`,
+  - `struct Money: Sendable, Hashable, Comparable, Codable { let minorUnits: Int; init(minorUnits: Int); static let zero; static func + - ; static func += ; static func * (Money, Int) -> Money }`,
     `extension Sequence where Element == Money { func sum() -> Money }`
   - `struct DayKey: Sendable, Hashable, Comparable, Codable { let year, month, day: Int; init(year:month:day:); init(_ date: Date, calendar: Calendar); func startDate(in: Calendar) -> Date; func adding(days: Int, calendar: Calendar) -> DayKey; var monthKey: MonthKey; var storageValue: Int; init?(storageValue: Int) }`
   - `struct MonthKey: Sendable, Hashable, Comparable, Codable { let year, month: Int; init(year:month:); var previous: MonthKey; var next: MonthKey; func days(in: Calendar) -> [DayKey]; func contains(_: DayKey) -> Bool; var firstDayStorageValue: Int; var lastDayStorageValue: Int }`
 
 - [ ] **Step 1: Failing tests.**
-  - `Money`: `Money(grosze: 2800) * 6 + Money(grosze: 5600) == Money(grosze: 22400)`;
-    `[Money(grosze: 2800), Money(grosze: 5600)].sum() == Money(grosze: 8400)`; `[Money]().sum() == .zero`;
-    `Money(grosze: 100) < Money(grosze: 200)`.
+  - `Money`: `Money(minorUnits: 2800) * 6 + Money(minorUnits: 5600) == Money(minorUnits: 22400)`;
+    `[Money(minorUnits: 2800), Money(minorUnits: 5600)].sum() == Money(minorUnits: 8400)`; `[Money]().sum() == .zero`;
+    `Money(minorUnits: 100) < Money(minorUnits: 200)`.
   - `DayKey`: `DayKey(.warsaw(2026, 11, 13, 23, 59), calendar: .warsaw) == DayKey(year: 2026, month: 11, day: 13)`;
     across DST `DayKey(year: 2026, month: 3, day: 28).adding(days: 1, calendar: .warsaw) == DayKey(year: 2026, month: 3, day: 29)` and `+2 == 3/30`;
     across months `DayKey(year: 2026, month: 10, day: 31).adding(days: 1, …) == 11/1`, `adding(days: -1)` from 1/1/2027 is 12/31/2026;
@@ -137,7 +137,7 @@ One contract test suite per repository runs against both the fake and the SwiftD
   - `"101"`, `" 101 "`, and for a letter name `"6PIW"` against active `"6piw"` → throws `.duplicateName`.
   - `"205"` (archived) → accepted.
   - Editing `"101"` itself with `excluding: its id` → accepted.
-  - `Money(grosze: -1)` → throws `.negativePrice`; `Money.zero` → accepted.
+  - `Money(minorUnits: -1)` → throws `.negativePrice`; `Money.zero` → accepted.
 - [ ] **Step 2:** Run — FAIL.
 - [ ] **Step 3: Implement.** Names compare with `trimmingCharacters(in: .whitespacesAndNewlines)`
   and `caseInsensitiveCompare == .orderedSame`; only non-archived apartments count.
@@ -163,7 +163,7 @@ One contract test suite per repository runs against both the fake and the SwiftD
     `func copyingPlan(from other: WorkDay) -> WorkDay`,
     `func settingCleaned(_ entryID: UUID, _ isCleaned: Bool, now: Date, today: DayKey) throws(WorkDayError) -> WorkDay`,
     `var earned: Money`, `var planned: Money`, `var cleanedCount: Int`, `var hasCleanedEntries: Bool`
-  - Fixtures: `Apartment.fixture(_ name: String, grosze: Int = 2800, separate: Bool = false, sortOrder: Int = 0, archived: Bool = false)`
+  - Fixtures: `Apartment.fixture(_ name: String, minorUnits: Int = 2800, separate: Bool = false, sortOrder: Int = 0, archived: Bool = false)`
 
 - [ ] **Step 1: Failing tests.**
   - Planning `[100, 101]` then `[101, 102]` → entries `100, 101, 102` (no duplicate `101`); each entry's
@@ -227,16 +227,16 @@ One contract test suite per repository runs against both the fake and the SwiftD
   - Empty input → earned `.zero`, counts 0, `workedDuration == .zero`, both optionals `nil`, `topApartments == []`.
   - Three days: A (100, 101 ticked, 106 ticked, sessions 2 h), B (100 ticked, no time), C (only 102 unticked, manual 1 h):
     `earned == 11200` (28+56 + 28), `cleanedCount == 3`, `workingDays == 2` (C has nothing ticked),
-    `workedDuration == 3 h`, `earningsPerHour == Money(grosze: 2800)` (days with recorded time are A and C:
-    8400 earned over 3 h; B's 2800 has no hours and is left out), `averagePerWorkingDay == Money(grosze: 5600)`.
-  - Rounding half-up: earned 1000 grosze over 3 h → `Money(grosze: 333)`; 1001 over 2 h (half) → `501`.
+    `workedDuration == 3 h`, `earningsPerHour == Money(minorUnits: 2800)` (days with recorded time are A and C:
+    8400 earned over 3 h; B's 2800 has no hours and is left out), `averagePerWorkingDay == Money(minorUnits: 5600)`.
+  - Rounding half-up: earned 1000 minor units over 3 h → `Money(minorUnits: 333)`; 1001 over 2 h (half) → `501`.
   - `topApartments`: `100` ticked on 3 days, `101` on 2, `102` on 2, `103` on 1 → `[100 (3), 101 (2), 102 (2)]`
     (ties by name); the name is the snapshot from the latest day.
   - A day with a manual duration of zero contributes no hours and no division by zero.
 - [ ] **Step 2:** Run — FAIL.
 - [ ] **Step 3: Implement.** Integer half-up division:
   `(numerator * 2 + denominator) / (denominator * 2)`; per hour uses seconds:
-  `earnedGrosze * 3600` over `totalSeconds`.
+  `earnedMinorUnits * 3600` over `totalSeconds`.
 - [ ] **Step 4:** Run — PASS.
 - [ ] **Step 5: Commit** `Add month statistics`.
 
@@ -325,7 +325,7 @@ One contract test suite per repository runs against both the fake and the SwiftD
   - `clock(.seconds(4 * 3600 + 12 * 60 + 35)) == "4:12:35"`, `clock(.zero) == "0:00:00"`, `clock(.seconds(-5)) == "0:00:00"`.
   - `short(.seconds(5 * 3600 + 10 * 60)) == "5:10"`, `short(.seconds(59)) == "0:00"`, `short(.seconds(62 * 3600)) == "62:00"`.
 - [ ] **Step 2:** Run — FAIL.
-- [ ] **Step 3: Implement.** Money: `Decimal(grosze) / 100` with
+- [ ] **Step 3: Implement.** Money: `Decimal(minorUnits) / 100` with
   `.number.precision(.fractionLength(whole ? 0 : 2)).locale(locale)`, then `"\u{00A0}zł"`; replace any
   ordinary space the locale produces with U+00A0. Durations: whole seconds, negatives clamp to 0,
   `String(format:)` with `en_US_POSIX`.
@@ -391,7 +391,7 @@ One contract test suite per repository runs against both the fake and the SwiftD
 - Produces: `enum ModelContainerFactory { static func make(inMemory: Bool) throws -> ModelContainer }`;
   `final class SwiftDataApartmentRepository: ApartmentRepository { init(context: ModelContext, now: @escaping () -> Date = Date.init) }`;
   `final class SwiftDataWorkDayRepository: WorkDayRepository { init(context: ModelContext) }`.
-  Records: `ApartmentRecord` (`id: UUID`, `name: String`, `priceGrosze: Int`, `accessCode: String?`,
+  Records: `ApartmentRecord` (`id: UUID`, `name: String`, `priceMinorUnits: Int`, `accessCode: String?`,
   `isReportedSeparately`, `sortOrder`, `isArchived`, `createdAt`), `WorkDayRecord` (`id`, `dayValue: Int`,
   `manualDurationSeconds: Int?`, `isTimerFinished`, `entries: [DayEntryRecord]?`, `sessions: [WorkSessionRecord]?`,
   both `.cascade` with inverses), `DayEntryRecord` (snapshot fields, `isCleaned`, `cleanedAt`, `day: WorkDayRecord?`),

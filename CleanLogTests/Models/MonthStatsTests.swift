@@ -9,7 +9,7 @@ struct MonthStatsTests {
     private let a101 = Apartment.fixture("101", sortOrder: 1)
     private let a102 = Apartment.fixture("102", sortOrder: 2)
     private let a103 = Apartment.fixture("103", sortOrder: 3)
-    private let a106 = Apartment.fixture("106", grosze: 5600, separate: true, sortOrder: 6)
+    private let a106 = Apartment.fixture("106", minorUnits: 5600, separate: true, sortOrder: 6)
 
     private func day(
         _ number: Int,
@@ -51,19 +51,19 @@ struct MonthStatsTests {
             ],
             now: now
         )
-        #expect(stats.earned == Money(grosze: 11200))
+        #expect(stats.earned == Money(minorUnits: 11200))
         #expect(stats.cleanedCount == 3)
         #expect(stats.workingDays == 2)
         #expect(stats.workedDuration == .seconds(3 * 3600))
-        #expect(stats.earningsPerHour == Money(grosze: 2800))
-        #expect(stats.averagePerWorkingDay == Money(grosze: 5600))
+        #expect(stats.earningsPerHour == Money(minorUnits: 2800))
+        #expect(stats.averagePerWorkingDay == Money(minorUnits: 5600))
     }
 
     @Test func roundsPerHourHalfUp() {
-        var thirds = day(1, [.fixture("x", grosze: 1000)], ticked: ["x"], hours: 3)
-        #expect(MonthStats.calculate(days: [thirds], now: now).earningsPerHour == Money(grosze: 333))
-        thirds = day(1, [.fixture("x", grosze: 1001)], ticked: ["x"], hours: 2)
-        #expect(MonthStats.calculate(days: [thirds], now: now).earningsPerHour == Money(grosze: 501))
+        var thirds = day(1, [.fixture("x", minorUnits: 1000)], ticked: ["x"], hours: 3)
+        #expect(MonthStats.calculate(days: [thirds], now: now).earningsPerHour == Money(minorUnits: 333))
+        thirds = day(1, [.fixture("x", minorUnits: 1001)], ticked: ["x"], hours: 2)
+        #expect(MonthStats.calculate(days: [thirds], now: now).earningsPerHour == Money(minorUnits: 501))
     }
 
     @Test func ignoresADayWithZeroRecordedTime() {

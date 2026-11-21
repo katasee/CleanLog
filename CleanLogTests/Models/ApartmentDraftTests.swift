@@ -7,10 +7,10 @@ struct ApartmentDraftTests {
     private let archived = Apartment.fixture("205", archived: true)
     private var existing: [Apartment] { [active, archived] }
 
-    private func draft(_ name: String, grosze: Int = 2800, code: String? = nil) -> ApartmentDraft {
+    private func draft(_ name: String, minorUnits: Int = 2800, code: String? = nil) -> ApartmentDraft {
         ApartmentDraft(
             name: name,
-            price: Money(grosze: grosze),
+            price: Money(minorUnits: minorUnits),
             accessCode: code,
             isReportedSeparately: false
         )
@@ -62,11 +62,11 @@ struct ApartmentDraftTests {
 
     @Test func rejectsANegativePrice() {
         #expect(throws: ApartmentError.negativePrice) {
-            try draft("102", grosze: -1).validated(against: existing)
+            try draft("102", minorUnits: -1).validated(against: existing)
         }
     }
 
     @Test func allowsAFreeApartment() throws {
-        #expect(try draft("102", grosze: 0).validated(against: existing).price == .zero)
+        #expect(try draft("102", minorUnits: 0).validated(against: existing).price == .zero)
     }
 }
