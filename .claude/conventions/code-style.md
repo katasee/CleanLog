@@ -78,11 +78,12 @@ views. **Each token has one role:**
 | `AccentSoft` | tinted fills under accent text (badges, progress track) | `#DDEFEE` / `#173634` |
 | `Background` | the screen | `#EEF2F3` / `#0B0F11` |
 | `Card` | content cards and list groups | `#FFFFFF` / `#1A2124` |
-| `Separator` | hairlines between rows | ink 8% / white 10% |
+| `Hairline` | hairlines between rows | ink 8% / white 10% |
 | `Warning` | a paused timer, a day that needs attention | `#9A5B00` / `#FFB340` |
 
 Dark values are a first proposal; confirm them on a device before the first TestFlight. Never name a
-colorset after an existing `Color` member (`Primary` collides with `Color.primary`).
+colorset after an existing `Color` or `UIColor` member (`Primary` collides with `Color.primary`,
+`Separator` with `UIColor.separator`): Xcode then skips the generated symbol with a warning.
 
 ## Surfaces and Liquid Glass
 

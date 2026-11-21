@@ -18,9 +18,10 @@ that branch only, updates this file, and stops. Rules: `CLAUDE.md` (Branches and
 7. Update the table below (status, review result), push the branch, open its PR with `gh pr create`
    (base = the branch's base; description as in `CLAUDE.md` → Git), stop.
 
-## Feature 1 — Foundation
+## Feature 1 — Foundation (done)
 
-Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowers/specs/2026-11-20-foundation-design.md`
+The plan and design files were deleted once the feature merged (CL-8); the notes below stay as the
+record.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -30,7 +31,7 @@ Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowe
 | 4 | `feature/CL-4-report-formatters` | `main` | 7–8 | 294 | merged (PR #4) | done — concurrency clean; SOLID: 5 fixes + spec sync (below) |
 | 5 | `feature/CL-5-repositories` | `main` | 9 | 504 | merged (PR #5) | done — concurrency: 1 test fix; SOLID: 1 fix (below) |
 | 6 | `feature/CL-6-swiftdata` | `main` | 10 | 563 | merged (PR #6) | done — concurrency clean; SOLID: 3 fixes (below) |
-| 7 | `feature/CL-7-app-wiring` | `main` | 11 | ~95 (end of feature) | reviewed, PR open | done — SwiftUI: 1 fix; SOLID clean (below) |
+| 7 | `feature/CL-7-app-wiring` | `main` | 11 | ~95 (end of feature) | merged (PR #7) | done — SwiftUI: 1 fix; SOLID clean (below) |
 
 Notes for the sessions:
 
@@ -120,23 +121,45 @@ Notes for the sessions:
   foundation spec allows it; there is no String Catalog yet). SOLID / clean code: no findings —
   `AppDependencies` only composes, and exposes the repositories as protocols.
 - Branch 4 is under 300 lines on purpose: it closes the pure-logic half of the foundation.
-- After branch 7 merges: delete the foundation plan and design files (`CLAUDE.md`), mark the feature
-  done here.
-- **NEXT, once PR #7 is merged:** in one session, delete the foundation plan and design files, mark
-  Feature 1 done, then start Feature 2 (Design system) with `superpowers:brainstorming`.
 
-Next free branch number: **CL-8**.
+## Feature 2 — Design system
+
+Plan: `docs/superpowers/plans/2026-11-21-design-system.md` · Spec: `docs/superpowers/specs/2026-11-21-design-system-design.md`
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 8 | `feature/CL-8-design-system` | `main` | 1–3 | 634 | reviewed, PR open | done — SwiftUI clean; SOLID clean; 1 convention fix (below) |
+| 9 | `feature/CL-9-tab-shell` | CL-8 (or `main` once merged) | 4–5 | ~250 (end of feature) | **NEXT** after CL-8 | `swiftui-pro` + SOLID |
+
+Notes for the sessions:
+
+- Brainstorming (2026-11-21): the canvas's colour variants were dropped, so one teal palette and no
+  themes. The floating add button moves to Feature 5 (Day plan), since it opens that sheet. No
+  blurred blobs behind the screens: the flat `Background` token. Plan reviewed with `swiftui-pro`
+  before code (no blocking findings, see the plan file).
+- Sizes leave out the deleted foundation docs (a pure deletion of ~440 lines in CL-8).
+- CL-8 (2026-11-21): the `Separator` colorset collided with `UIColor.separator` (Xcode skipped its
+  generated symbol with a warning) → renamed `Hairline`; `code-style.md` table and its naming rule
+  updated in the same commit. `AccentColor` generates `Color.accent` as well as `Color.accentColor`.
+  Glass: compiled for iOS 18 and 26, Debug and Release; not yet seen on screen, since nothing uses the
+  modifiers — check the iOS 18.6 fallback on the simulator when the first screen uses them. Review:
+  `swiftui-pro` no findings; SOLID / clean code no findings (the modifiers are unused until Feature 3
+  by design). Size 634 is over the cap from the format, not the code: ~400 lines are the eight
+  colorset JSON files and ~250 the new spec, plan and `docs/plan.md`; the Swift is ~55 lines. Kept as
+  one branch.
+
+Next free branch number: **CL-10**.
 
 ## Roadmap (v1)
 
 Each feature: brainstorm → plan (split into 300–500-line branches, written here) → plan review →
 branches as above.
 
-1. Foundation — in progress (above).
-2. Design system — colour tokens, `.glassSurface`, `.cardSurface`, String Catalog, the `TabView` shell.
+1. Foundation — done.
+2. Design system — in progress (above): colour tokens, `.glassSurface`, `.cardSurface`, String Catalog, the `TabView` shell.
 3. Apartments (template) — list, form, reorder, archive. Logic, then UI.
 4. Today — plan, ticks, timer, empty state, "as yesterday", past and future days. Logic, then UI.
-5. Day plan sheet. Logic, then UI.
+5. Day plan sheet, and the floating add button beside the tab bar. Logic, then UI.
 6. Calendar. Logic, then UI.
 7. Statistics. Logic, then UI.
 8. Report and WhatsApp. Logic, then UI.
