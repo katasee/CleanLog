@@ -143,4 +143,18 @@ struct WorkDayPlanningTests {
         #expect(day.hasCleanedEntries)
         #expect(!WorkDay.empty(today).hasCleanedEntries)
     }
+
+    @Test func aNewDayIsBlank() {
+        #expect(WorkDay.empty(today).isBlank)
+    }
+
+    @Test func aDayWithAPlanIsNotBlank() {
+        #expect(WorkDay.empty(today).planning([a100]).isBlank == false)
+    }
+
+    @Test func aDayWithOnlyAManualDurationIsNotBlank() {
+        var day = WorkDay.empty(today)
+        day.manualDuration = .seconds(3600)
+        #expect(day.isBlank == false)
+    }
 }

@@ -34,4 +34,8 @@ nonisolated struct WorkDay: Sendable, Hashable, Identifiable {
     var hasCleanedEntries: Bool {
         entries.contains { $0.isCleaned }
     }
+
+    var isBlank: Bool {
+        entries.isEmpty && !hasRecordedTime && !isTimerFinished
+    }
 }
