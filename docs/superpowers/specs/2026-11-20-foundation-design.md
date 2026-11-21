@@ -55,7 +55,7 @@ target ever needs it.
 
 All `struct`/`enum`, `Sendable`, `Equatable`, Foundation only.
 
-- **`Money`** — `grosze: Int`; `static let zero`; `+`, `-`, `+=`, `Money * Int`; `Comparable`.
+- **`Money`** — `minorUnits: Int`; `static let zero`; `+`, `-`, `+=`, `Money * Int`; `Comparable`.
   `Sequence<Money>.sum()`.
 - **`DayKey`** — `year`, `month`, `day`; `Comparable`, `Hashable`, `Codable`;
   `init(_ date: Date, calendar: Calendar)`, `func startDate(in calendar: Calendar) -> Date`,
@@ -105,7 +105,7 @@ All `struct`/`enum`, `Sendable`, `Equatable`, Foundation only.
 `MonthStats.calculate(days: [WorkDay], now: Date) -> MonthStats`, numbers only:
 `earned: Money`, `cleanedCount: Int` (all cleaned, separate ones included), `workingDays: Int`
 (days with a cleaned entry), `workedDuration: Duration`, `earningsPerHour: Money?` (earned on days
-with recorded time ÷ their hours, rounded half-up to whole grosze; `nil` without recorded time),
+with recorded time ÷ their hours, rounded half-up to whole minor units; `nil` without recorded time),
 `averagePerWorkingDay: Money?` (`nil` without working days), `topApartments: [ApartmentCount]`
 (grouped by `apartmentID`, latest snapshot name, sorted by count then name, top 3). The previous
 month's comparison is the caller running `calculate` twice — the percentage is presentation.
@@ -168,7 +168,7 @@ protocol WorkDayRepository {
   real change is a migration stage, not a rescue.
 - Records are CloudKit-compatible: every attribute has a default, relationships optional with
   `.cascade` from day to entries and sessions, no `@Attribute(.unique)`. Stored forms: `Money` →
-  `pricesGrosze: Int`, `DayKey` → `dayValue: Int`, `Duration?` → `manualDurationSeconds: Int?`.
+  `priceMinorUnits: Int`, `DayKey` → `dayValue: Int`, `Duration?` → `manualDurationSeconds: Int?`.
 - `Record+Domain.swift` per record: `var domain: …` and `func apply(_ domain: …)`, which syncs
   child records by `id` (insert new, update existing, delete removed).
 - **`SwiftDataApartmentRepository`**, **`SwiftDataWorkDayRepository`** take a `ModelContext`.
