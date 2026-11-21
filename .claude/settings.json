@@ -9,11 +9,23 @@
       "Bash(git log *)",
       "Bash(xcodebuild -scheme CleanLog *)",
       "Bash(xcrun swift-format *)",
-      "Bash(xcrun simctl list *)"
+      "Bash(xcrun simctl list *)",
+      "Bash(git push origin feature/*)",
+      "Bash(git push -u origin feature/*)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list *)"
     ],
     "deny": [
-      "Bash(git push *)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f*)",
+      "Bash(git push * --delete*)",
+      "Bash(git push * +*)",
+      "Bash(git push * main*)",
+      "Bash(git push * :*)"
     ]
   },
   "hooks": {
