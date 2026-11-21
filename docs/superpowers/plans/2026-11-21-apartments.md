@@ -5,9 +5,10 @@
 **Goal:** The Apartments tab: a name-sorted template list with add, edit and confirmed swipe-delete,
 backed by a domain without archiving or manual order.
 
-**Architecture:** Three stacked branches. CL-10 changes the domain, persistence and repositories
+**Architecture:** Four stacked branches. CL-10 changes the domain, persistence and repositories
 (delete instead of archive, `ApartmentNameOrder` instead of `sortOrder`, report order). CL-11 adds
-`MoneyInput` and the two view models, test-first against `FakeApartmentRepository`. CL-12 builds the
+`MoneyInput` and the list view model, CL-13 the form view model, test-first against
+`FakeApartmentRepository`. CL-12 builds the
 screen, the sheet and the strings on those view models, with no logic of its own.
 
 **Tech Stack:** SwiftUI, SwiftData, Swift Testing, iOS 18.0+, Swift 6, default `MainActor` isolation.
@@ -231,7 +232,7 @@ tests, lint, `docs/plan.md`, push, PR to `main`.
 
 ## Branch CL-11 — `feature/CL-11-apartment-view-models` (base CL-10)
 
-Tasks 4–6. No SwiftUI view in the diff.
+Tasks 4–5. No SwiftUI view in the diff.
 
 ### Task 4: `MoneyInput`
 
@@ -397,6 +398,10 @@ enum ApartmentSheet: Identifiable, Equatable {
 - [ ] **Step 5: Run** → PASS.
 - [ ] **Step 6: Commit** — `Add the apartments list view model`.
 
+## Branch CL-13 — `feature/CL-13-apartment-form-view-model` (base CL-11)
+
+Task 6, split from CL-11 when that branch came to 701 lines. No SwiftUI view in the diff.
+
 ### Task 6: `ApartmentFormViewModel`
 
 **Files:**
@@ -502,11 +507,11 @@ func enablesSaveForAValidForm(name: String, price: String, canSave: Bool) {
 - [ ] **Step 5: Commit** — `Add the apartment form view model`.
 
 Then the branch review (`swiftui-pro` and `swift-concurrency-pro` on the view models; SOLID pass),
-build, tests, lint, `docs/plan.md`, push, PR to CL-10's branch (or `main` once merged).
+build, tests, lint, `docs/plan.md`, push, PR to CL-11's branch (or `main` once merged).
 
 ---
 
-## Branch CL-12 — `feature/CL-12-apartments-screen` (base CL-11)
+## Branch CL-12 — `feature/CL-12-apartments-screen` (base CL-13)
 
 Tasks 7–8. Layout and bindings only; every decision is already in a view model.
 
