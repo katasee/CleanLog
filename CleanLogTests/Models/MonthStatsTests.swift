@@ -5,11 +5,11 @@ import Testing
 
 struct MonthStatsTests {
     private let now = Date.warsaw(2026, 11, 30, 20)
-    private let a100 = Apartment.fixture("100", sortOrder: 0)
-    private let a101 = Apartment.fixture("101", sortOrder: 1)
-    private let a102 = Apartment.fixture("102", sortOrder: 2)
-    private let a103 = Apartment.fixture("103", sortOrder: 3)
-    private let a106 = Apartment.fixture("106", minorUnits: 5600, separate: true, sortOrder: 6)
+    private let a100 = Apartment.fixture("100")
+    private let a101 = Apartment.fixture("101")
+    private let a102 = Apartment.fixture("102")
+    private let a103 = Apartment.fixture("103")
+    private let a106 = Apartment.fixture("106", minorUnits: 5600, separate: true)
 
     private func day(
         _ number: Int,

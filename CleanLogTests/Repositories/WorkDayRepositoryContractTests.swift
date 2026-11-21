@@ -6,7 +6,7 @@ import Testing
 struct WorkDayRepositoryContractTests {
     private let today = DayKey(year: 2026, month: 11, day: 13)
     private let a100 = Apartment.fixture("100")
-    private let a101 = Apartment.fixture("101", sortOrder: 1)
+    private let a101 = Apartment.fixture("101")
 
     private func key(_ day: Int, month: Int = 11) -> DayKey {
         DayKey(year: 2026, month: month, day: day)

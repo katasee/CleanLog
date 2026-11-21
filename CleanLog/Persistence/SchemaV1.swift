@@ -20,8 +20,6 @@ enum SchemaV1: VersionedSchema {
         var priceMinorUnits = 0
         var accessCode: String?
         var isReportedSeparately = false
-        var sortOrder = 0
-        var isArchived = false
         var createdAt = Date.distantPast
 
         init() {}
@@ -49,7 +47,6 @@ enum SchemaV1: VersionedSchema {
         var name = ""
         var priceMinorUnits = 0
         var isReportedSeparately = false
-        var sortOrder = 0
         var isCleaned = false
         var cleanedAt: Date?
         var day: WorkDayRecord?

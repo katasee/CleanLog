@@ -42,8 +42,7 @@ enum OctoberReport {
         """
 
     static let template: [Apartment] = ["54", "64", "96", "100", "105", "115", "116", "138", "6piw", "133kol", "155"]
-        .enumerated()
-        .map { index, name in Apartment.fixture(name, separate: name == "155", sortOrder: index) }
+        .map { name in Apartment.fixture(name, separate: name == "155") }
 
     static var days: [WorkDay] {
         expected.split(separator: "\n").map { line in

@@ -34,9 +34,7 @@ nonisolated enum ReportBuilder {
     }
 
     private static func line(for day: WorkDay) -> String {
-        let cleaned = day.entries
-            .filter(\.isCleaned)
-            .sorted { ($0.sortOrder, $0.name) < ($1.sortOrder, $1.name) }
+        let cleaned = ApartmentNameOrder.sorted(day.entries.filter(\.isCleaned), by: \.name)
         let counted = cleaned.filter { !$0.isReportedSeparately }.map(\.name)
         let separate = cleaned.filter(\.isReportedSeparately).map { "+\($0.name)" }
         return "\(date(of: day.day))-(\(counted.joined(separator: ",")))=\(counted.count)" + separate.joined()

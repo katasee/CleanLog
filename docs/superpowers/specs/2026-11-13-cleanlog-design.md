@@ -39,7 +39,7 @@ an Apple Developer account.
 
 - A daily flow slower or more complicated than writing it in notes.
 - A report that differs from what the boss is used to.
-- Losing data: archiving an apartment erases history, or a price change rewrites past months.
+- Losing data: deleting an apartment or changing a price rewrites past months.
 - Anything hard-coded to one person or company.
 
 ## Constraints
@@ -134,10 +134,11 @@ The same screen for any earlier date, reached by ‹ or the calendar.
 
 ### Apartments (template)
 
-- The list: name, price, an "окремо у звіті" badge. Add, edit, reorder, archive.
+- The list: name, price, an "окремо у звіті" badge. Add, edit, delete (a confirmed swipe); sorted by
+  name — digit-only names numerically first, then the rest.
 - An apartment has an optional, permanent **access code** (free text, e.g. `4821` or `1234#`),
   edited in the template and shown on the Today rows.
-- Names are unique among active apartments (case- and edge-whitespace-insensitive).
+- Names are unique (case- and edge-whitespace-insensitive).
 - A price change applies to new entries only; the footnote says so.
 
 ### Settings
@@ -166,7 +167,7 @@ The real October report this must reproduce:
   apartment marked "окремо у звіті" — one with a different rate, like `155` in the example or
   `106` (56 zł against 28 zł for the rest) in the test data.
   - The date has no leading zeros: `1.10`, `13.11`.
-  - Inside the brackets: entries in template order.
+  - Inside the brackets: entries in apartment name order: digit-only names numerically, then the rest.
   - `{count}` counts the entries inside the brackets only.
   - A day with only separate apartments: `{d}.{M}-()=0+155`. *(assumed; confirm with the boss's
     expectations)*
@@ -182,11 +183,10 @@ Domain value types (`Models/`), mirrored by SwiftData records (`Persistence/`) t
 CloudKit-compatible: every attribute optional or defaulted, relationships optional, no unique
 constraints (uniqueness is enforced in code).
 
-- **Apartment**: `id`, `name`, `price: Money`, `accessCode?`, `isReportedSeparately`, `sortOrder`, `isArchived`,
-  `createdAt`.
+- **Apartment**: `id`, `name`, `price: Money`, `accessCode?`, `isReportedSeparately`, `createdAt`.
 - **WorkDay**: `id`, `day: DayKey`, `entries`, `sessions`, `manualDuration: Duration?`.
-- **DayEntry**: `id`, `apartmentID?`, snapshots `name`, `price`, `isReportedSeparately`,
-  `sortOrder`; `isCleaned`, `cleanedAt?`.
+- **DayEntry**: `id`, `apartmentID?`, snapshots `name`, `price`, `isReportedSeparately`;
+  `isCleaned`, `cleanedAt?`.
 - **WorkSession**: `id`, `start: Date`, `end: Date?`.
 - **Money**: integer minor units (28 zł = 2800); złoty only.
 - **DayKey**: year, month, day — a calendar day independent of time zone.

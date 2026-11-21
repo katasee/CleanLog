@@ -47,8 +47,7 @@ nonisolated struct ApartmentDraft: Sendable, Hashable {
 
     private static func isName(_ name: String, takenIn existing: [Apartment], excluding id: UUID?) -> Bool {
         existing.contains { apartment in
-            !apartment.isArchived
-                && apartment.id != id
+            apartment.id != id
                 && apartment.name.caseInsensitiveCompare(name) == .orderedSame
         }
     }

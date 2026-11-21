@@ -7,7 +7,7 @@ struct AppDependenciesTests {
 
     @Test
     func previewStartsWithNoApartments() async {
-        var stream = AppDependencies.preview().apartments.apartments(includingArchived: true).makeAsyncIterator()
+        var stream = AppDependencies.preview().apartments.apartments().makeAsyncIterator()
         #expect(await stream.next() == [])
     }
 

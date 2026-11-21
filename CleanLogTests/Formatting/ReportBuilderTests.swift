@@ -35,18 +35,18 @@ struct ReportBuilderTests {
         #expect(ReportBuilder.report(for: november, days: [only155]) == "5.11-()=0+155")
     }
 
-    @Test func listsSeparateApartmentsInTemplateOrder() {
+    @Test func listsApartmentsInNameOrder() {
         let mixed = WorkDay.fixture(
             DayKey(year: 2026, month: 11, day: 5),
             ticked: [
-                .fixture("160", separate: true, sortOrder: 9),
-                .fixture("101", sortOrder: 1),
-                .fixture("155", separate: true, sortOrder: 8),
-                .fixture("100", sortOrder: 0),
-                .fixture("102", sortOrder: 2),
+                .fixture("160", separate: true),
+                .fixture("6piw"),
+                .fixture("155", separate: true),
+                .fixture("100"),
+                .fixture("54"),
             ]
         )
-        #expect(ReportBuilder.report(for: november, days: [mixed]) == "5.11-(100,101,102)=3+155+160")
+        #expect(ReportBuilder.report(for: november, days: [mixed]) == "5.11-(54,100,6piw)=3+155+160")
     }
 
     @Test func startsWeeksOnMonday() {

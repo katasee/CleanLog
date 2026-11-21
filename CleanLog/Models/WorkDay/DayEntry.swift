@@ -6,7 +6,6 @@ nonisolated struct DayEntry: Sendable, Hashable, Identifiable {
     let name: String
     let price: Money
     let isReportedSeparately: Bool
-    let sortOrder: Int
     var isCleaned: Bool
     var cleanedAt: Date?
 }
@@ -19,7 +18,6 @@ extension DayEntry {
             name: apartment.name,
             price: apartment.price,
             isReportedSeparately: apartment.isReportedSeparately,
-            sortOrder: apartment.sortOrder,
             isCleaned: false,
             cleanedAt: nil
         )
@@ -32,7 +30,6 @@ extension DayEntry {
             name: name,
             price: price,
             isReportedSeparately: isReportedSeparately,
-            sortOrder: sortOrder,
             isCleaned: false,
             cleanedAt: nil
         )
