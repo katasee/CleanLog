@@ -161,7 +161,7 @@ One contract test suite per repository runs against both the fake and the SwiftD
   - `enum WorkDayError: Error, Equatable { case futureDay, notToday, timerState, entryNotFound }`
   - On `WorkDay`: `func planning(_ apartments: [Apartment]) -> WorkDay`, `func removingEntry(_ id: UUID) -> WorkDay`,
     `func copyingPlan(from other: WorkDay) -> WorkDay`,
-    `func settingCleaned(_ entryID: UUID, _ isCleaned: Bool, now: Date, today: DayKey) throws(WorkDayError) -> WorkDay`,
+    `func settingCleaned(_ entryID: UUID, to isCleaned: Bool, now: Date, today: DayKey) throws(WorkDayError) -> WorkDay`,
     `var earned: Money`, `var planned: Money`, `var cleanedCount: Int`, `var hasCleanedEntries: Bool`
   - Fixtures: `Apartment.fixture(_ name: String, minorUnits: Int = 2800, separate: Bool = false, sortOrder: Int = 0, archived: Bool = false)`
 
@@ -171,7 +171,7 @@ One contract test suite per repository runs against both the fake and the SwiftD
   - Snapshot survives: plan `100` at 28 zł, then a changed `Apartment` (price 30 zł) is not re-applied — the entry keeps 28 zł.
   - `copyingPlan(from:)` a day with `100` (ticked) and an archived `205` → target has both, unticked, same snapshots, new entry ids; copying onto a day that already has `100` adds only `205`.
   - `removingEntry` removes exactly that entry; unknown id → unchanged.
-  - `settingCleaned(id, true, now: 13.11 10:00, today: 13.11)` → `isCleaned`, `cleanedAt == now`; `false` → `cleanedAt == nil`;
+  - `settingCleaned(id, to: true, now: 13.11 10:00, today: 13.11)` → `isCleaned`, `cleanedAt == now`; `false` → `cleanedAt == nil`;
     on a day `14.11` with today `13.11` → throws `.futureDay`; past day `12.11` → allowed; unknown id → `.entryNotFound`.
   - Totals for `100` (28, ticked), `101` (28), `106` (56, ticked): `earned == 8400`, `planned == 11200`, `cleanedCount == 2`, `hasCleanedEntries`.
 - [ ] **Step 2:** Run — FAIL.
