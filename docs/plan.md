@@ -23,8 +23,8 @@ Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowe
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 1 | `feature/CL-1-test-target-day-keys` | `main` | 1–2 | ~495 | built, tests green | **NEXT** — `swift-concurrency-pro` (nonisolated value types) + SOLID |
-| 2 | `feature/CL-2-apartment-workday` | 1 | 3–4 | ~455 | built, tests green | to do — `swift-concurrency-pro` + SOLID |
+| 1 | `feature/CL-1-test-target-day-keys` | `main` | 1–2 | 481 | reviewed, ready for PR | done — concurrency clean; SOLID: 3 fixes + convention sync (below) |
+| 2 | `feature/CL-2-apartment-workday` | 1 | 3–4 | ~455 | built, tests green | **NEXT** — `swift-concurrency-pro` + SOLID |
 | 3 | `feature/CL-3-timer-stats` | 2 | 5–6 | ~335 | built, tests green | to do — `swift-concurrency-pro` + SOLID |
 | 4 | `feature/CL-4-report-formatters` | 3 | 7–8 | ~275 | built, tests green | to do — SOLID (pure formatting) |
 | 5 | `feature/CL-5-repositories` | 4 | 9 | ~450 est. | contract tests drafted and committed (red); implementation to do | after build — `swift-concurrency-pro` (streams, `StoreObservers`) + SOLID |
@@ -35,6 +35,12 @@ Notes for the sessions:
 
 - Branches 1–4 were built in one long session before the branch rules existed; their review has not
   run yet. Review each one in its own fresh session, in order.
+- CL-1 review (2026-11-21): `main` merged in for the current conventions. Concurrency: no
+  findings (`nonisolated` structs keep their conformances off the main actor). SOLID / clean code:
+  `DayKey(_:calendar:)` failed silently to day 0 → `preconditionFailure`; `MonthKey` storage
+  bounds duplicated the `yyyymmdd` encoding → derived from `DayKey.storageValue`; the Warsaw test
+  calendar fell back to the device time zone → fails instead; `architecture.md` DayKey/Date
+  sentence updated as the foundation spec requires. Merged up into CL-2…CL-5 (CL-2–4 tests green).
 - Branch 4 is under 300 lines on purpose: it closes the pure-logic half of the foundation.
 - Branch 5 starts with the contract tests already written (`CleanLogTests/Repositories/`,
   `CleanLogTests/Support/Repositories+UnderTest.swift`) and failing to build — continue at the
