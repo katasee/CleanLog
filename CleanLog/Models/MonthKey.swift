@@ -1,6 +1,5 @@
 import Foundation
 
-/// A calendar month, independent of time zone.
 nonisolated struct MonthKey: Sendable, Hashable, Comparable, Codable {
     let year: Int
     let month: Int
@@ -13,12 +12,10 @@ nonisolated struct MonthKey: Sendable, Hashable, Comparable, Codable {
         month == 12 ? MonthKey(year: year + 1, month: 1) : MonthKey(year: year, month: month + 1)
     }
 
-    /// The lowest `DayKey.storageValue` in the month.
     var firstDayStorageValue: Int {
         year * 10_000 + month * 100 + 1
     }
 
-    /// An upper bound for every `DayKey.storageValue` in the month (day 31, whether or not it exists).
     var lastDayStorageValue: Int {
         year * 10_000 + month * 100 + 31
     }

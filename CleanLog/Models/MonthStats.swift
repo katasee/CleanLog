@@ -6,17 +6,13 @@ nonisolated struct ApartmentCount: Sendable, Hashable {
     let count: Int
 }
 
-/// A month's numbers, unformatted. The comparison with the previous month is a second `calculate`.
 nonisolated struct MonthStats: Sendable, Equatable {
     private static let topApartmentsLimit = 3
 
     let earned: Money
-    /// Every cleaned entry, separately reported ones included.
     let cleanedCount: Int
-    /// Days with at least one cleaned entry.
     let workingDays: Int
     let workedDuration: Duration
-    /// Earned on days with recorded time, divided by their hours; `nil` without recorded time.
     let earningsPerHour: Money?
     let averagePerWorkingDay: Money?
     let topApartments: [ApartmentCount]
