@@ -24,9 +24,9 @@ Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowe
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 1 | `feature/CL-1-test-target-day-keys` | `main` | 1–2 | 481 | reviewed, PR #1 open | done — concurrency clean; SOLID: 3 fixes + convention sync (below) |
-| 2 | `feature/CL-2-apartment-workday` | 1 | 3–4 | ~455 | built, tests green | **NEXT** — `swift-concurrency-pro` + SOLID |
-| 3 | `feature/CL-3-timer-stats` | 2 | 5–6 | ~335 | built, tests green | to do — `swift-concurrency-pro` + SOLID |
+| 1 | `feature/CL-1-test-target-day-keys` | `main` | 1–2 | 481 | merged (PR #1) | done — concurrency clean; SOLID: 3 fixes + convention sync (below) |
+| 2 | `feature/CL-2-apartment-workday` | `main` | 3–4 | 469 | reviewed, PR #2 open | done — concurrency clean; SOLID: 5 fixes (below) |
+| 3 | `feature/CL-3-timer-stats` | 2 | 5–6 | ~335 | built, tests green | **NEXT** — `swift-concurrency-pro` + SOLID |
 | 4 | `feature/CL-4-report-formatters` | 3 | 7–8 | ~275 | built, tests green | to do — SOLID (pure formatting) |
 | 5 | `feature/CL-5-repositories` | 4 | 9 | ~450 est. | contract tests drafted and committed (red); implementation to do | after build — `swift-concurrency-pro` (streams, `StoreObservers`) + SOLID |
 | 6 | `feature/CL-6-swiftdata` | 5 | 10 | ~450 est. | to do (create from 5) | after build — `swift-concurrency-pro` (`@Model` isolation) + SOLID |
@@ -42,6 +42,15 @@ Notes for the sessions:
   bounds duplicated the `yyyymmdd` encoding → derived from `DayKey.storageValue`; the Warsaw test
   calendar fell back to the device time zone → fails instead; `architecture.md` DayKey/Date
   sentence updated as the foundation spec requires. Merged up into CL-2…CL-5 (CL-2–4 tests green).
+- CL-2 review (2026-11-21): PR #1 was merged into `main`, so CL-2's PR targets `main`. Concurrency:
+  no findings. SOLID / clean code: `ApartmentError` moved to its own file (the repositories use
+  `.notFound`, it is not the draft's supporting type); `validated(against:excluding:)` split into
+  `isName(_:takenIn:excluding:)` and `normalizedAccessCode`; `DayEntry`'s hand-written memberwise
+  init removed (the snapshot init moved to an extension); `settingCleaned(_:to:now:today:)` labels
+  the flag and `appending` became `addingUnplanned`; the unused `accessCode` fixture parameter
+  dropped; test calls with 3+ arguments put one per line. Kept: `WorkDayError.notToday` and
+  `.timerState` are unused in CL-2 but belong to the timer rules in CL-3. Merged up into CL-3…CL-5;
+  CL-5's contract tests updated to the new label; CL-3 and CL-4 build with their tests.
 - Branch 4 is under 300 lines on purpose: it closes the pure-logic half of the foundation.
 - Branch 5 starts with the contract tests already written (`CleanLogTests/Repositories/`,
   `CleanLogTests/Support/Repositories+UnderTest.swift`) and failing to build — continue at the
