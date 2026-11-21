@@ -2,7 +2,6 @@ import Foundation
 
 @testable import CleanLog
 
-/// Every repository implementation the contract suites run against.
 enum RepositoryKind: CaseIterable, Sendable {
     case fake
 
@@ -17,7 +16,6 @@ enum RepositoryKind: CaseIterable, Sendable {
     }
 }
 
-/// The repositories of one test, plus whatever must stay alive behind them.
 struct StoreUnderTest {
     let apartments: any ApartmentRepository
     let workDays: any WorkDayRepository
