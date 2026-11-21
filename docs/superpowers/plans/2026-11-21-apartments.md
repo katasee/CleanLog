@@ -21,7 +21,7 @@ and Report sections).
 - Every rule in `CLAUDE.md` and `.claude/conventions/` holds: no comments in Swift, no `print`, no `!`
   or `try!`, `private` by default, 3+ arguments one per line, every type in `Models/` and
   `Formatting/` is `nonisolated`.
-- No user-facing literal in a view or view model: every string is a catalog key with uk, pl and en,
+- No user-facing literal in a view or view model: every string is a catalog key with uk and en,
   used through the generated symbol.
 - Money is `Money(minorUnits:)`; display goes through `MoneyFormat`, input through `MoneyInput`.
 - Every `#Preview` using fakes sits inside `#if DEBUG`; UI branches build Release too before the PR.
@@ -393,8 +393,8 @@ enum ApartmentSheet: Identifiable, Equatable {
   (`MoneyFormat.string`). `confirmDeletion()` takes `pendingDeletion` into a local and clears it
   **before** `await repository.delete` (a second tap during the await finds nothing to delete). A
   failed delete sets `errorMessage` from `apartments.error.delete`
-  («Не вдалося видалити квартиру.» / «Nie udało się usunąć mieszkania.» / "Couldn't delete the
-  apartment."). Add that key to the catalog in all three languages.
+  («Не вдалося видалити квартиру.» / "Couldn't delete the
+  apartment."). Add that key to the catalog in both languages.
 - [ ] **Step 5: Run** → PASS.
 - [ ] **Step 6: Commit** — `Add the apartments list view model`.
 
@@ -497,12 +497,10 @@ func enablesSaveForAValidForm(name: String, price: String, canSave: Bool) {
   `update(apartment.applying(draft))`; `ApartmentError.duplicateName` → `nameError`, any other error →
   `errorMessage`. `save()` returns `false` at once while a save is running, sets the saving flag
   before the `await` and clears it with `defer` (`canSave` is false meanwhile, so a double tap saves
-  once). Catalog keys, all three languages:
-  - `apartments.form.title.new` — «Нова квартира» / «Nowe mieszkanie» / "New apartment"
-  - `apartments.form.error.duplicateName` — «Квартира з такою назвою вже є» / «Mieszkanie o tej
-    nazwie już istnieje» / "An apartment with this name already exists"
-  - `apartments.form.error.save` — «Не вдалося зберегти квартиру.» / «Nie udało się zapisać
-    mieszkania.» / "Couldn't save the apartment."
+  once). Catalog keys, both languages:
+  - `apartments.form.title.new` — «Нова квартира» / "New apartment"
+  - `apartments.form.error.duplicateName` — «Квартира з такою назвою вже є» / "An apartment with this name already exists"
+  - `apartments.form.error.save` — «Не вдалося зберегти квартиру.» / "Couldn't save the apartment."
 - [ ] **Step 4: Run** both view-model suites → PASS.
 - [ ] **Step 5: Commit** — `Add the apartment form view model`.
 
@@ -528,21 +526,20 @@ Tasks 7–8. Layout and bindings only; every decision is already in a view model
 - Produces: `ApartmentsView(repository: any ApartmentRepository)`; `RootView` reads
   `@Environment(AppDependencies.self)` and passes `dependencies.apartments`.
 
-- [ ] **Step 1: Strings** (uk / pl / en):
+- [ ] **Step 1: Strings** (uk / en):
   - `apartments.count` — plural on `%lld`: «%lld квартира / квартири / квартир» /
-    «%lld mieszkanie / mieszkania / mieszkań» / "%lld apartment / apartments"
+    "%lld apartment / apartments"
   - `apartments.footnote` — «Нова ціна діє лише для наступних прибирань — минулі місяці не
-    змінюються.» / «Nowa cena obowiązuje tylko przy kolejnych sprzątaniach — poprzednie miesiące się
-    nie zmieniają.» / "A new price applies to future cleanings only — past months stay as they were."
-  - `apartments.badge.separate` — «окремо у звіті» / «osobno w raporcie» / "separate in report"
-  - `apartments.action.add` — «Нова квартира» / «Nowe mieszkanie» / "New apartment"
-  - `apartments.empty.title` — «Додай свої квартири» / «Dodaj swoje mieszkania» / "Add your apartments"
-  - `apartments.empty.action` — «Додати квартиру» / «Dodaj mieszkanie» / "Add apartment"
-  - `apartments.delete.action` — «Видалити» / «Usuń» / "Delete"
-  - `apartments.delete.title` — «Видалити %@?» / «Usunąć %@?» / "Delete %@?"
-  - `apartments.delete.message` — «Минулі прибирання лишаться у звітах.» / «Wcześniejsze sprzątania
-    zostaną w raportach.» / "Past cleanings stay in your reports."
-  - `common.action.cancel` — «Скасувати» / «Anuluj» / "Cancel"
+    змінюються.» / "A new price applies to future cleanings only — past months stay as they were."
+  - `apartments.badge.separate` — «окремо у звіті» / "separate in report"
+  - `apartments.action.add` — «Нова квартира» / "New apartment"
+  - `apartments.empty.title` — «Додай свої квартири» / "Add your apartments"
+  - `apartments.empty.action` — «Додати квартиру» / "Add apartment"
+  - `apartments.delete.action` — «Видалити» / "Delete"
+  - `apartments.delete.title` — «Видалити %@?» / "Delete %@?"
+  - `apartments.delete.message` — «Минулі прибирання лишаться у звітах.» / "Past cleanings stay in
+    your reports."
+  - `common.action.cancel` — «Скасувати» / "Cancel"
 - [ ] **Step 2: Build the view.** `ApartmentsView` owns `@State private var viewModel`, built in
   `init(repository:)`; `.task { await viewModel.observe() }`. A `List` with one section: header the
   count, footer the footnote, rows `ApartmentRowView` on `Color.card` (`listRowBackground`),
@@ -575,11 +572,10 @@ Tasks 7–8. Layout and bindings only; every decision is already in a view model
 - Consumes: `ApartmentsViewModel.makeFormViewModel(for:)`, `ApartmentFormViewModel` (Task 6).
 - Produces: `ApartmentFormView(viewModel: ApartmentFormViewModel)`.
 
-- [ ] **Step 1: Strings**: `apartments.form.field.name` «Назва» / «Nazwa» / "Name";
-  `apartments.form.field.price` «Ціна» / «Cena» / "Price"; `apartments.form.field.accessCode`
-  «Код доступу» / «Kod dostępu» / "Access code"; `apartments.form.placeholder.optional`
-  «Необов'язково» / «Opcjonalnie» / "Optional"; `apartments.form.field.separate` «Окремо у звіті» /
-  «Osobno w raporcie» / "Separate in report"; `common.action.save` «Зберегти» / «Zapisz» / "Save".
+- [ ] **Step 1: Strings**: `apartments.form.field.name` «Назва» / "Name";
+  `apartments.form.field.price` «Ціна» / "Price"; `apartments.form.field.accessCode`
+  «Код доступу» / "Access code"; `apartments.form.placeholder.optional`
+  «Необов'язково» / "Optional"; `apartments.form.field.separate` «Окремо у звіті» / "Separate in report"; `common.action.save` «Зберегти» / "Save".
 - [ ] **Step 2: Build the sheet.** A `NavigationStack` with a `Form`: name `TextField` (the
   `nameError` under it in `Color.warning`, `.footnote`), price `TextField` with `.keyboardType(.decimalPad)`
   and a trailing «zł» that is not localized (`Text(verbatim:)` — the currency symbol, like

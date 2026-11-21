@@ -112,7 +112,7 @@ tie.
 - **Views**: `ApartmentsView` (a `List` for swipe actions, rows on `Card`, the hidden list background
   over `Background`, the footnote as a section footer), `ApartmentFormView` (a `Form` in a
   `NavigationStack`, `presentationDetents([.medium, .large])`), `ContentUnavailableView` for the empty
-  state. Strings under `apartments.*` in all three languages.
+  state. Strings under `apartments.*` in both languages.
 
 ## Branches
 
@@ -136,7 +136,7 @@ a Settings entry point (Feature 9).
 
 ## Left to the builder
 
-- The exact accessibility label wording and the plural strings in Polish and English.
+- The exact accessibility label wording and the plural strings in English.
 - Whether the name-taken check also runs live while typing (the minimum is on save).
 - How the October report fixture builds its template now that there is no `sortOrder`.
 - Where the count line sits (a list section header is the iOS 18-compatible choice;

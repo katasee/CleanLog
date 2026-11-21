@@ -47,7 +47,7 @@ an Apple Developer account.
 - iOS 18.0+, iPhone only, portrait. SwiftUI, SwiftData, Swift Testing, Swift 6.
 - Liquid Glass on iOS 26 (system bars and sheets, plus our own controls), material fallback on 18.
 - All data on the device. No data collection (the App Store still needs a privacy policy page).
-- Languages: Ukrainian, Polish, English. Złoty (zł) only for now; no currency setting.
+- Languages: Ukrainian and English (no Polish). Złoty (zł) only for now; no currency setting.
 
 ## Approaches considered
 
@@ -100,7 +100,7 @@ The same screen for any earlier date, reached by ‹ or the calendar.
 ### Calendar (sheet)
 
 - Quick buttons: **Сьогодні**, **Учора**, **Тиждень тому**.
-- A month grid, weeks starting on the locale's first weekday (Monday for pl/uk). Each worked day
+- A month grid, weeks starting on the locale's first weekday (Monday for uk). Each worked day
   shows its earnings in small type; today is ringed; the selected day is filled. Month paging ‹ ›.
 - A card for the selected day (weekday, date, count, earnings) with **Відкрити день**.
 - Future days are selectable (the canvas still shows them disabled; the spec wins): the list for

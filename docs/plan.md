@@ -215,6 +215,9 @@ Notes for the sessions:
   parameters on one line → one per line; `makeFormViewModel(for:)` repeated the same three-argument
   construction in both `switch` branches → `ApartmentSheet.apartment` (which `id` now reuses) and
   one call. Kept: the `enablesSaveForAValidForm` argument tuples stay packed — they read as a table.
+  Decision (user, 2026-11-21): **no Polish** — the app ships Ukrainian and English only. Removed on
+  this branch: the `pl` strings from the catalog, `pl` from the project's known regions, and Polish
+  from `code-style.md`, both specs and the apartments plan (CL-12's string list is uk / en).
 - CL-12 (next session): create it from CL-13 (`git switch -c feature/CL-12-apartments-screen
   feature/CL-13-apartment-form-view-model`); if PR CL-13 is merged by then, start from `main`
   instead and target `main`. UI branch: a Release build belongs to its pre-PR check (CL-7 note).
