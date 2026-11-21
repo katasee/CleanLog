@@ -165,8 +165,8 @@ Plan: `docs/superpowers/plans/2026-11-21-apartments.md` · Spec: `docs/superpowe
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 10 | `feature/CL-10-apartment-delete-name-order` | `main` | 1–3 | ~350 est. | **NEXT** — spec and plan committed, code not started | concurrency (repositories) + SOLID |
-| 11 | `feature/CL-11-apartment-view-models` | CL-10 | 4–6 | ~450 est. | not started | SwiftUI + concurrency + SOLID |
+| 10 | `feature/CL-10-apartment-delete-name-order` | `main` | 1–3 | 298 code (+ spec and plan) | PR open | done — concurrency clean; SOLID: 1 fix (below) |
+| 11 | `feature/CL-11-apartment-view-models` | CL-10 | 4–6 | ~450 est. | **NEXT** — create from CL-10 | SwiftUI + concurrency + SOLID |
 | 12 | `feature/CL-12-apartments-screen` | CL-11 | 7–8 | ~400 est. (end of feature) | not started | SwiftUI + SOLID |
 
 Notes for the sessions:
@@ -180,6 +180,14 @@ Notes for the sessions:
   snapshots); no manual order — apartments sort by name (digit-only names numerically first, then the
   rest), and the report uses the same order; the form is a half-height sheet; delete is a confirmed
   swipe only; an empty state with an add button; no Settings button until Feature 9.
+- CL-10 (2026-11-21): built as planned. Deviations: `updatesTheEditableFields` read the list's
+  `.first`, but the renamed `100A` now sorts after `101` (digit-only names first) → it finds the
+  apartment by id; the `WorkDayPlanningTests` copy tests' archived `205` became a plain fixture.
+  Concurrency review: no findings (no new tasks or streams; `delete` has no `await` between fetch and
+  delete). SOLID / clean code: the name-sort closure was repeated in both repositories and the report
+  → `ApartmentNameOrder.sorted(_:by:)`, test-first. Size: 298 changed lines of code and tests; the
+  rest of the diff is the feature spec and plan (and the deleted design-system spec). An existing
+  simulator store from before this branch has the old `SchemaV1`: delete the app once.
 - **For Feature 4:** «Як учора» must not copy apartments deleted since that day — filter the copy by
   the current template.
 
