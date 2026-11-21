@@ -75,15 +75,15 @@ Size excludes the deleted foundation docs (a pure deletion, ~440 lines): CL-8 is
 
 **Files:**
 - Modify: `CleanLog/Resources/Assets.xcassets/AccentColor.colorset/Contents.json`
-- Create: `CleanLog/Resources/Assets.xcassets/{Ink,InkSecondary,AccentSoft,Background,Card,Separator,Warning}.colorset/Contents.json`
+- Create: `CleanLog/Resources/Assets.xcassets/{Ink,InkSecondary,AccentSoft,Background,Card,Hairline,Warning}.colorset/Contents.json`
 
 **Interfaces:**
-- Produces: `Color.ink`, `.inkSecondary`, `.accentSoft`, `.background`, `.card`, `.separator`,
+- Produces: `Color.ink`, `.inkSecondary`, `.accentSoft`, `.background`, `.card`, `.hairline`,
   `.warning` (generated), and `Color.accentColor`.
 
 - [ ] **Step 1:** Each colorset: sRGB, `"idiom": "universal"`, one entry without appearances (light)
   and one with the dark luminosity appearance; components as `0xNN` hex strings, alpha `1.000`
-  except `Separator`: light `#0B1215` alpha `0.080`, dark `#FFFFFF` alpha `0.100`. Values:
+  except `Hairline`: light `#0B1215` alpha `0.080`, dark `#FFFFFF` alpha `0.100`. Values:
 
   | Token | Light | Dark |
   |---|---|---|

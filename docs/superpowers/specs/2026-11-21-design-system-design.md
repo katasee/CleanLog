@@ -52,7 +52,7 @@ Only A fits the conventions and the canvas as it stands.
 ## Decided
 
 - **Colorsets**: `Ink`, `InkSecondary`, `AccentColor` (exists, gets its values), `AccentSoft`,
-  `Background`, `Card`, `Separator`, `Warning`, with the light/dark values from the
+  `Background`, `Card`, `Hairline`, `Warning`, with the light/dark values from the
   `code-style.md` table, used through the generated symbols (`Color.ink`, `.accentSoft`, …).
 - **`developmentRegion`** becomes `uk`; `knownRegions` gains `uk` and `pl`.
 - **String keys** follow `feature.kind.name`; this feature adds only the three tab titles
