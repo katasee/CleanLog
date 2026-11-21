@@ -131,7 +131,7 @@ struct ApartmentFormViewModelTests {
         async let second = form.save()
         let results = await [first, second]
 
-        #expect(results.filter { $0 }.count == 1)
+        #expect(results.count(where: { $0 }) == 1)
         #expect(form.errorMessage == nil)
         #expect(form.nameError == nil)
     }

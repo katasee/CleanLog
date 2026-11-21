@@ -16,7 +16,11 @@ final class ApartmentFormViewModel {
     private(set) var nameError: String?
     private(set) var errorMessage: String?
 
-    init(repository: any ApartmentRepository, editing apartment: Apartment?, locale: Locale = .current) {
+    init(
+        repository: any ApartmentRepository,
+        editing apartment: Apartment?,
+        locale: Locale = .current
+    ) {
         self.repository = repository
         self.apartment = apartment
         name = apartment?.name ?? ""
