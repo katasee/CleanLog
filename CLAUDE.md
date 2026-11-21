@@ -120,7 +120,9 @@ push `main`, never force anything, never delete a remote branch, never rewrite p
 `.claude/settings.json` allows only `git push [-u] origin feature/*`.
 
 The PR description is in English: a one-line title, what the user gets, the key changes as
-bullets. No review findings, no "how it was verified" section, no attribution line.
+bullets about the app and its code. No review findings, no "how it was verified" section, no
+attribution line, and nothing about the AI workflow: changes to `CLAUDE.md`, `.claude/` or the
+plan files stay out of the description (they still ship in the branch).
 
 ## Language
 
