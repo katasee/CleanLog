@@ -122,14 +122,15 @@ Notes for the sessions:
   `AppDependencies` only composes, and exposes the repositories as protocols.
 - Branch 4 is under 300 lines on purpose: it closes the pure-logic half of the foundation.
 
-## Feature 2 — Design system
+## Feature 2 — Design system (done)
 
-Plan: `docs/superpowers/plans/2026-11-21-design-system.md` · Spec: `docs/superpowers/specs/2026-11-21-design-system-design.md`
+The plan and design files were deleted once the feature merged (CL-9); the notes below stay as the
+record.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 8 | `feature/CL-8-design-system` | `main` | 1–3 | 634 | merged (PR #8) | done — SwiftUI clean; SOLID clean; 1 convention fix (below) |
-| 9 | `feature/CL-9-tab-shell` | `main` | 4–5 | 178 (end of feature) | reviewed, PR open | done — SwiftUI: 1 tidy-up; SOLID: 1 fix (below) |
+| 9 | `feature/CL-9-tab-shell` | `main` | 4–5 | 178 (end of feature) | merged (PR #9) | done — SwiftUI: 1 tidy-up; SOLID: 1 fix (below) |
 
 Notes for the sessions:
 
@@ -157,13 +158,21 @@ Notes for the sessions:
   `RootView.swift` instead of its own file (deviation from the plan's file list). Kept: the three
   placeholder screens repeat the same `NavigationStack` + background + title; each is replaced by
   its feature's real screen, so a shared placeholder would be dead code then.
-- **Next: Feature 3 (Apartments).** Once PR #9 merges, start a fresh session with
-  `superpowers:brainstorming` for the template screen; delete this feature's plan and spec files
-  (`docs/superpowers/plans/2026-11-21-design-system.md`,
-  `docs/superpowers/specs/2026-11-21-design-system-design.md`) and mark Feature 2 done in the same
-  first commit, as CL-8 did for the foundation.
 
-Next free branch number: **CL-10**.
+## Feature 3 — Apartments
+
+Spec: `docs/superpowers/specs/2026-11-21-apartments-design.md` · Plan: being written.
+
+Notes for the sessions:
+
+- Brainstorming (2026-11-21): no archive — an apartment is deleted (history is safe: entries keep
+  snapshots); no manual order — apartments sort by name (digit-only names numerically first, then the
+  rest), and the report uses the same order; the form is a half-height sheet; delete is a confirmed
+  swipe only; an empty state with an add button; no Settings button until Feature 9.
+- **For Feature 4:** «Як учора» must not copy apartments deleted since that day — filter the copy by
+  the current template.
+
+Next free branch number: **CL-11** (CL-10 is `feature/CL-10-apartment-delete-name-order`).
 
 ## Roadmap (v1)
 
@@ -171,8 +180,8 @@ Each feature: brainstorm → plan (split into 300–500-line branches, written h
 branches as above.
 
 1. Foundation — done.
-2. Design system — built, CL-9 in review (above): colour tokens, `.glassSurface`, `.cardSurface`, String Catalog, the `TabView` shell.
-3. Apartments (template) — list, form, reorder, archive. Logic, then UI.
+2. Design system — done.
+3. Apartments (template) — list, form, delete, name order. Logic, then UI. In progress (above).
 4. Today — plan, ticks, timer, empty state, "as yesterday", past and future days. Logic, then UI.
 5. Day plan sheet, and the floating add button beside the tab bar. Logic, then UI.
 6. Calendar. Logic, then UI.
