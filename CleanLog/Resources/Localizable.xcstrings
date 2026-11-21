@@ -1,6 +1,29 @@
 {
   "sourceLanguage" : "uk",
   "strings" : {
+    "apartments.error.delete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't delete the apartment."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie udało się usunąć mieszkania."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося видалити квартиру."
+          }
+        }
+      }
+    },
     "tab.apartments.title" : {
       "extractionState" : "manual",
       "localizations" : {
