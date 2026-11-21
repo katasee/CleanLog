@@ -26,9 +26,9 @@ Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowe
 |---|---|---|---|---|---|---|
 | 1 | `feature/CL-1-test-target-day-keys` | `main` | 1–2 | 481 | merged (PR #1) | done — concurrency clean; SOLID: 3 fixes + convention sync (below) |
 | 2 | `feature/CL-2-apartment-workday` | `main` | 3–4 | 469 | merged (PR #2) | done — concurrency clean; SOLID: 5 fixes (below) |
-| 3 | `feature/CL-3-timer-stats` | `main` | 5–6 | 353 | reviewed, PR open | done — concurrency clean; SOLID: 6 fixes (below) |
-| 4 | `feature/CL-4-report-formatters` | 3 | 7–8 | ~275 | built, tests green | **NEXT** — SOLID (pure formatting) |
-| 5 | `feature/CL-5-repositories` | 4 | 9 | ~450 est. | contract tests drafted and committed (red); implementation to do | after build — `swift-concurrency-pro` (streams, `StoreObservers`) + SOLID |
+| 3 | `feature/CL-3-timer-stats` | `main` | 5–6 | 353 | merged (PR #3) | done — concurrency clean; SOLID: 6 fixes (below) |
+| 4 | `feature/CL-4-report-formatters` | `main` | 7–8 | 294 | reviewed, PR open | done — concurrency clean; SOLID: 5 fixes + spec sync (below) |
+| 5 | `feature/CL-5-repositories` | 4 | 9 | ~450 est. | contract tests drafted and committed (red); implementation to do | **NEXT** — after build — `swift-concurrency-pro` (streams, `StoreObservers`) + SOLID |
 | 6 | `feature/CL-6-swiftdata` | 5 | 10 | ~450 est. | to do (create from 5) | after build — `swift-concurrency-pro` (`@Model` isolation) + SOLID |
 | 7 | `feature/CL-7-app-wiring` | 6 | 11 | ~150 est. (end of feature) | to do (create from 6) | after build — `swiftui-pro` + SOLID |
 
@@ -59,6 +59,18 @@ Notes for the sessions:
   is never empty; the three `.notToday` guards became `requireToday(_:)`; packed 3-argument
   `WorkSession` / `ApartmentCount` calls put one argument per line; the rounding test parameterized.
   Merged up into CL-4 and CL-5 (both build; CL-4's tests run in its own session).
+- CL-4 review (2026-11-21): PR #3 was merged into `main`, so `main` was merged in and CL-4's PR
+  targets `main`. Concurrency: no findings (pure `nonisolated` formatters; the report calendar is a
+  `Sendable` static). SOLID / clean code: the report's `firstWeekday = 2` was set but unused (weeks
+  came from `(weekday + 5) % 7`) → weeks now come from `dateInterval(of: .weekOfYear)` on that
+  calendar; `report(for:days:)` split into `workedDays`, `weeks(of:)` and `date(of:)`, dropping the
+  `weeks[week] ?? []` over a group that is never empty; `TimeZone(secondsFromGMT: 0) ?? .gmt` →
+  `.gmt`; `DurationFormat`'s `3600`/`60` and `MoneyFormat`'s `100`/`"zł"` named; the two copies of
+  "plan these and tick them" in the report tests became `WorkDay.fixture(_:ticked:unticked:)` in
+  `Support/Fixtures.swift`, and the October fixture's `?? 0` day became a `preconditionFailure`.
+  Kept: the October input is parsed from the expected text instead of a second 31-line table (the
+  input is shuffled, so the order and counts are still the builder's work). Product spec: report
+  weeks always start on Monday (the foundation spec required this sync). Merged up into CL-5.
 - Branch 4 is under 300 lines on purpose: it closes the pure-logic half of the foundation.
 - Branch 5 starts with the contract tests already written (`CleanLogTests/Repositories/`,
   `CleanLogTests/Support/Repositories+UnderTest.swift`) and failing to build — continue at the
