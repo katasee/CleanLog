@@ -84,7 +84,7 @@ All `struct`/`enum`, `Sendable`, `Equatable`, Foundation only.
   already on the day (by `apartmentID`); `removingEntry(_ id:)`; `copyingPlan(from other: WorkDay)`
   plans the other day's apartments, unticked, from *their snapshots* (an apartment archived since
   is still copied — it was really on that day).
-- **Cleaning**: `settingCleaned(_ entryID:, _ isCleaned:, now:, today: DayKey) throws` — sets
+- **Cleaning**: `settingCleaned(_ entryID:, to isCleaned:, now:, today: DayKey) throws` — sets
   `cleanedAt` to `now` or `nil`; throws `WorkDayError.futureDay` when `day > today`.
 - **Timer** — state derived, never stored as a flag besides `isTimerFinished`:
   - `timerState(now:) -> TimerState` = `.idle` (no sessions) · `.running(since:)` (an open session)
@@ -149,7 +149,7 @@ protocol WorkDayRepository {
 
 - **One write path for days: `update(_:_:)`** loads the day (or `.empty`), applies a domain rule,
   saves the result. View models call
-  `repository.update(day) { try $0.settingCleaned(id, true, now: now, today: today) }` — every
+  `repository.update(day) { try $0.settingCleaned(id, to: true, now: now, today: today) }` — every
   rule stays in `WorkDay`, the repository never grows a method per action.
 - `ApartmentDraft` — `name`, `price`, `accessCode`, `isReportedSeparately`: what the form edits,
   validated by `ApartmentDraft.validated(against existing: [Apartment]) throws` in `Models/`, so the
