@@ -1,7 +1,5 @@
 import Foundation
 
-/// A calendar day, independent of time zone. Never represented as a midnight `Date`, which would
-/// move when the time zone changes.
 nonisolated struct DayKey: Sendable, Hashable, Comparable, Codable {
     let year: Int
     let month: Int
@@ -22,7 +20,6 @@ nonisolated struct DayKey: Sendable, Hashable, Comparable, Codable {
         )
     }
 
-    /// `yyyymmdd`, the form persistence stores and range-queries.
     init?(storageValue: Int) {
         let year = storageValue / 10_000
         let month = storageValue / 100 % 100

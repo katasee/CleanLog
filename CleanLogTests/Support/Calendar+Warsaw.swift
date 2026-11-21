@@ -1,7 +1,6 @@
 import Foundation
 
 extension Calendar {
-    /// The calendar every test pins: Gregorian, Warsaw time, POSIX locale.
     static let warsaw: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         if let timeZone = TimeZone(identifier: "Europe/Warsaw") {
@@ -13,7 +12,6 @@ extension Calendar {
 }
 
 extension Date {
-    /// A wall-clock moment in Warsaw, for readable test fixtures.
     static func warsaw(_ year: Int, _ month: Int, _ day: Int, _ hour: Int = 0, _ minute: Int = 0) -> Date {
         let components = DateComponents(
             year: year,
