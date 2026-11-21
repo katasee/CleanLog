@@ -34,8 +34,8 @@ struct ApartmentsView: View {
             }
             .modifier(DeletionConfirmation(viewModel: viewModel))
             .alert(viewModel.errorMessage ?? "", isPresented: $viewModel.isShowingError) {}
-            .sheet(item: $viewModel.sheet) { _ in
-                Color.background
+            .sheet(item: $viewModel.sheet) { sheet in
+                ApartmentFormView(viewModel: viewModel.makeFormViewModel(for: sheet))
             }
         }
         .task {
