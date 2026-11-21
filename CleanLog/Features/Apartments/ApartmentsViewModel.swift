@@ -28,7 +28,7 @@ final class ApartmentsViewModel {
 
     var isConfirmingDeletion: Bool {
         get { pendingDeletion != nil }
-        set { if !newValue { pendingDeletion = nil } }
+        set { if !newValue { cancelDeletion() } }
     }
 
     var isShowingError: Bool {
