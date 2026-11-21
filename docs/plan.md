@@ -25,7 +25,7 @@ Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowe
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 1 | `feature/CL-1-test-target-day-keys` | `main` | 1–2 | 481 | merged (PR #1) | done — concurrency clean; SOLID: 3 fixes + convention sync (below) |
-| 2 | `feature/CL-2-apartment-workday` | `main` | 3–4 | 441 | reviewed, PR open | done — concurrency clean; SOLID: 5 fixes (below) |
+| 2 | `feature/CL-2-apartment-workday` | `main` | 3–4 | 469 | reviewed, PR open | done — concurrency clean; SOLID: 5 fixes (below) |
 | 3 | `feature/CL-3-timer-stats` | 2 | 5–6 | ~335 | built, tests green | **NEXT** — `swift-concurrency-pro` + SOLID |
 | 4 | `feature/CL-4-report-formatters` | 3 | 7–8 | ~275 | built, tests green | to do — SOLID (pure formatting) |
 | 5 | `feature/CL-5-repositories` | 4 | 9 | ~450 est. | contract tests drafted and committed (red); implementation to do | after build — `swift-concurrency-pro` (streams, `StoreObservers`) + SOLID |
