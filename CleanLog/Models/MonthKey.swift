@@ -13,11 +13,11 @@ nonisolated struct MonthKey: Sendable, Hashable, Comparable, Codable {
     }
 
     var firstDayStorageValue: Int {
-        year * 10_000 + month * 100 + 1
+        DayKey(year: year, month: month, day: 1).storageValue
     }
 
     var lastDayStorageValue: Int {
-        year * 10_000 + month * 100 + 31
+        DayKey(year: year, month: month, day: 31).storageValue
     }
 
     func contains(_ day: DayKey) -> Bool {
