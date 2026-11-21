@@ -1,11 +1,17 @@
 import SwiftUI
 
+private enum AppTab: Hashable {
+    case today
+    case stats
+    case apartments
+}
+
 struct RootView: View {
     @State private var selectedTab: AppTab = .today
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            Tab(value: AppTab.today) {
+            Tab(value: .today) {
                 TodayView()
             } label: {
                 Label {
@@ -14,7 +20,7 @@ struct RootView: View {
                     Image(systemName: "checkmark.circle")
                 }
             }
-            Tab(value: AppTab.stats) {
+            Tab(value: .stats) {
                 StatsView()
             } label: {
                 Label {
@@ -23,7 +29,7 @@ struct RootView: View {
                     Image(systemName: "chart.bar")
                 }
             }
-            Tab(value: AppTab.apartments) {
+            Tab(value: .apartments) {
                 ApartmentsView()
             } label: {
                 Label {
