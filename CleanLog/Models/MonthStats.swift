@@ -30,10 +30,10 @@ nonisolated struct MonthStats: Sendable, Equatable {
             workingDays: workingDays,
             workedDuration: days.reduce(.zero) { $0 + $1.workedDuration(now: now) },
             earningsPerHour: timedSeconds > 0
-                ? Money(grosze: dividedRoundingHalfUp(timedEarned.grosze * 3600, by: Int(timedSeconds)))
+                ? Money(minorUnits: dividedRoundingHalfUp(timedEarned.minorUnits * 3600, by: Int(timedSeconds)))
                 : nil,
             averagePerWorkingDay: workingDays > 0
-                ? Money(grosze: dividedRoundingHalfUp(earned.grosze, by: workingDays))
+                ? Money(minorUnits: dividedRoundingHalfUp(earned.minorUnits, by: workingDays))
                 : nil,
             topApartments: topApartments(in: days)
         )
