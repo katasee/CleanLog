@@ -22,3 +22,14 @@ extension Apartment {
         )
     }
 }
+
+extension WorkDay {
+    static func fixture(_ day: DayKey, ticked: [Apartment], unticked: [Apartment] = []) -> WorkDay {
+        let tickedIDs = Set(ticked.map(\.id))
+        var workDay = WorkDay.empty(day).planning(ticked + unticked)
+        for index in workDay.entries.indices where tickedIDs.contains(workDay.entries[index].apartmentID) {
+            workDay.entries[index].isCleaned = true
+        }
+        return workDay
+    }
+}

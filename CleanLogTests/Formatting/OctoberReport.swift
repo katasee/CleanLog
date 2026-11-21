@@ -47,18 +47,21 @@ enum OctoberReport {
 
     static var days: [WorkDay] {
         expected.split(separator: "\n").map { line in
-            let dayNumber = Int(line.prefix { $0 != "." }) ?? 0
             let names = Set(cleanedNames(in: String(line)))
-            let cleaned = template.filter { names.contains($0.name) }
             let spare = template.first { !names.contains($0.name) && !$0.isReportedSeparately }
-            var day = WorkDay.empty(DayKey(year: 2026, month: 10, day: dayNumber))
-                .planning((cleaned + [spare].compactMap(\.self)).shuffled())
-            for index in day.entries.indices where names.contains(day.entries[index].name) {
-                day.entries[index].isCleaned = true
-                day.entries[index].cleanedAt = .warsaw(2026, 10, dayNumber, 12)
-            }
-            return day
+            return WorkDay.fixture(
+                DayKey(year: 2026, month: 10, day: dayNumber(in: String(line))),
+                ticked: template.filter { names.contains($0.name) }.shuffled(),
+                unticked: [spare].compactMap(\.self)
+            )
         }
+    }
+
+    private static func dayNumber(in line: String) -> Int {
+        guard let day = Int(line.prefix { $0 != "." }) else {
+            preconditionFailure("No day number in \(line)")
+        }
+        return day
     }
 
     private static func cleanedNames(in line: String) -> [String] {
