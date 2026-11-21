@@ -23,7 +23,7 @@ Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowe
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 1 | `feature/CL-1-test-target-day-keys` | `main` | 1–2 | 481 | reviewed, ready for PR | done — concurrency clean; SOLID: 3 fixes + convention sync (below) |
+| 1 | `feature/CL-1-test-target-day-keys` | `main` | 1–2 | 481 | reviewed, PR #1 open | done — concurrency clean; SOLID: 3 fixes + convention sync (below) |
 | 2 | `feature/CL-2-apartment-workday` | 1 | 3–4 | ~455 | built, tests green | **NEXT** — `swift-concurrency-pro` + SOLID |
 | 3 | `feature/CL-3-timer-stats` | 2 | 5–6 | ~335 | built, tests green | to do — `swift-concurrency-pro` + SOLID |
 | 4 | `feature/CL-4-report-formatters` | 3 | 7–8 | ~275 | built, tests green | to do — SOLID (pure formatting) |
