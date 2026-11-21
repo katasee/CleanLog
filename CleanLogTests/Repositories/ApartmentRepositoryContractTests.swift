@@ -7,7 +7,7 @@ struct ApartmentRepositoryContractTests {
     private let now = Date.warsaw(2026, 11, 13, 9)
 
     private func draft(_ name: String, code: String? = nil) -> ApartmentDraft {
-        ApartmentDraft(name: name, price: Money(grosze: 2800), accessCode: code, isReportedSeparately: false)
+        ApartmentDraft(name: name, price: Money(minorUnits: 2800), accessCode: code, isReportedSeparately: false)
     }
 
     @Test(arguments: RepositoryKind.allCases)
@@ -51,14 +51,14 @@ struct ApartmentRepositoryContractTests {
         _ = try await repository.add(draft("101"))
 
         apartment.name = "100A "
-        apartment.price = Money(grosze: 3000)
+        apartment.price = Money(minorUnits: 3000)
         apartment.accessCode = "1234#"
         try await repository.update(apartment)
 
         var stream = repository.apartments(includingArchived: false).makeAsyncIterator()
         let stored = try #require(await stream.next()?.first)
         #expect(stored.name == "100A")
-        #expect(stored.price == Money(grosze: 3000))
+        #expect(stored.price == Money(minorUnits: 3000))
         #expect(stored.accessCode == "1234#")
         #expect(stored.sortOrder == 0)
     }
