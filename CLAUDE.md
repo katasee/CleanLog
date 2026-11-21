@@ -119,8 +119,16 @@ Small commits with an imperative English subject.
 push `main`, never force anything, never delete a remote branch, never rewrite pushed history;
 `.claude/settings.json` allows only `git push [-u] origin feature/*`.
 
-The PR description is in English: a one-line title, what the user gets, the key changes as
-bullets about the app and its code. No review findings, no "how it was verified" section, no
+The PR description is in English and written for a developer reading it months later without
+this session's context:
+
+- a title that says what the branch adds, in plain words;
+- one or two sentences on why the change is needed;
+- bullets, each opening with a bold short name, saying what appeared and why it is built that way
+  (`**Money.** Stores an amount as a whole number of 1/100 zł … whole numbers add up exactly`);
+- plain sentences, no unexplained jargon, no bare lists of API names.
+
+It covers the app and its code only. No review findings, no "how it was verified" section, no
 attribution line, and nothing about the AI workflow: changes to `CLAUDE.md`, `.claude/` or the
 plan files stay out of the description (they still ship in the branch).
 
