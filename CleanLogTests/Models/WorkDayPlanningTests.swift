@@ -40,7 +40,7 @@ struct WorkDayPlanningTests {
         let planned = WorkDay.empty(yesterday).planning([a100, archived])
         let source = try planned.settingCleaned(
             planned.entries[0].id,
-            true,
+            to: true,
             now: .warsaw(2026, 11, 12, 10),
             today: today
         )
@@ -68,10 +68,20 @@ struct WorkDayPlanningTests {
         let now = Date.warsaw(2026, 11, 13, 10)
         let planned = WorkDay.empty(today).planning([a100])
         let id = planned.entries[0].id
-        let ticked = try planned.settingCleaned(id, true, now: now, today: today)
+        let ticked = try planned.settingCleaned(
+            id,
+            to: true,
+            now: now,
+            today: today
+        )
         #expect(ticked.entries[0].isCleaned)
         #expect(ticked.entries[0].cleanedAt == now)
-        let unticked = try ticked.settingCleaned(id, false, now: now, today: today)
+        let unticked = try ticked.settingCleaned(
+            id,
+            to: false,
+            now: now,
+            today: today
+        )
         #expect(!unticked.entries[0].isCleaned)
         #expect(unticked.entries[0].cleanedAt == nil)
     }
@@ -79,7 +89,12 @@ struct WorkDayPlanningTests {
     @Test func refusesToTickOnAFutureDay() {
         let tomorrow = WorkDay.empty(DayKey(year: 2026, month: 11, day: 14)).planning([a100])
         #expect(throws: WorkDayError.futureDay) {
-            try tomorrow.settingCleaned(tomorrow.entries[0].id, true, now: .warsaw(2026, 11, 13, 22), today: today)
+            try tomorrow.settingCleaned(
+                tomorrow.entries[0].id,
+                to: true,
+                now: .warsaw(2026, 11, 13, 22),
+                today: today
+            )
         }
     }
 
@@ -87,7 +102,7 @@ struct WorkDayPlanningTests {
         let yesterday = WorkDay.empty(DayKey(year: 2026, month: 11, day: 12)).planning([a100])
         let ticked = try yesterday.settingCleaned(
             yesterday.entries[0].id,
-            true,
+            to: true,
             now: .warsaw(2026, 11, 13, 9),
             today: today
         )
@@ -96,7 +111,12 @@ struct WorkDayPlanningTests {
 
     @Test func refusesAnUnknownEntry() {
         #expect(throws: WorkDayError.entryNotFound) {
-            try WorkDay.empty(today).settingCleaned(UUID(), true, now: .warsaw(2026, 11, 13, 9), today: today)
+            try WorkDay.empty(today).settingCleaned(
+                UUID(),
+                to: true,
+                now: .warsaw(2026, 11, 13, 9),
+                today: today
+            )
         }
     }
 
@@ -105,8 +125,18 @@ struct WorkDayPlanningTests {
         let planned = WorkDay.empty(today).planning([a100, a101, a106])
         let day =
             try planned
-            .settingCleaned(planned.entries[0].id, true, now: now, today: today)
-            .settingCleaned(planned.entries[2].id, true, now: now, today: today)
+            .settingCleaned(
+                planned.entries[0].id,
+                to: true,
+                now: now,
+                today: today
+            )
+            .settingCleaned(
+                planned.entries[2].id,
+                to: true,
+                now: now,
+                today: today
+            )
         #expect(day.earned == Money(minorUnits: 8400))
         #expect(day.planned == Money(minorUnits: 11200))
         #expect(day.cleanedCount == 2)
