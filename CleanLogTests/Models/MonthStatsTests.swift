@@ -25,7 +25,13 @@ struct MonthStatsTests {
         }
         if hours > 0 {
             let start = Date.warsaw(2026, 11, number, 8)
-            day.sessions = [WorkSession(id: UUID(), start: start, end: start.addingTimeInterval(Double(hours) * 3600))]
+            day.sessions = [
+                WorkSession(
+                    id: UUID(),
+                    start: start,
+                    end: start.addingTimeInterval(Double(hours) * 3600)
+                )
+            ]
         }
         day.manualDuration = manualHours.map { .seconds($0 * 3600) }
         return day
@@ -59,11 +65,11 @@ struct MonthStatsTests {
         #expect(stats.averagePerWorkingDay == Money(minorUnits: 5600))
     }
 
-    @Test func roundsPerHourHalfUp() {
-        var thirds = day(1, [.fixture("x", minorUnits: 1000)], ticked: ["x"], hours: 3)
-        #expect(MonthStats.calculate(days: [thirds], now: now).earningsPerHour == Money(minorUnits: 333))
-        thirds = day(1, [.fixture("x", minorUnits: 1001)], ticked: ["x"], hours: 2)
-        #expect(MonthStats.calculate(days: [thirds], now: now).earningsPerHour == Money(minorUnits: 501))
+    @Test(arguments: [(1000, 3, 333), (1001, 2, 501)])
+    func roundsPerHourHalfUp(earnedMinorUnits: Int, hours: Int, expectedMinorUnits: Int) {
+        let timed = day(1, [.fixture("x", minorUnits: earnedMinorUnits)], ticked: ["x"], hours: hours)
+        let stats = MonthStats.calculate(days: [timed], now: now)
+        #expect(stats.earningsPerHour == Money(minorUnits: expectedMinorUnits))
     }
 
     @Test func ignoresADayWithZeroRecordedTime() {
