@@ -66,6 +66,16 @@ struct ApartmentsViewModelTests {
         }
     }
 
+    @Test func makesAFormForTheSheet() {
+        let newForm = viewModel.makeFormViewModel(for: .new)
+        #expect(newForm.title == String(localized: .apartmentsFormTitleNew))
+        #expect(newForm.name.isEmpty)
+
+        let editForm = viewModel.makeFormViewModel(for: .edit(a100))
+        #expect(editForm.title == "100")
+        #expect(editForm.priceText == "28")
+    }
+
     @Test func deletesOnlyAfterConfirmation() async {
         await observing {
             viewModel.requestDeletion(a100.id)
@@ -116,13 +126,17 @@ struct ApartmentsViewModelTests {
     }
 
     @Test func confirmsADeletionOnce() async {
-        await observing {
-            viewModel.requestDeletion(a100.id)
-            async let first: Void = viewModel.confirmDeletion()
-            async let second: Void = viewModel.confirmDeletion()
-            _ = await (first, second)
+        let viewModel = ApartmentsViewModel(repository: YieldingApartmentRepository([a100, a101]))
+        let task = Task { await viewModel.observe() }
+        defer { task.cancel() }
+        await eventually { viewModel.rows.count == 2 }
 
-            #expect(viewModel.errorMessage == nil)
-        }
+        viewModel.requestDeletion(a100.id)
+        async let first: Void = viewModel.confirmDeletion()
+        async let second: Void = viewModel.confirmDeletion()
+        _ = await (first, second)
+
+        #expect(viewModel.errorMessage == nil)
+        await eventually { viewModel.rows.map(\.name) == ["101"] }
     }
 }

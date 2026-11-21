@@ -24,6 +24,75 @@
         }
       }
     },
+    "apartments.form.error.duplicateName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An apartment with this name already exists"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mieszkanie o tej nazwie już istnieje"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Квартира з такою назвою вже є"
+          }
+        }
+      }
+    },
+    "apartments.form.error.save" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't save the apartment."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie udało się zapisać mieszkania."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося зберегти квартиру."
+          }
+        }
+      }
+    },
+    "apartments.form.title.new" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New apartment"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nowe mieszkanie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нова квартира"
+          }
+        }
+      }
+    },
     "tab.apartments.title" : {
       "extractionState" : "manual",
       "localizations" : {

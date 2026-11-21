@@ -71,6 +71,15 @@ final class ApartmentsViewModel {
         }
     }
 
+    func makeFormViewModel(for sheet: ApartmentSheet) -> ApartmentFormViewModel {
+        switch sheet {
+        case .new:
+            ApartmentFormViewModel(repository: repository, editing: nil, locale: locale)
+        case .edit(let apartment):
+            ApartmentFormViewModel(repository: repository, editing: apartment, locale: locale)
+        }
+    }
+
     private func apartment(_ id: UUID) -> Apartment? {
         apartments.first { $0.id == id }
     }
