@@ -1,7 +1,5 @@
 import Foundation
 
-/// Złoty amounts for the screen: the locale's digits and grouping, no fraction when whole,
-/// always `zł` (a `.currency` style would print "PLN 28.00" on an English device).
 nonisolated enum MoneyFormat {
     private static let noBreakSpace: Character = "\u{00A0}"
 

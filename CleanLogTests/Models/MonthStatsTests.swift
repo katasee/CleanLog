@@ -11,7 +11,6 @@ struct MonthStatsTests {
     private let a103 = Apartment.fixture("103", sortOrder: 3)
     private let a106 = Apartment.fixture("106", grosze: 5600, separate: true, sortOrder: 6)
 
-    /// A day with `apartments` planned, `ticked` cleaned and an optional measured or manual duration.
     private func day(
         _ number: Int,
         _ apartments: [Apartment],
@@ -56,7 +55,6 @@ struct MonthStatsTests {
         #expect(stats.cleanedCount == 3)
         #expect(stats.workingDays == 2)
         #expect(stats.workedDuration == .seconds(3 * 3600))
-        // Days with recorded time are the 1st and the 3rd: 8400 grosze over 3 hours.
         #expect(stats.earningsPerHour == Money(grosze: 2800))
         #expect(stats.averagePerWorkingDay == Money(grosze: 5600))
     }

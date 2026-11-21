@@ -2,7 +2,6 @@ import Foundation
 
 @testable import CleanLog
 
-/// The user's real October 2026 report (her typos corrected) and the days that must produce it.
 enum OctoberReport {
     static let expected = """
         1.10-(54,96,100,105,115,116,138)=7
@@ -42,13 +41,10 @@ enum OctoberReport {
         31.10-(96,100,115)=3+155
         """
 
-    /// The template in its order; `155` is reported separately.
     static let template: [Apartment] = ["54", "64", "96", "100", "105", "115", "116", "138", "6piw", "133kol", "155"]
         .enumerated()
         .map { index, name in Apartment.fixture(name, separate: name == "155", sortOrder: index) }
 
-    /// One day per line of `expected`: the line's apartments ticked, in shuffled order, plus one
-    /// unticked apartment — so the builder has to sort and filter.
     static var days: [WorkDay] {
         expected.split(separator: "\n").map { line in
             let dayNumber = Int(line.prefix { $0 != "." }) ?? 0
@@ -65,7 +61,6 @@ enum OctoberReport {
         }
     }
 
-    /// `"2.10-(54,64)=2+155"` → `["54", "64", "155"]`.
     private static func cleanedNames(in line: String) -> [String] {
         let inside = line.drop { $0 != "(" }.dropFirst().prefix { $0 != ")" }
         let separate = line.split(separator: "+").dropFirst().map(String.init)

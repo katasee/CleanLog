@@ -1,8 +1,5 @@
 import Foundation
 
-/// The monthly report in the boss's fixed format: one line per worked day,
-/// `13.11-(100,101,102)=3+106`, weeks separated by a blank line. Nothing here follows the device
-/// locale — weeks always start on Monday.
 nonisolated enum ReportBuilder {
     private static let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
@@ -22,7 +19,6 @@ nonisolated enum ReportBuilder {
             .joined(separator: "\n\n")
     }
 
-    /// `2.10-(54,64,96,105,115,138,6piw)=7+155`
     private static func line(for day: WorkDay) -> String {
         let cleaned = day.entries
             .filter(\.isCleaned)
@@ -33,7 +29,6 @@ nonisolated enum ReportBuilder {
             + separate.joined()
     }
 
-    /// The Monday of the day's week.
     private static func weekStart(of day: WorkDay) -> DayKey {
         let date = day.day.startDate(in: calendar)
         let daysSinceMonday = (calendar.component(.weekday, from: date) + 5) % 7

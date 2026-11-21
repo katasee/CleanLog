@@ -7,7 +7,6 @@ nonisolated enum ApartmentError: Error, Equatable {
     case notFound
 }
 
-/// The editable fields of an apartment, validated the same way by the form, the fakes and the store.
 nonisolated struct ApartmentDraft: Sendable, Hashable {
     var name: String
     var price: Money
@@ -30,8 +29,6 @@ nonisolated struct ApartmentDraft: Sendable, Hashable {
         )
     }
 
-    /// Returns the draft normalized for storage: the name and code trimmed, a blank code `nil`.
-    /// A name may repeat only the name of an archived apartment, or of the one being edited (`excluding`).
     func validated(
         against existing: [Apartment],
         excluding id: UUID? = nil

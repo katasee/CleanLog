@@ -1,6 +1,5 @@
 import Foundation
 
-/// An amount of złoty, kept as whole grosze so sums are exact.
 nonisolated struct Money: Sendable, Hashable, Comparable, Codable {
     static let zero = Money(grosze: 0)
 
