@@ -1,6 +1,5 @@
 import Foundation
 
-/// Worked time with the same digits in every language: `4:12:35` for a running timer, `5:10` for a total.
 nonisolated enum DurationFormat {
     static func clock(_ duration: Duration) -> String {
         let (hours, minutes, seconds) = parts(of: duration)
