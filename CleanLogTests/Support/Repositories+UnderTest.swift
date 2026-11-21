@@ -4,6 +4,7 @@ import Foundation
 
 enum RepositoryKind: CaseIterable, Sendable {
     case fake
+    case swiftData
 
     func makeStore(now: Date = .warsaw(2026, 11, 13, 9)) -> StoreUnderTest {
         switch self {
@@ -12,6 +13,8 @@ enum RepositoryKind: CaseIterable, Sendable {
                 apartments: FakeApartmentRepository(now: { now }),
                 workDays: FakeWorkDayRepository()
             )
+        case .swiftData:
+            .swiftData(now: now)
         }
     }
 }
@@ -19,5 +22,4 @@ enum RepositoryKind: CaseIterable, Sendable {
 struct StoreUnderTest {
     let apartments: any ApartmentRepository
     let workDays: any WorkDayRepository
-    var keepAlive: Any?
 }
