@@ -56,7 +56,8 @@ Features: `Today` (the day screen, today or any past day), `DayPlan` (the add-ap
   `Money` and a setting, not changing how amounts are stored.
 - **A calendar day is `DayKey(year:month:day:)`, never a `Date` at midnight.** A start-of-day `Date`
   moves when the time zone changes (a trip abroad would shift every day by one). `DayKey` is
-  `Comparable`, `Hashable` and converts to and from `Date` only in `Formatting/` and `Persistence/`.
+  `Comparable`, `Hashable` and converts to and from `Date` only through its own
+  `init(_:calendar:)` and `startDate(in:)`, always with an explicit `Calendar`.
 - **Snapshots, not references, for history.** A `DayEntry` copies the apartment's name, price and
   report flag when it is planned, so editing or archiving an apartment never rewrites a past month.
   Archiving is a flag; nothing that history refers to is ever deleted.

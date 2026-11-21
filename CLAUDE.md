@@ -102,7 +102,9 @@ spec and `docs/plan.md` stay.
 ## Git
 
 **Claude creates branches and commits; the user pushes and opens the PRs.** Branch names
-`feature/<feature>-<n>-<short-name>`, small commits with an imperative English subject.
+`feature/CL-<n>-<short-name>`, where `CL-<n>` is a project-wide sequence number (the next free one
+is in `docs/plan.md`) and the short name says what the branch adds (`feature/CL-6-swiftdata`).
+Small commits with an imperative English subject.
 **Never add a `Co-Authored-By` trailer or any other attribution line** to commits or PRs. Never
 run `git push`, never force anything, never rewrite history the user has pushed.
 
