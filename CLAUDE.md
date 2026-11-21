@@ -66,8 +66,8 @@ Every feature goes through the same pipeline without being asked:
      functions with one level of abstraction, intention-revealing names, no duplication, no dead
      code, and every rule in `.claude/conventions/`.
    Fix what the reviews find, then build, test and lint again.
-6. Build, test and lint green, then commit and a short PR description (below). The PR
-   description lists what each review found and what was fixed.
+6. Build, test and lint green, then commit, push the branch and open its PR (below). What each
+   review found and what was fixed goes into `docs/plan.md`, not the PR description.
 
 **A complex feature is split into separate logic and UI tasks — and, when it is big enough,
 separate plans and branches.** Logic comes first: domain types, calculations, repository work and
@@ -101,15 +101,17 @@ spec and `docs/plan.md` stay.
 
 ## Git
 
-**Claude creates branches and commits; the user pushes and opens the PRs.** Branch names
+**Claude creates branches and commits, pushes `feature/*` branches and opens their PRs** with
+`gh pr create` (base = the branch below in the stack, or `main`). Branch names
 `feature/CL-<n>-<short-name>`, where `CL-<n>` is a project-wide sequence number (the next free one
 is in `docs/plan.md`) and the short name says what the branch adds (`feature/CL-6-swiftdata`).
 Small commits with an imperative English subject.
 **Never add a `Co-Authored-By` trailer or any other attribution line** to commits or PRs. Never
-run `git push`, never force anything, never rewrite history the user has pushed.
+push `main`, never force anything, never delete a remote branch, never rewrite pushed history;
+`.claude/settings.json` allows only `git push [-u] origin feature/*`.
 
-At the end of every PR, give a PR description in English, ready to paste: a one-line title, what
-the user gets, the key changes as bullets, how it was verified. No attribution line.
+The PR description is in English: a one-line title, what the user gets, the key changes as
+bullets. No review findings, no "how it was verified" section, no attribution line.
 
 ## Language
 
