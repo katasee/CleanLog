@@ -45,7 +45,6 @@ extension DayEntryRecord {
             name: name,
             price: Money(minorUnits: priceMinorUnits),
             isReportedSeparately: isReportedSeparately,
-            sortOrder: sortOrder,
             isCleaned: isCleaned,
             cleanedAt: cleanedAt
         )
@@ -58,7 +57,6 @@ extension DayEntryRecord {
         name = entry.name
         priceMinorUnits = entry.price.minorUnits
         isReportedSeparately = entry.isReportedSeparately
-        sortOrder = entry.sortOrder
         isCleaned = entry.isCleaned
         cleanedAt = entry.cleanedAt
     }

@@ -22,7 +22,6 @@ struct WorkDayPlanningTests {
         #expect(entry.name == "106")
         #expect(entry.price == Money(minorUnits: 5600))
         #expect(entry.isReportedSeparately)
-        #expect(entry.sortOrder == 6)
     }
 
     @Test func aLaterPriceChangeDoesNotTouchAPlannedEntry() throws {
