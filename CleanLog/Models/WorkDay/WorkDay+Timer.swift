@@ -27,22 +27,28 @@ extension WorkDay {
     }
 
     nonisolated func startingTimer(at now: Date, today: DayKey) throws(WorkDayError) -> WorkDay {
-        guard day == today else { throw .notToday }
+        try requireToday(today)
         if case .running = timerState { throw .timerState }
         var copy = self
-        copy.sessions.append(WorkSession(id: UUID(), start: now, end: nil))
+        copy.sessions.append(
+            WorkSession(
+                id: UUID(),
+                start: now,
+                end: nil
+            )
+        )
         copy.isTimerFinished = false
         return copy
     }
 
     nonisolated func pausingTimer(at now: Date, today: DayKey) throws(WorkDayError) -> WorkDay {
-        guard day == today else { throw .notToday }
+        try requireToday(today)
         guard case .running = timerState else { throw .timerState }
         return closingOpenSession(at: now)
     }
 
     nonisolated func finishingTimer(at now: Date, today: DayKey) throws(WorkDayError) -> WorkDay {
-        guard day == today else { throw .notToday }
+        try requireToday(today)
         switch timerState {
         case .running, .paused:
             var copy = closingOpenSession(at: now)
@@ -57,6 +63,10 @@ extension WorkDay {
         var copy = self
         copy.manualDuration = duration
         return copy
+    }
+
+    private nonisolated func requireToday(_ today: DayKey) throws(WorkDayError) {
+        guard day == today else { throw .notToday }
     }
 
     private nonisolated func closingOpenSession(at now: Date) -> WorkDay {
