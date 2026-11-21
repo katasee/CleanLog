@@ -1,16 +1,16 @@
 import Foundation
 
 nonisolated struct Money: Sendable, Hashable, Comparable, Codable {
-    static let zero = Money(grosze: 0)
+    static let zero = Money(minorUnits: 0)
 
-    let grosze: Int
+    let minorUnits: Int
 
     static func + (lhs: Money, rhs: Money) -> Money {
-        Money(grosze: lhs.grosze + rhs.grosze)
+        Money(minorUnits: lhs.minorUnits + rhs.minorUnits)
     }
 
     static func - (lhs: Money, rhs: Money) -> Money {
-        Money(grosze: lhs.grosze - rhs.grosze)
+        Money(minorUnits: lhs.minorUnits - rhs.minorUnits)
     }
 
     static func += (lhs: inout Money, rhs: Money) {
@@ -18,11 +18,11 @@ nonisolated struct Money: Sendable, Hashable, Comparable, Codable {
     }
 
     static func * (lhs: Money, rhs: Int) -> Money {
-        Money(grosze: lhs.grosze * rhs)
+        Money(minorUnits: lhs.minorUnits * rhs)
     }
 
     static func < (lhs: Money, rhs: Money) -> Bool {
-        lhs.grosze < rhs.grosze
+        lhs.minorUnits < rhs.minorUnits
     }
 }
 

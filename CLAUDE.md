@@ -117,7 +117,8 @@ bullets. No review findings, no "how it was verified" section, no attribution li
 
 **All project documentation, code, comments and commit messages are in English**, whatever language
 the session is in. Ukrainian appears only as data: UI strings quoted verbatim (so they can be
-grepped against the String Catalog) and the report format.
+grepped against the String Catalog) and the report format. Names use English words only, never a
+Polish or Ukrainian word in an identifier or in prose (`Money(minorUnits:)`, not `grosze`).
 
 ## Conventions
 
