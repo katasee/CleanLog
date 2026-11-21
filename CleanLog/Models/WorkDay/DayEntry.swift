@@ -1,7 +1,5 @@
 import Foundation
 
-/// An apartment planned on a day. Name, price, report flag and order are copied when it is planned,
-/// so later edits to the template never rewrite history.
 nonisolated struct DayEntry: Sendable, Hashable, Identifiable {
     let id: UUID
     let apartmentID: UUID
@@ -45,7 +43,6 @@ nonisolated struct DayEntry: Sendable, Hashable, Identifiable {
         )
     }
 
-    /// The same apartment, planned afresh: a new id, unticked, the snapshot kept.
     func replanned() -> DayEntry {
         DayEntry(
             id: UUID(),
