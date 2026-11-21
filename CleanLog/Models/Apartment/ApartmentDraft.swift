@@ -1,12 +1,5 @@
 import Foundation
 
-nonisolated enum ApartmentError: Error, Equatable {
-    case emptyName
-    case duplicateName
-    case negativePrice
-    case notFound
-}
-
 nonisolated struct ApartmentDraft: Sendable, Hashable {
     var name: String
     var price: Money
@@ -36,20 +29,27 @@ nonisolated struct ApartmentDraft: Sendable, Hashable {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedName.isEmpty else { throw .emptyName }
         guard price >= .zero else { throw .negativePrice }
-
-        let isTaken = existing.contains { apartment in
-            !apartment.isArchived
-                && apartment.id != id
-                && apartment.name.caseInsensitiveCompare(trimmedName) == .orderedSame
-        }
-        guard !isTaken else { throw .duplicateName }
-
-        let trimmedCode = accessCode?.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !Self.isName(trimmedName, takenIn: existing, excluding: id) else { throw .duplicateName }
         return ApartmentDraft(
             name: trimmedName,
             price: price,
-            accessCode: trimmedCode?.isEmpty == false ? trimmedCode : nil,
+            accessCode: normalizedAccessCode,
             isReportedSeparately: isReportedSeparately
         )
+    }
+
+    private var normalizedAccessCode: String? {
+        guard let trimmed = accessCode?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmed.isEmpty else {
+            return nil
+        }
+        return trimmed
+    }
+
+    private static func isName(_ name: String, takenIn existing: [Apartment], excluding id: UUID?) -> Bool {
+        existing.contains { apartment in
+            !apartment.isArchived
+                && apartment.id != id
+                && apartment.name.caseInsensitiveCompare(name) == .orderedSame
+        }
     }
 }
