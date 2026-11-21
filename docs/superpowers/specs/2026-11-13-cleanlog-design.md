@@ -170,8 +170,9 @@ The real October report this must reproduce:
   - `{count}` counts the entries inside the brackets only.
   - A day with only separate apartments: `{d}.{M}-()=0+155`. *(assumed; confirm with the boss's
     expectations)*
-- Weeks are separated by one blank line; the first weekday follows the locale (Monday for pl/uk —
-  the October example breaks after Sunday the 4th, which matches).
+- Weeks are separated by one blank line and always start on Monday, whatever the device locale:
+  it is the boss's fixed format (the October example breaks after Sunday the 4th). The calendar
+  grid is the one that follows the locale.
 - No header and no total line, exactly like the example.
 - Names and the separate flag come from the entry's snapshot.
 
