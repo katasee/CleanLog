@@ -27,9 +27,9 @@ Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowe
 | 1 | `feature/CL-1-test-target-day-keys` | `main` | 1–2 | 481 | merged (PR #1) | done — concurrency clean; SOLID: 3 fixes + convention sync (below) |
 | 2 | `feature/CL-2-apartment-workday` | `main` | 3–4 | 469 | merged (PR #2) | done — concurrency clean; SOLID: 5 fixes (below) |
 | 3 | `feature/CL-3-timer-stats` | `main` | 5–6 | 353 | merged (PR #3) | done — concurrency clean; SOLID: 6 fixes (below) |
-| 4 | `feature/CL-4-report-formatters` | `main` | 7–8 | 294 | reviewed, PR #4 open | done — concurrency clean; SOLID: 5 fixes + spec sync (below) |
-| 5 | `feature/CL-5-repositories` | 4 | 9 | ~450 est. | contract tests drafted and committed (red); implementation to do | **NEXT** — after build — `swift-concurrency-pro` (streams, `StoreObservers`) + SOLID |
-| 6 | `feature/CL-6-swiftdata` | 5 | 10 | ~450 est. | to do (create from 5) | after build — `swift-concurrency-pro` (`@Model` isolation) + SOLID |
+| 4 | `feature/CL-4-report-formatters` | `main` | 7–8 | 294 | merged (PR #4) | done — concurrency clean; SOLID: 5 fixes + spec sync (below) |
+| 5 | `feature/CL-5-repositories` | `main` | 9 | 504 | reviewed, PR open | done — concurrency: 1 test fix; SOLID: 1 fix (below) |
+| 6 | `feature/CL-6-swiftdata` | 5 | 10 | ~450 est. | to do (create from 5) | **NEXT** — after build — `swift-concurrency-pro` (`@Model` isolation) + SOLID |
 | 7 | `feature/CL-7-app-wiring` | 6 | 11 | ~150 est. (end of feature) | to do (create from 6) | after build — `swiftui-pro` + SOLID |
 
 Notes for the sessions:
@@ -71,10 +71,23 @@ Notes for the sessions:
   Kept: the October input is parsed from the expected text instead of a second 31-line table (the
   input is shuffled, so the order and counts are still the builder's work). Product spec: report
   weeks always start on Monday (the foundation spec required this sync). Merged up into CL-5.
+- CL-5 (2026-11-21): PR #4 was merged into `main`, so `main` was merged in and CL-5's PR targets `main`.
+  Built from the drafted contract tests. Deviation from the plan interface: `StoreObservers` is not generic
+  — one per repository, generic per `stream`, so one `notify()` after a save reaches both the day and the
+  month streams (plan file updated). Added domain helpers both repositories need, test-first:
+  `Apartment(_:sortOrder:createdAt:)`, `Apartment.applying(_:)`, `WorkDay.isBlank` (a day with only a
+  manual duration is not blank). Concurrency review: `StoreObservers` is main-actor; `onTermination` hops
+  with `Task { @MainActor in … }` because it can fire off the main actor; a yield into an ended stream
+  between cancellation and removal is harmless; `[unowned self]` in the fakes is safe because only the
+  repository's own `StoreObservers` calls the read closure; no `await` between read and write, so no
+  reentrancy. Finding fixed: `survivesACancelledObserver` subscribed inside the task after a
+  `Task.yield()`, so it could pass without ever subscribing → the stream is created before the task.
+  SOLID / clean code: packed 3+-argument declarations and calls (the new `Apartment` init, its test,
+  the contract tests' `draft`) put one argument per line; `DayKey(year:month:day:)` and `Date.warsaw`
+  literals stay packed like the rest of the tests. Size 504: 4 over the cap only from that formatting,
+  not split. Kept: apartments with equal `sortOrder` (an archived one after a partial `reorder`) have no
+  tie-break — the UI always reorders the whole active list; revisit in the Apartments feature.
 - Branch 4 is under 300 lines on purpose: it closes the pure-logic half of the foundation.
-- Branch 5 starts with the contract tests already written (`CleanLogTests/Repositories/`,
-  `CleanLogTests/Support/Repositories+UnderTest.swift`) and failing to build — continue at the
-  plan's Task 9, Step 2.
 - After branch 7 merges: delete the foundation plan and design files (`CLAUDE.md`), mark the feature
   done here.
 

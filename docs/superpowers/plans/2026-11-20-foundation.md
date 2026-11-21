@@ -347,7 +347,10 @@ One contract test suite per repository runs against both the fake and the SwiftD
 - Produces:
   - `protocol ApartmentRepository: AnyObject { func apartments(includingArchived: Bool) -> AsyncStream<[Apartment]>; func add(_ draft: ApartmentDraft) async throws -> Apartment; func update(_ apartment: Apartment) async throws; func archive(_ id: UUID) async throws; func reorder(_ ids: [UUID]) async throws }`
   - `protocol WorkDayRepository: AnyObject { func day(_ day: DayKey) -> AsyncStream<WorkDay>; func days(in month: MonthKey) -> AsyncStream<[WorkDay]>; func latestDayWithEntries(before day: DayKey) async throws -> WorkDay?; func update(_ day: DayKey, _ change: (WorkDay) throws -> WorkDay) async throws }`
-  - `final class StoreObservers<Value: Sendable> { func stream(_ read: @escaping () -> Value) -> AsyncStream<Value>; func notify() }`
+  - `final class StoreObservers { func stream<Value: Sendable>(_ read: @escaping () -> Value) -> AsyncStream<Value>; func notify() }`
+    — one per repository, generic per stream, so a work-day save notifies the day and the month streams with one `notify()`.
+  - Domain helpers shared by the fake and the SwiftData repositories: `Apartment(_ draft:sortOrder:createdAt:)`,
+    `Apartment.applying(_ draft:)` (editable fields only), `WorkDay.isBlank` (no entries, no recorded time, not finished).
   - `final class FakeApartmentRepository: ApartmentRepository { init(_ apartments: [Apartment] = [], now: @escaping () -> Date = Date.init) }`,
     `final class FakeWorkDayRepository: WorkDayRepository { init(_ days: [WorkDay] = []) }` — both `#if DEBUG`.
   - Tests: `enum RepositoryKind: CaseIterable { case fake }` (Task 10 adds `.swiftData`) with
@@ -387,7 +390,8 @@ One contract test suite per repository runs against both the fake and the SwiftD
 - Test: `CleanLogTests/Persistence/WorkDayRecordMappingTests.swift`
 
 **Interfaces:**
-- Consumes: Task 9 protocols and `StoreObservers`, domain types.
+- Consumes: Task 9 protocols and `StoreObservers`, domain types, `Apartment(_:sortOrder:createdAt:)`,
+  `Apartment.applying(_:)` and `WorkDay.isBlank` (store a day only when it was stored or is not blank — as the fake).
 - Produces: `enum ModelContainerFactory { static func make(inMemory: Bool) throws -> ModelContainer }`;
   `final class SwiftDataApartmentRepository: ApartmentRepository { init(context: ModelContext, now: @escaping () -> Date = Date.init) }`;
   `final class SwiftDataWorkDayRepository: WorkDayRepository { init(context: ModelContext) }`.
