@@ -59,8 +59,8 @@ Features: `Today` (the day screen, today or any past day), `DayPlan` (the add-ap
   `Comparable`, `Hashable` and converts to and from `Date` only through its own
   `init(_:calendar:)` and `startDate(in:)`, always with an explicit `Calendar`.
 - **Snapshots, not references, for history.** A `DayEntry` copies the apartment's name, price and
-  report flag when it is planned, so editing or archiving an apartment never rewrites a past month.
-  Archiving is a flag; nothing that history refers to is ever deleted.
+  report flag when it is planned, so editing or deleting an apartment never rewrites a past month.
+  Deleting an apartment leaves history intact: entries keep their snapshots.
 
 ## Persistence (`Persistence/`)
 
@@ -87,8 +87,8 @@ Features: `Today` (the day screen, today or any past day), `DayPlan` (the add-ap
 - **Reads are observable streams**: `func days(in month: MonthKey) -> AsyncStream<[WorkDay]>`.
   The SwiftData implementation yields again after every save it performs (and, once sync exists,
   on remote change), so every screen showing the same day stays in step without manual refreshes.
-- Writes are `async throws`. Apartments have one write per intent (`add`, `update`, `archive`,
-  `reorder`). A day has a single write path, `update(_:_:)`, which hands the stored day (or an empty
+- Writes are `async throws`. Apartments have one write per intent (`add`, `update`, `delete`).
+  A day has a single write path, `update(_:_:)`, which hands the stored day (or an empty
   one) to a change closure and saves what it returns: the rules (`planning`, `settingCleaned`, the
   timer) live on `WorkDay` as pure functions, so a refused change throws its typed error and leaves
   the stored day untouched.
