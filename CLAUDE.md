@@ -24,17 +24,26 @@ with default `MainActor` isolation. No third-party dependencies without asking f
 
 ## Commands
 
-Build (must succeed before any change is called done):
+Build:
 
 ```bash
 xcodebuild -scheme CleanLog -destination 'generic/platform=iOS Simulator' build
 ```
 
-Test (once `CleanLogTests` exists; must pass before any change is called done):
+Test (a single suite: add `-only-testing:CleanLogTests/MoneyTests`):
 
 ```bash
 xcodebuild -scheme CleanLog -destination 'platform=iOS Simulator,name=iPhone 16' test
 ```
+
+**Check as much as the change can break, not more:**
+
+| Change | Check |
+|---|---|
+| Docs, conventions, `docs/plan.md` | nothing |
+| Mechanical code change: rename, file move, a conflict-free merge up the stack | build |
+| Logic in `Models/`, `Formatting/`, repositories, view models | build + the suites that cover it |
+| Before pushing a branch and opening its PR | build, the full test run and lint, once |
 
 Lint (the PostToolUse hook runs it per file; run it on the tree before handing work over):
 
