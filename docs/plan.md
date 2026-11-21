@@ -27,7 +27,7 @@ Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowe
 | 1 | `feature/CL-1-test-target-day-keys` | `main` | 1–2 | 481 | merged (PR #1) | done — concurrency clean; SOLID: 3 fixes + convention sync (below) |
 | 2 | `feature/CL-2-apartment-workday` | `main` | 3–4 | 469 | merged (PR #2) | done — concurrency clean; SOLID: 5 fixes (below) |
 | 3 | `feature/CL-3-timer-stats` | `main` | 5–6 | 353 | merged (PR #3) | done — concurrency clean; SOLID: 6 fixes (below) |
-| 4 | `feature/CL-4-report-formatters` | `main` | 7–8 | 294 | reviewed, PR open | done — concurrency clean; SOLID: 5 fixes + spec sync (below) |
+| 4 | `feature/CL-4-report-formatters` | `main` | 7–8 | 294 | reviewed, PR #4 open | done — concurrency clean; SOLID: 5 fixes + spec sync (below) |
 | 5 | `feature/CL-5-repositories` | 4 | 9 | ~450 est. | contract tests drafted and committed (red); implementation to do | **NEXT** — after build — `swift-concurrency-pro` (streams, `StoreObservers`) + SOLID |
 | 6 | `feature/CL-6-swiftdata` | 5 | 10 | ~450 est. | to do (create from 5) | after build — `swift-concurrency-pro` (`@Model` isolation) + SOLID |
 | 7 | `feature/CL-7-app-wiring` | 6 | 11 | ~150 est. (end of feature) | to do (create from 6) | after build — `swiftui-pro` + SOLID |
