@@ -13,11 +13,10 @@ nonisolated struct DayKey: Sendable, Hashable, Comparable, Codable {
 
     init(_ date: Date, calendar: Calendar) {
         let components = calendar.dateComponents([.year, .month, .day], from: date)
-        self.init(
-            year: components.year ?? 0,
-            month: components.month ?? 0,
-            day: components.day ?? 0
-        )
+        guard let year = components.year, let month = components.month, let day = components.day else {
+            preconditionFailure("No day components for \(date)")
+        }
+        self.init(year: year, month: month, day: day)
     }
 
     init?(storageValue: Int) {
