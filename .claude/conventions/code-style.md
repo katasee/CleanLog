@@ -41,7 +41,8 @@
   pattern: a fixed `"d MMMM"` is right in Ukrainian and wrong in English.
 - **The report** is the user's boss's fixed format (`13.11-(100,101,102)=3+106`). It pins
   `en_US_POSIX`, is built only by `ReportBuilder`, and is tested against the real October report.
-- Money goes through `MoneyFormat` (always zł, no fraction digits when the amount is whole). Numbers that change in place (timer, sums) get `.monospacedDigit()`.
+- Money goes through `MoneyFormat` (always zł, no fraction digits when the amount is whole).
+  Numbers that change in place (timer, sums) get `.monospacedDigit()`.
 
 ## Localization
 
