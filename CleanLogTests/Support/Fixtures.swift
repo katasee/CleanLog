@@ -8,14 +8,13 @@ extension Apartment {
         minorUnits: Int = 2800,
         separate: Bool = false,
         sortOrder: Int = 0,
-        archived: Bool = false,
-        accessCode: String? = nil
+        archived: Bool = false
     ) -> Apartment {
         Apartment(
             id: UUID(),
             name: name,
             price: Money(minorUnits: minorUnits),
-            accessCode: accessCode,
+            accessCode: nil,
             isReportedSeparately: separate,
             sortOrder: sortOrder,
             isArchived: archived,
