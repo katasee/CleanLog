@@ -2,11 +2,11 @@ import Foundation
 
 extension WorkDay {
     nonisolated func planning(_ apartments: [Apartment]) -> WorkDay {
-        appending(apartments.map(DayEntry.init(planning:)))
+        addingUnplanned(apartments.map(DayEntry.init(planning:)))
     }
 
     nonisolated func copyingPlan(from other: WorkDay) -> WorkDay {
-        appending(other.entries.map { $0.replanned() })
+        addingUnplanned(other.entries.map { $0.replanned() })
     }
 
     nonisolated func removingEntry(_ id: DayEntry.ID) -> WorkDay {
@@ -17,7 +17,7 @@ extension WorkDay {
 
     nonisolated func settingCleaned(
         _ entryID: DayEntry.ID,
-        _ isCleaned: Bool,
+        to isCleaned: Bool,
         now: Date,
         today: DayKey
     ) throws(WorkDayError) -> WorkDay {
@@ -29,7 +29,7 @@ extension WorkDay {
         return copy
     }
 
-    private nonisolated func appending(_ newEntries: [DayEntry]) -> WorkDay {
+    private nonisolated func addingUnplanned(_ newEntries: [DayEntry]) -> WorkDay {
         var copy = self
         for entry in newEntries where !copy.entries.contains(where: { $0.apartmentID == entry.apartmentID }) {
             copy.entries.append(entry)
