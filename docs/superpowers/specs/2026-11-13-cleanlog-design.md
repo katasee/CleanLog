@@ -187,7 +187,7 @@ constraints (uniqueness is enforced in code).
 - **DayEntry**: `id`, `apartmentID?`, snapshots `name`, `price`, `isReportedSeparately`,
   `sortOrder`; `isCleaned`, `cleanedAt?`.
 - **WorkSession**: `id`, `start: Date`, `end: Date?`.
-- **Money**: integer grosze (28 zł = 2800); złoty only.
+- **Money**: integer minor units (28 zł = 2800); złoty only.
 - **DayKey**: year, month, day — a calendar day independent of time zone.
 
 Timer rules: a day's duration is the sum of its sessions, or `manualDuration` when set; pausing ends a

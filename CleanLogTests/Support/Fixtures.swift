@@ -5,7 +5,7 @@ import Foundation
 extension Apartment {
     static func fixture(
         _ name: String,
-        grosze: Int = 2800,
+        minorUnits: Int = 2800,
         separate: Bool = false,
         sortOrder: Int = 0,
         archived: Bool = false,
@@ -14,7 +14,7 @@ extension Apartment {
         Apartment(
             id: UUID(),
             name: name,
-            price: Money(grosze: grosze),
+            price: Money(minorUnits: minorUnits),
             accessCode: accessCode,
             isReportedSeparately: separate,
             sortOrder: sortOrder,

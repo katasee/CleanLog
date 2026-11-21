@@ -8,7 +8,7 @@ struct WorkDayPlanningTests {
     private let a100 = Apartment.fixture("100", sortOrder: 0)
     private let a101 = Apartment.fixture("101", sortOrder: 1)
     private let a102 = Apartment.fixture("102", sortOrder: 2)
-    private let a106 = Apartment.fixture("106", grosze: 5600, separate: true, sortOrder: 6)
+    private let a106 = Apartment.fixture("106", minorUnits: 5600, separate: true, sortOrder: 6)
 
     @Test func plansEachApartmentOnce() {
         let day = WorkDay.empty(today).planning([a100, a101]).planning([a101, a102])
@@ -20,18 +20,18 @@ struct WorkDayPlanningTests {
         let entry = try #require(WorkDay.empty(today).planning([a106]).entries.first)
         #expect(entry.apartmentID == a106.id)
         #expect(entry.name == "106")
-        #expect(entry.price == Money(grosze: 5600))
+        #expect(entry.price == Money(minorUnits: 5600))
         #expect(entry.isReportedSeparately)
         #expect(entry.sortOrder == 6)
     }
 
     @Test func aLaterPriceChangeDoesNotTouchAPlannedEntry() throws {
         var repriced = a100
-        repriced.price = Money(grosze: 3000)
+        repriced.price = Money(minorUnits: 3000)
         let day = WorkDay.empty(today).planning([a100]).planning([repriced])
         let entry = try #require(day.entries.first)
         #expect(day.entries.count == 1)
-        #expect(entry.price == Money(grosze: 2800))
+        #expect(entry.price == Money(minorUnits: 2800))
     }
 
     @Test func copiesAPlanFromItsSnapshotsUnticked() throws {
@@ -107,8 +107,8 @@ struct WorkDayPlanningTests {
             try planned
             .settingCleaned(planned.entries[0].id, true, now: now, today: today)
             .settingCleaned(planned.entries[2].id, true, now: now, today: today)
-        #expect(day.earned == Money(grosze: 8400))
-        #expect(day.planned == Money(grosze: 11200))
+        #expect(day.earned == Money(minorUnits: 8400))
+        #expect(day.planned == Money(minorUnits: 11200))
         #expect(day.cleanedCount == 2)
         #expect(day.hasCleanedEntries)
         #expect(!WorkDay.empty(today).hasCleanedEntries)
