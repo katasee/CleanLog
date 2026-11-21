@@ -122,7 +122,8 @@ push `main`, never force anything, never delete a remote branch, never rewrite p
 The PR description is in English and written for a developer reading it months later without
 this session's context:
 
-- a title that says what the branch adds, in plain words;
+- a title that opens with the branch's `CL-<n>` and a colon, then says what the branch adds in plain
+  words (`CL-3: Add the work timer and monthly statistics`);
 - one or two sentences on why the change is needed;
 - bullets, each opening with a bold short name, saying what appeared and why it is built that way
   (`**Money.** Stores an amount as a whole number of 1/100 zł … whole numbers add up exactly`);

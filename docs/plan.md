@@ -25,9 +25,9 @@ Plan: `docs/superpowers/plans/2026-11-20-foundation.md` · Spec: `docs/superpowe
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 1 | `feature/CL-1-test-target-day-keys` | `main` | 1–2 | 481 | merged (PR #1) | done — concurrency clean; SOLID: 3 fixes + convention sync (below) |
-| 2 | `feature/CL-2-apartment-workday` | `main` | 3–4 | 469 | reviewed, PR #2 open | done — concurrency clean; SOLID: 5 fixes (below) |
-| 3 | `feature/CL-3-timer-stats` | 2 | 5–6 | ~335 | built, tests green | **NEXT** — `swift-concurrency-pro` + SOLID |
-| 4 | `feature/CL-4-report-formatters` | 3 | 7–8 | ~275 | built, tests green | to do — SOLID (pure formatting) |
+| 2 | `feature/CL-2-apartment-workday` | `main` | 3–4 | 469 | merged (PR #2) | done — concurrency clean; SOLID: 5 fixes (below) |
+| 3 | `feature/CL-3-timer-stats` | `main` | 5–6 | 353 | reviewed, PR open | done — concurrency clean; SOLID: 6 fixes (below) |
+| 4 | `feature/CL-4-report-formatters` | 3 | 7–8 | ~275 | built, tests green | **NEXT** — SOLID (pure formatting) |
 | 5 | `feature/CL-5-repositories` | 4 | 9 | ~450 est. | contract tests drafted and committed (red); implementation to do | after build — `swift-concurrency-pro` (streams, `StoreObservers`) + SOLID |
 | 6 | `feature/CL-6-swiftdata` | 5 | 10 | ~450 est. | to do (create from 5) | after build — `swift-concurrency-pro` (`@Model` isolation) + SOLID |
 | 7 | `feature/CL-7-app-wiring` | 6 | 11 | ~150 est. (end of feature) | to do (create from 6) | after build — `swiftui-pro` + SOLID |
@@ -51,6 +51,14 @@ Notes for the sessions:
   dropped; test calls with 3+ arguments put one per line. Kept: `WorkDayError.notToday` and
   `.timerState` are unused in CL-2 but belong to the timer rules in CL-3. Merged up into CL-3…CL-5;
   CL-5's contract tests updated to the new label; CL-3 and CL-4 build with their tests.
+- CL-3 review (2026-11-21): PR #2 was merged into `main`, so `main` was merged in and CL-3's PR
+  targets `main`. Concurrency: no findings (pure synchronous values, `nonisolated` like CL-2's
+  planning extension). SOLID / clean code: `MonthStats.calculate` split into `earningsPerHour` and
+  `average(of:over:)` and each day's worked duration computed once; the per-hour `3600` named
+  `secondsPerHour`; `topApartments` tallies instead of `entries.last?.name ?? ""` over a group that
+  is never empty; the three `.notToday` guards became `requireToday(_:)`; packed 3-argument
+  `WorkSession` / `ApartmentCount` calls put one argument per line; the rounding test parameterized.
+  Merged up into CL-4 and CL-5 (both build; CL-4's tests run in its own session).
 - Branch 4 is under 300 lines on purpose: it closes the pure-logic half of the foundation.
 - Branch 5 starts with the contract tests already written (`CleanLogTests/Repositories/`,
   `CleanLogTests/Support/Repositories+UnderTest.swift`) and failing to build — continue at the
