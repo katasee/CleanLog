@@ -14,10 +14,13 @@ struct ApartmentsViewModelTests {
         viewModel = ApartmentsViewModel(repository: repository, locale: Locale(identifier: "uk_UA"))
     }
 
-    private func observing(_ body: () async throws -> Void) async rethrows {
+    private func observing(
+        _ viewModel: ApartmentsViewModel,
+        _ body: () async throws -> Void
+    ) async rethrows {
         let task = Task { await viewModel.observe() }
         defer { task.cancel() }
-        await eventually { !viewModel.rows.isEmpty }
+        await eventually { viewModel.showsEmptyState || !viewModel.rows.isEmpty }
         try await body()
     }
 
@@ -28,32 +31,29 @@ struct ApartmentsViewModelTests {
             .fixture("54"),
         ])
         let viewModel = ApartmentsViewModel(repository: repository, locale: Locale(identifier: "uk_UA"))
-        let task = Task { await viewModel.observe() }
-        defer { task.cancel() }
 
-        await eventually { viewModel.rows.count == 3 }
-
-        #expect(viewModel.rows.map(\.name) == ["54", "106", "6piw"])
-        #expect(viewModel.rows[1].priceText == "56\u{00A0}zł")
-        #expect(viewModel.rows[1].isReportedSeparately)
-        #expect(!viewModel.rows[0].isReportedSeparately)
-        #expect(viewModel.count == 3)
-        #expect(!viewModel.showsEmptyState)
+        await observing(viewModel) {
+            #expect(viewModel.rows.map(\.name) == ["54", "106", "6piw"])
+            #expect(viewModel.rows[1].priceText == "56\u{00A0}zł")
+            #expect(viewModel.rows[1].isReportedSeparately)
+            #expect(!viewModel.rows[0].isReportedSeparately)
+            #expect(viewModel.count == 3)
+            #expect(!viewModel.showsEmptyState)
+        }
     }
 
     @Test func showsTheEmptyStateOnlyOnceLoaded() async {
         let viewModel = ApartmentsViewModel(repository: FakeApartmentRepository())
         #expect(!viewModel.showsEmptyState)
 
-        let task = Task { await viewModel.observe() }
-        defer { task.cancel() }
-
-        await eventually { viewModel.showsEmptyState }
-        #expect(viewModel.count == 0)
+        await observing(viewModel) {
+            #expect(viewModel.showsEmptyState)
+            #expect(viewModel.count == 0)
+        }
     }
 
     @Test func opensTheSheets() async {
-        await observing {
+        await observing(viewModel) {
             viewModel.add()
             #expect(viewModel.sheet == .new)
 
@@ -67,7 +67,7 @@ struct ApartmentsViewModelTests {
     }
 
     @Test func deletesOnlyAfterConfirmation() async {
-        await observing {
+        await observing(viewModel) {
             viewModel.requestDeletion(a100.id)
             #expect(viewModel.pendingDeletion?.name == "100")
             #expect(viewModel.isConfirmingDeletion)
@@ -86,7 +86,7 @@ struct ApartmentsViewModelTests {
     }
 
     @Test func dismissingTheConfirmationCancelsTheDeletion() async {
-        await observing {
+        await observing(viewModel) {
             viewModel.requestDeletion(a100.id)
             viewModel.isConfirmingDeletion = false
             #expect(viewModel.pendingDeletion == nil)
@@ -94,14 +94,14 @@ struct ApartmentsViewModelTests {
     }
 
     @Test func ignoresADeletionOfAnUnknownApartment() async {
-        await observing {
+        await observing(viewModel) {
             viewModel.requestDeletion(UUID())
             #expect(viewModel.pendingDeletion == nil)
         }
     }
 
     @Test func reportsAFailedDeletion() async throws {
-        try await observing {
+        try await observing(viewModel) {
             viewModel.requestDeletion(a100.id)
             try await repository.delete(a100.id)
 
@@ -116,13 +116,16 @@ struct ApartmentsViewModelTests {
     }
 
     @Test func confirmsADeletionOnce() async {
-        await observing {
+        let viewModel = ApartmentsViewModel(repository: YieldingApartmentRepository([a100, a101]))
+
+        await observing(viewModel) {
             viewModel.requestDeletion(a100.id)
             async let first: Void = viewModel.confirmDeletion()
             async let second: Void = viewModel.confirmDeletion()
             _ = await (first, second)
 
             #expect(viewModel.errorMessage == nil)
+            await eventually { viewModel.rows.map(\.name) == ["101"] }
         }
     }
 }
