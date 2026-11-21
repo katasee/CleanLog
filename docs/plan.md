@@ -166,9 +166,9 @@ Plan: `docs/superpowers/plans/2026-11-21-apartments.md` · Spec: `docs/superpowe
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 10 | `feature/CL-10-apartment-delete-name-order` | `main` | 1–3 | 298 code (+ spec and plan) | PR open | done — concurrency clean; SOLID: 1 fix (below) |
-| 11 | `feature/CL-11-apartment-view-models` | `main` | 4–5 | 386 | PR open | done — concurrency clean; SwiftUI clean; SOLID: 2 fixes (below) |
-| 13 | `feature/CL-13-apartment-form-view-model` | CL-11 | 6 | 301 | **NEXT** — built, run its tests and review | SwiftUI + concurrency + SOLID |
-| 12 | `feature/CL-12-apartments-screen` | CL-13 | 7–8 | ~400 est. (end of feature) | not started | SwiftUI + SOLID |
+| 11 | `feature/CL-11-apartment-view-models` | `main` | 4–5 | 386 | merged (PR #11) | done — concurrency clean; SwiftUI clean; SOLID: 2 fixes (below) |
+| 13 | `feature/CL-13-apartment-form-view-model` | `main` | 6 | 310 | PR open | done — concurrency clean; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
+| 12 | `feature/CL-12-apartments-screen` | CL-13 | 7–8 | ~400 est. (end of feature) | **NEXT** — not started | SwiftUI + SOLID |
 
 Notes for the sessions:
 
@@ -207,10 +207,20 @@ Notes for the sessions:
   Kept: `MoneyInput.string` of a negative amount prints a wrong fraction, but a price is never
   negative (the draft refuses it). Merged up into CL-13 (test file conflict resolved; builds, its
   tests not run yet).
-- CL-13 (next session): the branch exists locally only, with Task 6 and the CL-11 merge. Run
-  `ApartmentFormViewModelTests` and `ApartmentsViewModelTests`, then the review (`swiftui-pro`,
-  `swift-concurrency-pro`, SOLID), push, and open its PR against CL-11's branch (or `main` once
-  PR CL-11 is merged — then merge `main` in first).
+- CL-13 (2026-11-21): PR #11 was merged, so `main` was merged in and CL-13's PR targets `main`.
+  Built in the CL-11 session (Task 6); this session ran its tests and the review. Concurrency
+  review: no findings (`isSaving` is set before the only `await` and cleared in `defer`; `savesOnce`
+  overlaps two saves through `YieldingApartmentRepository`). SwiftUI review: `filter { $0 }.count`
+  in `savesOnce` → `count(where:)`. SOLID / clean code: the form's `init` declared its three
+  parameters on one line → one per line; `makeFormViewModel(for:)` repeated the same three-argument
+  construction in both `switch` branches → `ApartmentSheet.apartment` (which `id` now reuses) and
+  one call. Kept: the `enablesSaveForAValidForm` argument tuples stay packed — they read as a table.
+  Decision (user, 2026-11-21): **no Polish** — the app ships Ukrainian and English only. Removed on
+  this branch: the `pl` strings from the catalog, `pl` from the project's known regions, and Polish
+  from `code-style.md`, both specs and the apartments plan (CL-12's string list is uk / en).
+- CL-12 (next session): create it from CL-13 (`git switch -c feature/CL-12-apartments-screen
+  feature/CL-13-apartment-form-view-model`); if PR CL-13 is merged by then, start from `main`
+  instead and target `main`. UI branch: a Release build belongs to its pre-PR check (CL-7 note).
 - **For Feature 4:** «Як учора» must not copy apartments deleted since that day — filter the copy by
   the current template.
 

@@ -10,16 +10,61 @@
             "value" : "Couldn't delete the apartment."
           }
         },
-        "pl" : {
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nie udało się usunąć mieszkania."
+            "value" : "Не вдалося видалити квартиру."
+          }
+        }
+      }
+    },
+    "apartments.form.error.duplicateName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An apartment with this name already exists"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не вдалося видалити квартиру."
+            "value" : "Квартира з такою назвою вже є"
+          }
+        }
+      }
+    },
+    "apartments.form.error.save" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't save the apartment."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося зберегти квартиру."
+          }
+        }
+      }
+    },
+    "apartments.form.title.new" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New apartment"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нова квартира"
           }
         }
       }
@@ -31,12 +76,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apartments"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mieszkania"
           }
         },
         "uk" : {
@@ -56,12 +95,6 @@
             "value" : "Statistics"
           }
         },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Statystyki"
-          }
-        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -77,12 +110,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Today"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dzisiaj"
           }
         },
         "uk" : {
