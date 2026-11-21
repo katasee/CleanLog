@@ -24,8 +24,10 @@
 - No `print`. Diagnostics go through `Logger(subsystem:category:)` from `os`, one `Logger` per type.
 - Names say what, not how: `markCleaned(_:)`, not `toggle()`; `isPlanned`, not `flag`. Booleans
   read as assertions (`isRunning`, `hasEntries`, `canSave`).
-- **Comments explain why, never what**, in English, only where the code cannot say it itself. No
-  commented-out code, no `// MARK:` banners in files short enough not to need them.
+- **No comments in code** — no `//`, no `///` doc comments, no `// MARK:`, no commented-out code,
+  in the app and in tests. Names, types and small functions carry the meaning; a reason worth
+  keeping goes into the commit message, the plan or `.claude/conventions/`. The guard hook blocks
+  comment lines in Swift files.
 - Modern API only: `foregroundStyle` (not `foregroundColor`), `clipShape(.rect(cornerRadius:))`
   (not `cornerRadius`), `NavigationStack`, `onChange(of:) { old, new in }`, `Tab(…)`,
   `sensoryFeedback` / `UIFeedbackGenerator`, `Text(_:format:)` over string interpolation of numbers.
@@ -39,7 +41,8 @@
   pattern: a fixed `"d MMMM"` is right in Ukrainian and wrong in English.
 - **The report** is the user's boss's fixed format (`13.11-(100,101,102)=3+106`). It pins
   `en_US_POSIX`, is built only by `ReportBuilder`, and is tested against the real October report.
-- Money goes through `MoneyFormat` (always zł, no fraction digits when the amount is whole). Numbers that change in place (timer, sums) get `.monospacedDigit()`.
+- Money goes through `MoneyFormat` (always zł, no fraction digits when the amount is whole).
+  Numbers that change in place (timer, sums) get `.monospacedDigit()`.
 
 ## Localization
 
