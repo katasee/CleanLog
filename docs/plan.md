@@ -162,7 +162,8 @@ Notes for the sessions:
 ## Feature 3 — Apartments
 
 **NEXT session:** if PR CL-12 is merged, delete `docs/superpowers/plans/2026-11-21-apartments.md`
-and start Feature 4 (Today) with brainstorming; otherwise wait for the merge.
+and do the gradient background branch (CL-14, brainstorm it first), then Feature 4 (Today);
+otherwise wait for the merge.
 
 Plan: `docs/superpowers/plans/2026-11-21-apartments.md` · Spec: `docs/superpowers/specs/2026-11-21-apartments-design.md`
 
@@ -171,7 +172,7 @@ Plan: `docs/superpowers/plans/2026-11-21-apartments.md` · Spec: `docs/superpowe
 | 10 | `feature/CL-10-apartment-delete-name-order` | `main` | 1–3 | 298 code (+ spec and plan) | merged (PR #10) | done — concurrency clean; SOLID: 1 fix (below) |
 | 11 | `feature/CL-11-apartment-view-models` | `main` | 4–5 | 386 | merged (PR #11) | done — concurrency clean; SwiftUI clean; SOLID: 2 fixes (below) |
 | 13 | `feature/CL-13-apartment-form-view-model` | `main` | 6 | 310 | merged (PR #12) | done — concurrency clean; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
-| 12 | `feature/CL-12-apartments-screen` | `main` | 7–8 | 672 (364 Swift + 308 catalog JSON; end of feature) | PR open | done — SwiftUI: 2 fixes; SOLID: 1 fix (below) |
+| 12 | `feature/CL-12-apartments-screen` | `main` | 7–11 | see note (end of feature) | PR open (#13) | done — SwiftUI: 2 fixes; SOLID: 1 fix; rework review: 1 fix (below) |
 
 Notes for the sessions:
 
@@ -238,6 +239,24 @@ Notes for the sessions:
   line each); a row reads name, badge, price to VoiceOver (layout order), not the spec's name,
   price, badge. Size: the Swift is 364 lines; the rest is the string catalog's JSON (16 keys × uk/en),
   kept as one branch like CL-8.
+- CL-12 rework (2026-11-21, same session): the user reviewed the screen and asked for a big
+  «Додати квартиру» button, the form as a centered popup over a blurred screen, and no form title.
+  Brainstormed (approach A: a full-screen cover without the system slide, own fade and scale; spec
+  section "Revision after the first screen review"), planned as Tasks 9–11, built inline. Task 9:
+  `ApartmentFormViewModel.title` → `isAdding`, test-first; the `apartments.form.title.new` key gone.
+  Task 10: the toolbar `+` and the empty state's button replaced by one pinned full-width button
+  (`apartments.action.add` is now «Додати квартиру», `apartments.empty.action` gone); its text stops
+  growing at the first accessibility size (uncapped it covered a third of the list). Task 11: the
+  popup; deviations — `.ultraThinMaterial` backdrop (thin hid the screen entirely), a
+  `FormRowStyle` stacks label over field at accessibility sizes (`LabeledContent` does not outside a
+  `Form`), scoped to the text fields because a `Toggle` renders through `LabeledContent` too, and
+  the ink colour scoped to the rows (it darkened the Save label). Seen on the simulator (temporary
+  tweak): empty state, list, new and edit popups in light, dark, Ukrainian and the largest text.
+  Still not seen: typing with the keyboard up, a real save, swipe-delete. Rework review
+  (self-review): the card stayed tappable while animating closed, so a second Save could re-add and
+  flash the duplicate-name error → `allowsHitTesting(isShown)`. Kept: `ApartmentSheet` keeps its name
+  for the cover route; the no-slide transaction appears three times (one call each). **Next branch:
+  the canvas's gradient background for every screen** (the user's decision; not in this PR).
 - **Feature 3 is done once PR CL-12 is merged**: then delete the apartments plan file (the spec stays).
 - **For Feature 4:** «Як учора» must not copy apartments deleted since that day — filter the copy by
   the current template.
