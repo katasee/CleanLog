@@ -17,27 +17,26 @@ struct ApartmentRepositoryContractTests {
 
     @Test(arguments: RepositoryKind.allCases)
     func startsEmpty(kind: RepositoryKind) async {
-        var stream = kind.makeStore(now: now).apartments.apartments(includingArchived: false).makeAsyncIterator()
+        var stream = kind.makeStore(now: now).apartments.apartments().makeAsyncIterator()
         #expect(await stream.next() == [])
     }
 
     @Test(arguments: RepositoryKind.allCases)
-    func addsApartmentsInOrder(kind: RepositoryKind) async throws {
+    func listsApartmentsInNameOrder(kind: RepositoryKind) async throws {
         let repository = kind.makeStore(now: now).apartments
-        var stream = repository.apartments(includingArchived: false).makeAsyncIterator()
+        var stream = repository.apartments().makeAsyncIterator()
         _ = await stream.next()
 
         let added = try await repository.add(draft(" 100 ", code: "  "))
-        _ = try await repository.add(draft("101", code: "4821"))
-        _ = try await repository.add(draft("102"))
+        _ = try await repository.add(draft("6piw", code: "4821"))
+        _ = try await repository.add(draft("54"))
 
         #expect(added.name == "100")
         #expect(added.accessCode == nil)
         #expect(added.createdAt == now)
         let listed = try #require(await stream.next())
-        #expect(listed.map(\.name) == ["100", "101", "102"])
-        #expect(listed.map(\.sortOrder) == [0, 1, 2])
-        #expect(listed[1].accessCode == "4821")
+        #expect(listed.map(\.name) == ["54", "100", "6piw"])
+        #expect(listed[2].accessCode == "4821")
     }
 
     @Test(arguments: RepositoryKind.allCases)
@@ -60,12 +59,11 @@ struct ApartmentRepositoryContractTests {
         apartment.accessCode = "1234#"
         try await repository.update(apartment)
 
-        var stream = repository.apartments(includingArchived: false).makeAsyncIterator()
-        let stored = try #require(await stream.next()?.first)
+        var stream = repository.apartments().makeAsyncIterator()
+        let stored = try #require(await stream.next()?.first { $0.id == apartment.id })
         #expect(stored.name == "100A")
         #expect(stored.price == Money(minorUnits: 3000))
         #expect(stored.accessCode == "1234#")
-        #expect(stored.sortOrder == 0)
     }
 
     @Test(arguments: RepositoryKind.allCases)
@@ -81,37 +79,31 @@ struct ApartmentRepositoryContractTests {
     }
 
     @Test(arguments: RepositoryKind.allCases)
-    func archivingHidesButKeeps(kind: RepositoryKind) async throws {
+    func deletesAnApartment(kind: RepositoryKind) async throws {
         let repository = kind.makeStore(now: now).apartments
         let apartment = try await repository.add(draft("100"))
-        try await repository.archive(apartment.id)
+        _ = try await repository.add(draft("101"))
 
-        var active = repository.apartments(includingArchived: false).makeAsyncIterator()
-        var all = repository.apartments(includingArchived: true).makeAsyncIterator()
-        #expect(await active.next() == [])
-        #expect(await all.next()?.map(\.isArchived) == [true])
-        await #expect(throws: ApartmentError.notFound) { try await repository.archive(UUID()) }
+        try await repository.delete(apartment.id)
+
+        var stream = repository.apartments().makeAsyncIterator()
+        #expect(await stream.next()?.map(\.name) == ["101"])
+        await #expect(throws: ApartmentError.notFound) { try await repository.delete(apartment.id) }
     }
 
     @Test(arguments: RepositoryKind.allCases)
-    func reordersByTheGivenIds(kind: RepositoryKind) async throws {
+    func freesTheNameOfADeletedApartment(kind: RepositoryKind) async throws {
         let repository = kind.makeStore(now: now).apartments
-        let first = try await repository.add(draft("a"))
-        let second = try await repository.add(draft("b"))
-        let third = try await repository.add(draft("c"))
-
-        try await repository.reorder([third.id, first.id, second.id])
-
-        var stream = repository.apartments(includingArchived: false).makeAsyncIterator()
-        #expect(await stream.next()?.map(\.name) == ["c", "a", "b"])
-        await #expect(throws: ApartmentError.notFound) { try await repository.reorder([UUID()]) }
+        let apartment = try await repository.add(draft("100"))
+        try await repository.delete(apartment.id)
+        #expect(try await repository.add(draft("100")).name == "100")
     }
 
     @Test(arguments: RepositoryKind.allCases)
     func notifiesEveryObserver(kind: RepositoryKind) async throws {
         let repository = kind.makeStore(now: now).apartments
-        var first = repository.apartments(includingArchived: false).makeAsyncIterator()
-        var second = repository.apartments(includingArchived: false).makeAsyncIterator()
+        var first = repository.apartments().makeAsyncIterator()
+        var second = repository.apartments().makeAsyncIterator()
         _ = await first.next()
         _ = await second.next()
 

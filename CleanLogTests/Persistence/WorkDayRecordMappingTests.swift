@@ -8,7 +8,7 @@ struct WorkDayRecordMappingTests {
     private let container = ModelContainer.inMemory()
     private let today = DayKey(year: 2026, month: 11, day: 13)
     private let a100 = Apartment.fixture("100")
-    private let a101 = Apartment.fixture("101", sortOrder: 1)
+    private let a101 = Apartment.fixture("101")
 
     private var context: ModelContext {
         container.mainContext
@@ -51,7 +51,7 @@ struct WorkDayRecordMappingTests {
         record.apply(day)
         try context.save()
 
-        var changed = day.removingEntry(day.entries[1].id).planning([.fixture("102", sortOrder: 2)])
+        var changed = day.removingEntry(day.entries[1].id).planning([.fixture("102")])
         changed.entries[0].isCleaned = false
         changed.entries[0].cleanedAt = nil
         record.apply(changed)

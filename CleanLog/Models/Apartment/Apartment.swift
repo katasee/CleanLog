@@ -6,25 +6,17 @@ nonisolated struct Apartment: Sendable, Hashable, Identifiable {
     var price: Money
     var accessCode: String?
     var isReportedSeparately: Bool
-    var sortOrder: Int
-    var isArchived: Bool
     let createdAt: Date
 }
 
 extension Apartment {
-    nonisolated init(
-        _ draft: ApartmentDraft,
-        sortOrder: Int,
-        createdAt: Date
-    ) {
+    nonisolated init(_ draft: ApartmentDraft, createdAt: Date) {
         self.init(
             id: UUID(),
             name: draft.name,
             price: draft.price,
             accessCode: draft.accessCode,
             isReportedSeparately: draft.isReportedSeparately,
-            sortOrder: sortOrder,
-            isArchived: false,
             createdAt: createdAt
         )
     }
@@ -36,9 +28,5 @@ extension Apartment {
         copy.accessCode = draft.accessCode
         copy.isReportedSeparately = draft.isReportedSeparately
         return copy
-    }
-
-    nonisolated static func nextSortOrder(after apartments: [Apartment]) -> Int {
-        (apartments.map(\.sortOrder).max() ?? -1) + 1
     }
 }

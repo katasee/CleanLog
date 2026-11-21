@@ -11,21 +11,15 @@
             self.now = now
         }
 
-        func apartments(includingArchived: Bool) -> AsyncStream<[Apartment]> {
+        func apartments() -> AsyncStream<[Apartment]> {
             observers.stream { [unowned self] in
-                stored.values
-                    .filter { includingArchived || !$0.isArchived }
-                    .sorted { $0.sortOrder < $1.sortOrder }
+                stored.values.sorted { ApartmentNameOrder.areInIncreasingOrder($0.name, $1.name) }
             }
         }
 
         func add(_ draft: ApartmentDraft) async throws -> Apartment {
             let valid = try draft.validated(against: Array(stored.values))
-            let apartment = Apartment(
-                valid,
-                sortOrder: Apartment.nextSortOrder(after: Array(stored.values)),
-                createdAt: now()
-            )
+            let apartment = Apartment(valid, createdAt: now())
             stored[apartment.id] = apartment
             observers.notify()
             return apartment
@@ -38,19 +32,8 @@
             observers.notify()
         }
 
-        func archive(_ id: UUID) async throws {
-            var apartment = try storedApartment(id)
-            apartment.isArchived = true
-            stored[id] = apartment
-            observers.notify()
-        }
-
-        func reorder(_ ids: [UUID]) async throws {
-            let apartments = try ids.map(storedApartment)
-            for (sortOrder, var apartment) in apartments.enumerated() {
-                apartment.sortOrder = sortOrder
-                stored[apartment.id] = apartment
-            }
+        func delete(_ id: UUID) async throws {
+            guard stored.removeValue(forKey: id) != nil else { throw ApartmentError.notFound }
             observers.notify()
         }
 

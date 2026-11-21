@@ -13,12 +13,12 @@ final class SwiftDataApartmentRepository: ApartmentRepository {
         self.now = now
     }
 
-    func apartments(includingArchived: Bool) -> AsyncStream<[Apartment]> {
+    func apartments() -> AsyncStream<[Apartment]> {
         observers.stream { [unowned self] in
             do {
                 return try storedRecords()
-                    .filter { includingArchived || !$0.isArchived }
                     .map(\.domain)
+                    .sorted { ApartmentNameOrder.areInIncreasingOrder($0.name, $1.name) }
             } catch {
                 logger.error("Could not read apartments: \(error)")
                 return []
@@ -29,11 +29,7 @@ final class SwiftDataApartmentRepository: ApartmentRepository {
     func add(_ draft: ApartmentDraft) async throws -> Apartment {
         let existing = try storedRecords().map(\.domain)
         let valid = try draft.validated(against: existing)
-        let apartment = Apartment(
-            valid,
-            sortOrder: Apartment.nextSortOrder(after: existing),
-            createdAt: now()
-        )
+        let apartment = Apartment(valid, createdAt: now())
         context.inserted(ApartmentRecord()).apply(apartment)
         try save()
         return apartment
@@ -49,16 +45,8 @@ final class SwiftDataApartmentRepository: ApartmentRepository {
         try save()
     }
 
-    func archive(_ id: UUID) async throws {
-        try storedRecord(id).isArchived = true
-        try save()
-    }
-
-    func reorder(_ ids: [UUID]) async throws {
-        let records = try ids.map(storedRecord)
-        for (sortOrder, record) in records.enumerated() {
-            record.sortOrder = sortOrder
-        }
+    func delete(_ id: UUID) async throws {
+        context.delete(try storedRecord(id))
         try save()
     }
 
@@ -67,7 +55,7 @@ final class SwiftDataApartmentRepository: ApartmentRepository {
     }
 
     private func storedRecords() throws -> [ApartmentRecord] {
-        try context.fetch(FetchDescriptor<ApartmentRecord>(sortBy: [SortDescriptor(\.sortOrder)]))
+        try context.fetch(FetchDescriptor<ApartmentRecord>())
     }
 
     private func storedRecord(_ id: UUID) throws -> ApartmentRecord {

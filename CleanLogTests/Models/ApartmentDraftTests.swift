@@ -5,8 +5,7 @@ import Testing
 
 struct ApartmentDraftTests {
     private let active = Apartment.fixture("101")
-    private let archived = Apartment.fixture("205", archived: true)
-    private var existing: [Apartment] { [active, archived] }
+    private var existing: [Apartment] { [active] }
 
     private func draft(_ name: String, minorUnits: Int = 2800, code: String? = nil) -> ApartmentDraft {
         ApartmentDraft(
@@ -40,7 +39,7 @@ struct ApartmentDraftTests {
     }
 
     @Test(arguments: ["101", " 101 "])
-    func rejectsADuplicateOfAnActiveApartment(name: String) {
+    func rejectsADuplicateName(name: String) {
         #expect(throws: ApartmentError.duplicateName) {
             try draft(name).validated(against: existing)
         }
@@ -50,10 +49,6 @@ struct ApartmentDraftTests {
         #expect(throws: ApartmentError.duplicateName) {
             try draft("6PIW").validated(against: [.fixture("6piw")])
         }
-    }
-
-    @Test func allowsTheNameOfAnArchivedApartment() throws {
-        #expect(try draft("205").validated(against: existing).name == "205")
     }
 
     @Test func allowsAnApartmentToKeepItsOwnName() throws {
@@ -71,40 +66,26 @@ struct ApartmentDraftTests {
         #expect(try draft("102", minorUnits: 0).validated(against: existing).price == .zero)
     }
 
-    @Test func createsAnActiveApartmentFromADraft() {
+    @Test func createsAnApartmentFromADraft() {
         let createdAt = Date.warsaw(2026, 11, 13, 9)
-        let apartment = Apartment(
-            draft("102", code: "4821"),
-            sortOrder: 3,
-            createdAt: createdAt
-        )
+        let apartment = Apartment(draft("102", code: "4821"), createdAt: createdAt)
         #expect(apartment.name == "102")
         #expect(apartment.accessCode == "4821")
-        #expect(apartment.sortOrder == 3)
-        #expect(apartment.isArchived == false)
         #expect(apartment.createdAt == createdAt)
     }
 
     @Test func applyingADraftChangesOnlyTheEditableFields() {
-        let edited = archived.applying(
+        let edited = active.applying(
             draft(
                 "206",
                 minorUnits: 3000,
                 code: "1#"
             )
         )
-        #expect(edited.id == archived.id)
+        #expect(edited.id == active.id)
         #expect(edited.name == "206")
         #expect(edited.price == Money(minorUnits: 3000))
         #expect(edited.accessCode == "1#")
-        #expect(edited.isArchived)
-        #expect(edited.sortOrder == archived.sortOrder)
-        #expect(edited.createdAt == archived.createdAt)
-    }
-
-    @Test func sortsANewApartmentAfterEveryOther() {
-        let apartments = [Apartment.fixture("101", sortOrder: 4), .fixture("102", sortOrder: 1)]
-        #expect(Apartment.nextSortOrder(after: apartments) == 5)
-        #expect(Apartment.nextSortOrder(after: []) == 0)
+        #expect(edited.createdAt == active.createdAt)
     }
 }

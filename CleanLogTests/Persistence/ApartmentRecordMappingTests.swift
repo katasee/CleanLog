@@ -15,8 +15,6 @@ struct ApartmentRecordMappingTests {
             price: Money(minorUnits: 3550),
             accessCode: "4821",
             isReportedSeparately: true,
-            sortOrder: 3,
-            isArchived: true,
             createdAt: .warsaw(2026, 11, 1, 9)
         )
         let record = container.mainContext.inserted(ApartmentRecord())

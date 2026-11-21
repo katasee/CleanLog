@@ -5,10 +5,10 @@ import Testing
 
 struct WorkDayPlanningTests {
     private let today = DayKey(year: 2026, month: 11, day: 13)
-    private let a100 = Apartment.fixture("100", sortOrder: 0)
-    private let a101 = Apartment.fixture("101", sortOrder: 1)
-    private let a102 = Apartment.fixture("102", sortOrder: 2)
-    private let a106 = Apartment.fixture("106", minorUnits: 5600, separate: true, sortOrder: 6)
+    private let a100 = Apartment.fixture("100")
+    private let a101 = Apartment.fixture("101")
+    private let a102 = Apartment.fixture("102")
+    private let a106 = Apartment.fixture("106", minorUnits: 5600, separate: true)
 
     @Test func plansEachApartmentOnce() {
         let day = WorkDay.empty(today).planning([a100, a101]).planning([a101, a102])
@@ -34,9 +34,9 @@ struct WorkDayPlanningTests {
     }
 
     @Test func copiesAPlanFromItsSnapshotsUnticked() throws {
-        let archived = Apartment.fixture("205", archived: true)
+        let a205 = Apartment.fixture("205")
         let yesterday = DayKey(year: 2026, month: 11, day: 12)
-        let planned = WorkDay.empty(yesterday).planning([a100, archived])
+        let planned = WorkDay.empty(yesterday).planning([a100, a205])
         let source = try planned.settingCleaned(
             planned.entries[0].id,
             to: true,
@@ -51,8 +51,8 @@ struct WorkDayPlanningTests {
     }
 
     @Test func copyingSkipsApartmentsAlreadyOnTheDay() {
-        let archived = Apartment.fixture("205", archived: true)
-        let source = WorkDay.empty(DayKey(year: 2026, month: 11, day: 12)).planning([a100, archived])
+        let a205 = Apartment.fixture("205")
+        let source = WorkDay.empty(DayKey(year: 2026, month: 11, day: 12)).planning([a100, a205])
         let copy = WorkDay.empty(today).planning([a100]).copyingPlan(from: source)
         #expect(copy.entries.map(\.name) == ["100", "205"])
     }
