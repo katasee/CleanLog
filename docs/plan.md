@@ -172,7 +172,7 @@ Plan: `docs/superpowers/plans/2026-11-21-apartments.md` · Spec: `docs/superpowe
 | 10 | `feature/CL-10-apartment-delete-name-order` | `main` | 1–3 | 298 code (+ spec and plan) | merged (PR #10) | done — concurrency clean; SOLID: 1 fix (below) |
 | 11 | `feature/CL-11-apartment-view-models` | `main` | 4–5 | 386 | merged (PR #11) | done — concurrency clean; SwiftUI clean; SOLID: 2 fixes (below) |
 | 13 | `feature/CL-13-apartment-form-view-model` | `main` | 6 | 310 | merged (PR #12) | done — concurrency clean; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
-| 12 | `feature/CL-12-apartments-screen` | `main` | 7–11 | see note (end of feature) | PR open (#13) | done — SwiftUI: 2 fixes; SOLID: 1 fix; rework review: 1 fix (below) |
+| 12 | `feature/CL-12-apartments-screen` | `main` | 7–11 | 810 (530 Swift + 280 catalog JSON; end of feature) | PR open (#13) | done — SwiftUI: 2 fixes; SOLID: 1 fix; rework review: 1 fix (below) |
 
 Notes for the sessions:
 
