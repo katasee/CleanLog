@@ -203,6 +203,7 @@ struct ApartmentFormView: View {
                 .frame(maxWidth: .infinity)
                 .opacity(isShown ? 1 : 0)
                 .scaleEffect(isShown ? 1 : Layout.hiddenScale)
+                .allowsHitTesting(isShown)
             }
             .defaultScrollAnchor(.center, for: .alignment)
             .scrollBounceBehavior(.basedOnSize)
