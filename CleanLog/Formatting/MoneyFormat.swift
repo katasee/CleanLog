@@ -4,8 +4,8 @@ nonisolated enum MoneyFormat {
     private static let noBreakSpace: Character = "\u{00A0}"
 
     static func string(_ money: Money, locale: Locale = .current) -> String {
-        let isWhole = money.grosze % 100 == 0
-        let amount = Decimal(money.grosze) / 100
+        let isWhole = money.minorUnits % 100 == 0
+        let amount = Decimal(money.minorUnits) / 100
         let number = amount.formatted(
             .number
                 .precision(.fractionLength(isWhole ? 0 : 2))
