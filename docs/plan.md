@@ -166,8 +166,9 @@ Plan: `docs/superpowers/plans/2026-11-21-apartments.md` · Spec: `docs/superpowe
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 10 | `feature/CL-10-apartment-delete-name-order` | `main` | 1–3 | 298 code (+ spec and plan) | PR open | done — concurrency clean; SOLID: 1 fix (below) |
-| 11 | `feature/CL-11-apartment-view-models` | CL-10 | 4–6 | ~450 est. | **NEXT** — create from CL-10 | SwiftUI + concurrency + SOLID |
-| 12 | `feature/CL-12-apartments-screen` | CL-11 | 7–8 | ~400 est. (end of feature) | not started | SwiftUI + SOLID |
+| 11 | `feature/CL-11-apartment-view-models` | `main` | 4–5 | 386 | PR open | done — concurrency clean; SwiftUI clean; SOLID: 2 fixes (below) |
+| 13 | `feature/CL-13-apartment-form-view-model` | CL-11 | 6 | 301 | **NEXT** — built, run its tests and review | SwiftUI + concurrency + SOLID |
+| 12 | `feature/CL-12-apartments-screen` | CL-13 | 7–8 | ~400 est. (end of feature) | not started | SwiftUI + SOLID |
 
 Notes for the sessions:
 
@@ -188,10 +189,32 @@ Notes for the sessions:
   → `ApartmentNameOrder.sorted(_:by:)`, test-first. Size: 298 changed lines of code and tests; the
   rest of the diff is the feature spec and plan (and the deleted design-system spec). An existing
   simulator store from before this branch has the old `SchemaV1`: delete the app once.
+- CL-11 (2026-11-21): PR #10 was merged, so CL-11 starts from `main` and its PR targets `main`. All
+  three tasks came to 701 lines (245 code, 365 tests, 92 catalog JSON) against a ~450 estimate → split
+  by the user's decision: Task 6 (`ApartmentFormViewModel`) moved to the stacked `CL-13`, already
+  built and committed there; CL-12 now stacks on CL-13. Deviations: `MoneyInput.parse` takes no
+  locale (it accepts `,` and `.` whatever the locale, as the plan's interface says; the spec's
+  `locale:` there is dropped); the parse tests add non-ASCII digits and a whole part that overflows
+  when multiplied by 100. The "once" tests (`confirmsADeletionOnce`, CL-13's `savesOnce`) passed
+  trivially against `FakeApartmentRepository`, which never suspends, so the second call ran after
+  the first had finished → `YieldingApartmentRepository` in `CleanLogTests/Support/` yields before
+  each write. Mutation-checked: moving the `pendingDeletion` clear after the `await` makes
+  `confirmsADeletionOnce` fail. Concurrency review: no findings (main-actor `for await` ended by
+  `.task`'s cancellation, state cleared before the only `await`). SwiftUI review: no findings
+  (`ApartmentSheet`'s `UUID?` id serves `.sheet(item:)`; the alerts bind to the settable flags).
+  SOLID / clean code: `isConfirmingDeletion`'s setter repeated `cancelDeletion()` → calls it; three
+  tests repeated the start-observe-and-wait boilerplate → `observing(_:_:)` takes the view model.
+  Kept: `MoneyInput.string` of a negative amount prints a wrong fraction, but a price is never
+  negative (the draft refuses it). Merged up into CL-13 (test file conflict resolved; builds, its
+  tests not run yet).
+- CL-13 (next session): the branch exists locally only, with Task 6 and the CL-11 merge. Run
+  `ApartmentFormViewModelTests` and `ApartmentsViewModelTests`, then the review (`swiftui-pro`,
+  `swift-concurrency-pro`, SOLID), push, and open its PR against CL-11's branch (or `main` once
+  PR CL-11 is merged — then merge `main` in first).
 - **For Feature 4:** «Як учора» must not copy apartments deleted since that day — filter the copy by
   the current template.
 
-Next free branch number: **CL-13** (CL-10…12 are reserved above).
+Next free branch number: **CL-14** (CL-10…13 are used above).
 
 ## Roadmap (v1)
 
