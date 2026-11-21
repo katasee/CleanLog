@@ -50,8 +50,7 @@
   under a `feature.kind.name` key (`today.empty.title`, `report.action.send`) and is used through
   the symbol the catalog generates (`STRING_CATALOG_GENERATE_SYMBOLS = YES`), so a missing key is a
   compile error. Add the key, with both languages, in the same change that uses it.
-- Languages: Ukrainian (development copy) and English. No Polish: the app speaks the user's
-  language, not the country's. Plurals ("1 квартира / 3 квартири /
+- Languages: Ukrainian (development copy) and English; no Polish. Plurals ("1 квартира / 3 квартири /
   5 квартир") are catalog plural variations, never `if count == 1`.
 - Ukrainian copy speaks to the user informally («Додай квартири»):
   the app is a personal tool, not an institution.
