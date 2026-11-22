@@ -127,7 +127,9 @@ this session's context:
 - one or two sentences on why the change is needed;
 - bullets, each opening with a bold short name, saying what appeared and why it is built that way
   (`**Money.** Stores an amount as a whole number of 1/100 zł … whole numbers add up exactly`);
-- plain sentences, no unexplained jargon, no bare lists of API names.
+- plain sentences, no unexplained jargon, no bare lists of API names;
+- English only, with no Ukrainian word, not even a quoted UI string: name a string by its English
+  copy ("an "Add apartment" button") or describe it.
 
 It covers the app and its code only. No review findings, no "how it was verified" section, no
 attribution line, and nothing about the AI workflow: changes to `CLAUDE.md`, `.claude/` or the
