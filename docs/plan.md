@@ -313,15 +313,15 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** `git switch -c feature/CL-17-day-view-model feature/CL-16-today-domain` and build
-Tasks 5–7 of the plan, then review as the plan's Branches section says. PR base: CL-16 (or the branch
-below it that is still open).
+**NEXT session:** `git switch feature/CL-17-day-view-model` (already created from `main` after CL-16
+and CL-21 merged) and build Tasks 5–7 of the plan, then review as the plan's Branches section says.
+PR base: `main`.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 21 | `feature/CL-21-today-spec-plan` | `main` | — (spec, plan, design) | 912 (docs only) | PR open | — |
-| 16 | `feature/CL-16-today-domain` | CL-21 | 1–4 | 405 | PR #16 open | done — concurrency clean; SOLID: 1 fix (below) |
-| 17 | `feature/CL-17-day-view-model` | CL-16 | 5–7 | ~480 est. | not started | — |
+| 21 | `feature/CL-21-today-spec-plan` | `main` | — (spec, plan, design) | 912 (docs only) | merged (PR #17) | — |
+| 16 | `feature/CL-16-today-domain` | CL-21 | 1–4 | 405 | merged (PR #16) | done — concurrency clean; SOLID: 1 fix (below) |
+| 17 | `feature/CL-17-day-view-model` | `main` | 5–7 | ~480 est. | not started | — |
 | 18 | `feature/CL-18-day-actions` | CL-17 | 8–9 | ~350 est. | not started | — |
 | 19 | `feature/CL-19-today-screen` | CL-18 | 10–12 | ~450 est. | not started | — |
 | 20 | `feature/CL-20-today-states` | CL-19 | 13–14 | ~350 est. (end of feature) | not started | — |
