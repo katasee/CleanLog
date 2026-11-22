@@ -76,7 +76,9 @@ views. **Each token has one role:**
 | `InkSecondary` | secondary text, captions | `#4F5D65` / `#A3B0B7` |
 | `AccentColor` | primary actions, checkmarks, the selected state | `#0B7A75` / `#3FC2B7` |
 | `AccentSoft` | tinted fills under accent text (badges, progress track) | `#DDEFEE` / `#173634` |
-| `Background` | the screen | `#EEF2F3` / `#0B0F11` |
+| `Background` | the screen fill under the backdrop circles | `#E6F7F8` / `#0B0F11` |
+| `BackdropGlow` | the stronger backdrop circle | `#8CE2EA` / `#0F4C4F` |
+| `BackdropMist` | the softer backdrop circle | `#C3F0F3` / `#12302F` |
 | `Card` | content cards and list groups | `#FFFFFF` / `#1A2124` |
 | `Hairline` | hairlines between rows | ink 8% / white 10% |
 | `Warning` | a paused timer, a day that needs attention | `#9A5B00` / `#FFB340` |
@@ -96,6 +98,8 @@ colorset after an existing `Color` or `UIColor` member (`Primary` collides with 
   in: shape)` on 18. A feature never calls `.glassEffect` directly (the guard hook blocks it).
 - Glass goes on the view that is touched (`.interactive()` reacts only there), and a glass button
   uses `.buttonStyle(.plain)` so the glass is the press feedback, not a second scale effect.
+- **Every screen sets its background with `.screenBackground(_:)` from `UICommons/`**, passing its
+  own circles from its `Layout`; never `Color.background` directly.
 - Cards use `.cardSurface()` from `UICommons/` — fill, corner radius and padding in one place.
 - Icons are SF Symbols (`Image(systemName:)`), sized by the text style they sit next to.
 - Touch targets are at least 44×44 pt.
