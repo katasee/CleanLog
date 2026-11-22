@@ -1,6 +1,23 @@
 import SwiftUI
 
 struct ApartmentsView: View {
+    private enum Layout {
+        static let backdrop = [
+            BackdropCircle(
+                tone: .mist,
+                origin: CGPoint(x: 180, y: -60),
+                diameter: 340,
+                opacity: 0.6
+            ),
+            BackdropCircle(
+                tone: .glow,
+                origin: CGPoint(x: -150, y: 460),
+                diameter: 300,
+                opacity: 0.4
+            ),
+        ]
+    }
+
     @State private var viewModel: ApartmentsViewModel
 
     init(repository: any ApartmentRepository) {
@@ -20,7 +37,7 @@ struct ApartmentsView: View {
                 AddApartmentButton(action: add)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.background)
+            .screenBackground(Layout.backdrop)
             .navigationTitle(Text(.tabApartmentsTitle))
             .modifier(DeletionConfirmation(viewModel: viewModel))
             .alert(viewModel.errorMessage ?? "", isPresented: $viewModel.isShowingError) {}
