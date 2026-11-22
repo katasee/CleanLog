@@ -259,14 +259,13 @@ Notes for the sessions:
 
 ## Screen background (between Feature 3 and 4)
 
-**NEXT session:** if PR CL-14 is merged, delete `docs/superpowers/plans/2026-11-22-screen-background.md`
-and start Feature 4 (Today) with brainstorming; otherwise wait for the merge.
+Done: PR CL-14 merged 2026-11-22; its plan file is deleted on CL-16 (the spec stays).
 
-Plan: `docs/superpowers/plans/2026-11-22-screen-background.md` · Spec: `docs/superpowers/specs/2026-11-22-screen-background-design.md`
+Spec: `docs/superpowers/specs/2026-11-22-screen-background-design.md`
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 14 | `feature/CL-14-gradient-background` | `main` | 1–3 | 271 code (end of the work) | PR open (#14) | done — SwiftUI clean; SOLID: 2 fixes (below) |
+| 14 | `feature/CL-14-gradient-background` | `main` | 1–3 | 271 code (end of the work) | merged (PR #14) | done — SwiftUI clean; SOLID: 2 fixes (below) |
 
 Notes for the sessions:
 
@@ -292,7 +291,7 @@ Notes for the sessions:
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 15 | `feature/CL-15-apartment-deletion` | `main` | — (bug fix + copy) | 186 | PR open (#15) | done — SwiftUI: 1 kept exception; SOLID clean (below) |
+| 15 | `feature/CL-15-apartment-deletion` | `main` | — (bug fix + copy) | 186 | merged (PR #15) | done — SwiftUI: 1 kept exception; SOLID clean (below) |
 
 - CL-15 (2026-11-22), from the user trying the app: **deleting never happened.** The alert's
   dismissal reset `isConfirmingDeletion`, which cleared `pendingDeletion` before the button's `Task`
@@ -310,7 +309,39 @@ Notes for the sessions:
 - **Open offer:** a grey line under the empty state's title telling what to do — the user has not
   decided.
 
-Next free branch number: **CL-16** (CL-10…15 are used above).
+## Feature 4 — Today
+
+Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
+
+**NEXT session:** `git switch feature/CL-16-today-domain` (already created from `main`, holds the spec
+and plan commits) and build Tasks 1–4 of the plan, then review as the plan's Branches section says.
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 16 | `feature/CL-16-today-domain` | `main` | 1–4 | ~450 est. | spec + plan committed; code next | — |
+| 17 | `feature/CL-17-day-view-model` | CL-16 | 5–7 | ~480 est. | not started | — |
+| 18 | `feature/CL-18-day-actions` | CL-17 | 8–9 | ~350 est. | not started | — |
+| 19 | `feature/CL-19-today-screen` | CL-18 | 10–12 | ~450 est. | not started | — |
+| 20 | `feature/CL-20-today-states` | CL-19 | 13–14 | ~350 est. (end of feature) | not started | — |
+
+Notes for the sessions:
+
+- Brainstorming (2026-11-22): Today ships **without** the Day plan button, the floating add button and
+  the calendar button — they come with their sheets in Features 5 and 6, so a fresh install cannot plan
+  its first day until Feature 5 (hand the app to the user after it). «Стоп» finishes at once and
+  «Продовжити» restarts. User's timer rules: **the last tick stops the timer**; **a timer still open
+  after midnight drops all of its day's time** (the cleaner never works past midnight). One
+  `DayViewModel` per shown day (`.id`). Claude's calls (accepted): «Як учора» copies at current template
+  prices and hides when nothing remains; the overrun drop is a stored write (`isTimeDropped`), so
+  Statistics and Report need no rule of their own.
+- Plan review (2026-11-22, before code): `swiftui-pro` — one `List` for swipe actions, `TodaySummary`
+  and `DurationParts` structs, a work-free `DayView.init`; `swift-concurrency-pro` — the copy source
+  fetched once with the flag set before the `await`; the midnight refresh sleeps to the next day
+  instead of iterating `NotificationCenter.notifications`. Details at the end of the plan file.
+- `SchemaV1` gains `isTimeDropped` in place (no TestFlight yet): delete the simulator app once after
+  CL-16.
+
+Next free branch number: **CL-21** (CL-16…20 are reserved above).
 
 ## Roadmap (v1)
 
@@ -319,8 +350,8 @@ branches as above.
 
 1. Foundation — done.
 2. Design system — done.
-3. Apartments (template) — list, form, delete, name order. Logic, then UI. Built (above); last PR open.
-4. Today — plan, ticks, timer, empty state, "as yesterday", past and future days. Logic, then UI.
+3. Apartments (template) — done.
+4. Today — ticks, timer, empty state, "as yesterday", past and future days. Logic, then UI. Planned (above).
 5. Day plan sheet, and the floating add button beside the tab bar. Logic, then UI.
 6. Calendar. Logic, then UI.
 7. Statistics. Logic, then UI.

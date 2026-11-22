@@ -56,8 +56,8 @@ stay one tap, and nothing on the screen may be a button that leads nowhere.
    time this way. That past day's timer card shows `0:00` with «Час не записано — таймер не
    зупинили», and «Змінити» lets her enter the time by hand.
 6. Proposed by Claude and accepted without change:
-   - «Сьогодні» follows the clock: when the app comes back to the foreground or the system reports a
-     day change while the screen shows today, it moves to the new today. A screen showing another day
+   - «Сьогодні» follows the clock: when the app comes back to the foreground or midnight passes
+     while the screen shows today, it moves to the new today. A screen showing another day
      stays on it.
    - A past day's timer card: the total, then a span line «07:30 – 13:05 · пауза 25 хв» — the first
      session's start, the last session's end, and the sum of the gaps between sessions; without gaps
@@ -175,9 +175,8 @@ would change the repository in three places).
 - `Formatting/`: the header date and weekday (templates, `Locale.current`), the clock time «07:40»
   (localized hour-minute template), the pause «25 хв» (`Duration` units style).
 - `Features/Today/`:
-  - `TodayView` — `@State selectedDay`, `@State today`; the header; the midnight refresh (scene phase
-    and `NSNotification.Name.NSCalendarDayChanged` through `NotificationCenter.notifications(named:)`
-    in a `.task`); the child `DayView(day:).id(day)`.
+  - `TodayView` — the selected day and today; the header; the midnight refresh (the scene phase, and a
+    `.task` that sleeps until the next day starts); the child `DayView(day:).id(day)`.
   - `DayViewModel` (`@Observable @MainActor final`) — init with `day`, `today` (or a clock closure),
     `calendar`, `WorkDayRepository`, `ApartmentRepository`; `observe()` iterates the day stream, the
     month stream and the template stream (three loops in a task group or `async let`); exposes
