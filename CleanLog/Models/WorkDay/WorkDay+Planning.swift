@@ -29,7 +29,12 @@ extension WorkDay {
         var copy = self
         copy.entries[index].isCleaned = isCleaned
         copy.entries[index].cleanedAt = isCleaned ? now : nil
-        return copy
+        return isCleaned ? copy.finishingTimerIfAllCleaned(now: now, today: today) : copy
+    }
+
+    private nonisolated func finishingTimerIfAllCleaned(now: Date, today: DayKey) -> WorkDay {
+        guard day == today, entries.allSatisfy(\.isCleaned) else { return self }
+        return (try? finishingTimer(at: now, today: today)) ?? self
     }
 
     private nonisolated func addingUnplanned(_ newEntries: [DayEntry]) -> WorkDay {

@@ -136,6 +136,56 @@ struct WorkDayPlanningTests {
         }
     }
 
+    @Test func finishesARunningTimerOnTheLastTick() throws {
+        let planned = try WorkDay.empty(today).planning([a100, a101]).startingTimer(at: hour(8), today: today)
+        let first = try tick(planned, at: 0, hour: 10)
+        #expect(first.timerState == .running(since: hour(8)))
+        let last = try tick(first, at: 1, hour: 11)
+        #expect(last.timerState == .finished)
+        #expect(last.sessions.last?.end == hour(11))
+    }
+
+    @Test func finishesAPausedTimerOnTheLastTick() throws {
+        let paused = try WorkDay.empty(today)
+            .planning([a100])
+            .startingTimer(at: hour(8), today: today)
+            .pausingTimer(at: hour(9), today: today)
+        let ticked = try tick(paused, at: 0, hour: 10)
+        #expect(ticked.timerState == .finished)
+        #expect(ticked.sessions.count == 1)
+        #expect(ticked.sessions.last?.end == hour(9))
+    }
+
+    @Test func leavesTheTimerAloneWhenEntriesRemainOrNoTimerRuns() throws {
+        let running = try WorkDay.empty(today).planning([a100, a101]).startingTimer(at: hour(8), today: today)
+        #expect(try tick(running, at: 0, hour: 10).timerState == .running(since: hour(8)))
+        let idle = WorkDay.empty(today).planning([a100])
+        #expect(try tick(idle, at: 0, hour: 10).timerState == .idle)
+    }
+
+    @Test func ticksThePastDayLastEntryWithoutTouchingTheTimer() throws {
+        let past = try WorkDay.empty(yesterday)
+            .planning([a100])
+            .startingTimer(at: .warsaw(2026, 11, 12, 8), today: yesterday)
+            .pausingTimer(at: .warsaw(2026, 11, 12, 12), today: yesterday)
+        let ticked = try tick(past, at: 0, hour: 10)
+        #expect(ticked.entries[0].isCleaned)
+        #expect(ticked.timerState == past.timerState)
+        #expect(ticked.sessions == past.sessions)
+    }
+
+    @Test func untickingDoesNotRestartTheTimer() throws {
+        let running = try WorkDay.empty(today).planning([a100]).startingTimer(at: hour(8), today: today)
+        let finished = try tick(running, at: 0, hour: 10)
+        let unticked = try finished.settingCleaned(
+            finished.entries[0].id,
+            to: false,
+            now: hour(11),
+            today: today
+        )
+        #expect(unticked.timerState == .finished)
+    }
+
     @Test func totalsTheDay() throws {
         let now = Date.warsaw(2026, 11, 13, 10)
         let planned = WorkDay.empty(today).planning([a100, a101, a106])
@@ -172,5 +222,18 @@ struct WorkDayPlanningTests {
         var day = WorkDay.empty(today)
         day.manualDuration = .seconds(3600)
         #expect(day.isBlank == false)
+    }
+
+    private func hour(_ hour: Int) -> Date {
+        .warsaw(2026, 11, 13, hour)
+    }
+
+    private func tick(_ day: WorkDay, at index: Int, hour: Int) throws -> WorkDay {
+        try day.settingCleaned(
+            day.entries[index].id,
+            to: true,
+            now: self.hour(hour),
+            today: today
+        )
     }
 }
