@@ -99,7 +99,7 @@ colorset after an existing `Color` or `UIColor` member (`Primary` collides with 
 - Glass goes on the view that is touched (`.interactive()` reacts only there), and a glass button
   uses `.buttonStyle(.plain)` so the glass is the press feedback, not a second scale effect.
 - **Every screen sets its background with `.screenBackground(_:)` from `UICommons/`**, passing its
-  own circles from its `Layout`; never `Color.background` directly.
+  own circles from its `Layout`; a screen never paints `Color.background` itself (a `#Preview` may).
 - Cards use `.cardSurface()` from `UICommons/` — fill, corner radius and padding in one place.
 - Icons are SF Symbols (`Image(systemName:)`), sized by the text style they sit next to.
 - Touch targets are at least 44×44 pt.

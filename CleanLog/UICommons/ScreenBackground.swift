@@ -15,7 +15,7 @@ private struct ScreenBackground: ViewModifier {
                     ForEach(circles, id: \.self) { circle in
                         let frame = circle.frame(in: proxy.size)
                         Circle()
-                            .fill(circle.tone.color)
+                            .fill(color(for: circle.tone))
                             .opacity(circle.opacity)
                             .frame(width: frame.width, height: frame.height)
                             .offset(x: frame.minX, y: frame.minY)
@@ -28,11 +28,9 @@ private struct ScreenBackground: ViewModifier {
             .allowsHitTesting(false)
         }
     }
-}
 
-extension BackdropCircle.Tone {
-    fileprivate var color: Color {
-        switch self {
+    private func color(for tone: BackdropCircle.Tone) -> Color {
+        switch tone {
         case .glow: Color.backdropGlow
         case .mist: Color.backdropMist
         }
