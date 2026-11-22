@@ -292,7 +292,7 @@ Notes for the sessions:
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 15 | `feature/CL-15-apartment-deletion` | `main` | — (bug fix + copy) | ~180 | PR open | done — SwiftUI: 1 kept exception; SOLID clean (below) |
+| 15 | `feature/CL-15-apartment-deletion` | `main` | — (bug fix + copy) | 186 | PR open (#15) | done — SwiftUI: 1 kept exception; SOLID clean (below) |
 
 - CL-15 (2026-11-22), from the user trying the app: **deleting never happened.** The alert's
   dismissal reset `isConfirmingDeletion`, which cleared `pendingDeletion` before the button's `Task`
