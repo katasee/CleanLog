@@ -29,8 +29,8 @@ final class ApartmentFormViewModel {
         isReportedSeparately = apartment?.isReportedSeparately ?? false
     }
 
-    var title: String {
-        apartment?.name ?? String(localized: .apartmentsFormTitleNew)
+    var isAdding: Bool {
+        apartment == nil
     }
 
     var canSave: Bool {

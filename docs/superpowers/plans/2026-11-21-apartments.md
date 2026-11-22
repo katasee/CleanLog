@@ -594,6 +594,88 @@ Tasks 7–8. Layout and bindings only; every decision is already in a view model
 Then the branch review (`swiftui-pro`; SOLID pass), build Debug and Release, full tests, lint,
 `docs/plan.md` (Feature 3 done), push, PR.
 
+### CL-12 rework (2026-11-21) — the big add button and the centered form
+
+The user reviewed the built screen; the spec's "Revision after the first screen review" section
+replaces decisions 3 and 5. Three more tasks on the same branch: logic first (Task 9), then UI.
+The branch ends the feature, so it may pass 500 lines (most of the overflow is catalog JSON).
+
+**Review Focus (rework):**
+1. A double tap on «Зберегти» in the popup → one apartment, the card closes once.
+2. The keyboard on a small phone (iPhone SE size) → the focused field and the buttons stay visible.
+3. The largest Dynamic Type size → the card scrolls, the two buttons stack, nothing is cut off.
+4. A tap on the blurred backdrop → nothing happens; VoiceOver's escape gesture → cancels.
+5. The last apartment in a long list → can scroll above the pinned button and be tapped.
+
+### Task 9: The form says whether it adds, not a title
+
+**Files:** Modify `ApartmentFormViewModel.swift`, `ApartmentFormViewModelTests.swift`,
+`ApartmentsViewModelTests.swift`, `Localizable.xcstrings`.
+
+**Interfaces:** Produces `ApartmentFormViewModel.isAdding: Bool` (true when built with
+`editing: nil`). Removes `title` and the `apartments.form.title.new` key.
+
+- [ ] **Step 1: Tests.** In `startsBlankForANewApartment` replace the title line with
+  `#expect(form.isAdding)`; in `prefillsAnEditedApartment` with `#expect(!form.isAdding)`; in
+  `makesAFormForTheSheet` `#expect(newForm.isAdding)` and `#expect(!editForm.isAdding)`.
+- [ ] **Step 2: Run** `-only-testing:CleanLogTests/ApartmentFormViewModelTests` → fails to compile
+  (`isAdding` missing).
+- [ ] **Step 3: Implement** `var isAdding: Bool { apartment == nil }`; delete `title`; delete the
+  `apartments.form.title.new` key. The form view keeps compiling until Task 11 by dropping its
+  `.navigationTitle` line now.
+- [ ] **Step 4: Run** both apartment view model suites → pass.
+- [ ] **Step 5: Commit** — `Tell the form whether it adds instead of giving it a title`.
+
+### Task 10: The big «Додати квартиру» button
+
+**Files:** Modify `ApartmentsView.swift`, `Localizable.xcstrings`.
+
+- [ ] **Step 1: Strings.** `apartments.action.add` becomes «Додати квартиру» / "Add apartment";
+  delete `apartments.empty.action`.
+- [ ] **Step 2: View.** Remove the toolbar. A private `AddApartmentButton` (in `ApartmentsView.swift`):
+  `Label` with `plus` and `apartments.action.add`, full width, `.buttonStyle(.borderedProminent)`,
+  `.buttonBorderShape(.capsule)`, `.controlSize(.extraLarge)` (`.large` below iOS 26 if it does not
+  exist there), `.font(.headline)`. Pinned with `.safeAreaInset(edge: .bottom)` on the `Group`
+  holding the list or the empty state, horizontal and bottom padding from `private enum Layout`.
+  `ApartmentsEmptyState` keeps its label and loses its action and its `viewModel`.
+- [ ] **Step 3: Build** and look at the empty state and the list (the last row scrolls above the
+  button) on the simulator, light and largest text.
+- [ ] **Step 4: Commit** — `Pin a big add button to the bottom of the apartments screen`.
+
+### Task 11: The centered form popup
+
+**Files:** Modify `ApartmentFormView.swift`, `ApartmentsView.swift`.
+
+**Interfaces:** Consumes `ApartmentFormViewModel.isAdding` (Task 9). `ApartmentFormView(viewModel:)`
+stays the entry point.
+
+- [ ] **Step 1: Presentation.** `ApartmentsView` swaps `.sheet(item:)` for `.fullScreenCover(item:)`
+  with the same route. The system slide is switched off: every call that sets the route (`add`,
+  `edit`) runs inside `withTransaction(\.disablesAnimations, true) { … }` in the view; the form's
+  dismissal does the same. The cover gets `.presentationBackground(.clear)`.
+- [ ] **Step 2: The card.** `ApartmentFormView` drops `NavigationStack`, `Form`, the toolbar and the
+  detents. A full-screen `Rectangle().fill(.thinMaterial).ignoresSafeArea()` backdrop with no tap
+  action; above it, centered in a `ScrollView` that fills the screen (scrolls only when the card is
+  taller), a `VStack` card with the four rows separated by `Color.hairline` dividers, `NameField`'s
+  error under its row, and the buttons, on `.cardSurface()`, horizontal margin from `Layout`. Rows
+  keep `LabeledContent` (it stacks label and field at accessibility sizes).
+- [ ] **Step 3: Buttons.** `FormButtons` (private): `ViewThatFits(in: .horizontal)` of an `HStack`
+  (cancel, save) and a `VStack` (save, cancel); both full width; save `.borderedProminent`, cancel
+  `.bordered`, both `.buttonBorderShape(.capsule)`, `.controlSize(.large)`; save disabled by
+  `!viewModel.canSave`. `common.action.cancel` / `common.action.save`.
+- [ ] **Step 4: Motion and focus.** `@State private var isShown = false`: on appear
+  `withAnimation(.snappy) { isShown = true }`; the card's `opacity` and `scaleEffect` (0.94 → 1) and
+  the backdrop's `opacity` follow it. `close()` animates `isShown = false` and dismisses in the
+  animation's completion (without the system animation). Cancel and a successful save call
+  `close()`; `.accessibilityAction(.escape)` calls it too. `@FocusState` on the name field, set on
+  appear when `viewModel.isAdding`.
+- [ ] **Step 5: Build** Debug and Release; on the simulator (temporary, uncommitted tweak to open the
+  popup): new and edit, light, dark, largest text, Ukrainian; the keyboard with the name focused.
+- [ ] **Step 6: Commit** — `Show the apartment form as a centered popup`.
+
+Then the branch review again on the whole CL-12 diff (`swiftui-pro`, SOLID pass), build Debug and
+Release, full tests, lint, `docs/plan.md`, push (the open PR updates; rewrite its description).
+
 ---
 
 ## Plan review (2026-11-21)

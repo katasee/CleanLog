@@ -161,14 +161,18 @@ Notes for the sessions:
 
 ## Feature 3 — Apartments
 
+**NEXT session:** if PR CL-12 is merged, delete `docs/superpowers/plans/2026-11-21-apartments.md`
+and do the gradient background branch (CL-14, brainstorm it first), then Feature 4 (Today);
+otherwise wait for the merge.
+
 Plan: `docs/superpowers/plans/2026-11-21-apartments.md` · Spec: `docs/superpowers/specs/2026-11-21-apartments-design.md`
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 10 | `feature/CL-10-apartment-delete-name-order` | `main` | 1–3 | 298 code (+ spec and plan) | PR open | done — concurrency clean; SOLID: 1 fix (below) |
+| 10 | `feature/CL-10-apartment-delete-name-order` | `main` | 1–3 | 298 code (+ spec and plan) | merged (PR #10) | done — concurrency clean; SOLID: 1 fix (below) |
 | 11 | `feature/CL-11-apartment-view-models` | `main` | 4–5 | 386 | merged (PR #11) | done — concurrency clean; SwiftUI clean; SOLID: 2 fixes (below) |
-| 13 | `feature/CL-13-apartment-form-view-model` | `main` | 6 | 310 | PR open | done — concurrency clean; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
-| 12 | `feature/CL-12-apartments-screen` | CL-13 | 7–8 | ~400 est. (end of feature) | **NEXT** — not started | SwiftUI + SOLID |
+| 13 | `feature/CL-13-apartment-form-view-model` | `main` | 6 | 310 | merged (PR #12) | done — concurrency clean; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
+| 12 | `feature/CL-12-apartments-screen` | `main` | 7–11 | 810 (530 Swift + 280 catalog JSON; end of feature) | PR open (#13) | done — SwiftUI: 2 fixes; SOLID: 1 fix; rework review: 1 fix (below) |
 
 Notes for the sessions:
 
@@ -218,9 +222,42 @@ Notes for the sessions:
   Decision (user, 2026-11-21): **no Polish** — the app ships Ukrainian and English only. Removed on
   this branch: the `pl` strings from the catalog, `pl` from the project's known regions, and Polish
   from `code-style.md`, both specs and the apartments plan (CL-12's string list is uk / en).
-- CL-12 (next session): create it from CL-13 (`git switch -c feature/CL-12-apartments-screen
-  feature/CL-13-apartment-form-view-model`); if PR CL-13 is merged by then, start from `main`
-  instead and target `main`. UI branch: a Release build belongs to its pre-PR check (CL-7 note).
+- CL-12 (2026-11-21): PR #12 was merged, so CL-12 starts from `main` and its PR targets `main`.
+  Built as planned. Deviations: `MoneyFormat.currencySymbol` became internal so the price field's
+  «zł» suffix reuses it instead of a second literal; the «Окремо у звіті» toggle is tinted
+  `Color.accent` (a system toggle stays green otherwise); the row's name and badge stack vertically
+  at accessibility text sizes (`AnyLayout`). Seen on the iPhone 16 simulator (iOS 26) through a
+  temporary, uncommitted tweak (Apartments tab selected, the fake repository with the preview
+  template, the sheet preset to new / edit): the empty state, the list, the new and edit sheets in
+  light, dark, Ukrainian and the largest Dynamic Type size. **Not seen**: the swipe, the delete
+  alert, typing, a duplicate-name error and a real save — `simctl` cannot tap and no tap tool is
+  installed; check them by hand on the simulator or a device. The iOS 18 glass fallback is still
+  unseen (no iOS 18 runtime). SwiftUI review: the save button's `Task { if await save() … }` moved
+  into `save()`; buttons that wrap one call take it as `action:`. SOLID / clean code: the form's
+  `body` passed ~40 lines with the access code row inline while name and price were extracted →
+  `AccessCodeField`. Kept: the action-less error alert appears in both views (two view models, one
+  line each); a row reads name, badge, price to VoiceOver (layout order), not the spec's name,
+  price, badge. Size: the Swift is 364 lines; the rest is the string catalog's JSON (16 keys × uk/en),
+  kept as one branch like CL-8.
+- CL-12 rework (2026-11-21, same session): the user reviewed the screen and asked for a big
+  «Додати квартиру» button, the form as a centered popup over a blurred screen, and no form title.
+  Brainstormed (approach A: a full-screen cover without the system slide, own fade and scale; spec
+  section "Revision after the first screen review"), planned as Tasks 9–11, built inline. Task 9:
+  `ApartmentFormViewModel.title` → `isAdding`, test-first; the `apartments.form.title.new` key gone.
+  Task 10: the toolbar `+` and the empty state's button replaced by one pinned full-width button
+  (`apartments.action.add` is now «Додати квартиру», `apartments.empty.action` gone); its text stops
+  growing at the first accessibility size (uncapped it covered a third of the list). Task 11: the
+  popup; deviations — `.ultraThinMaterial` backdrop (thin hid the screen entirely), a
+  `FormRowStyle` stacks label over field at accessibility sizes (`LabeledContent` does not outside a
+  `Form`), scoped to the text fields because a `Toggle` renders through `LabeledContent` too, and
+  the ink colour scoped to the rows (it darkened the Save label). Seen on the simulator (temporary
+  tweak): empty state, list, new and edit popups in light, dark, Ukrainian and the largest text.
+  Still not seen: typing with the keyboard up, a real save, swipe-delete. Rework review
+  (self-review): the card stayed tappable while animating closed, so a second Save could re-add and
+  flash the duplicate-name error → `allowsHitTesting(isShown)`. Kept: `ApartmentSheet` keeps its name
+  for the cover route; the no-slide transaction appears three times (one call each). **Next branch:
+  the canvas's gradient background for every screen** (the user's decision; not in this PR).
+- **Feature 3 is done once PR CL-12 is merged**: then delete the apartments plan file (the spec stays).
 - **For Feature 4:** «Як учора» must not copy apartments deleted since that day — filter the copy by
   the current template.
 
@@ -233,7 +270,7 @@ branches as above.
 
 1. Foundation — done.
 2. Design system — done.
-3. Apartments (template) — list, form, delete, name order. Logic, then UI. In progress (above).
+3. Apartments (template) — list, form, delete, name order. Logic, then UI. Built (above); last PR open.
 4. Today — plan, ticks, timer, empty state, "as yesterday", past and future days. Logic, then UI.
 5. Day plan sheet, and the floating add button beside the tab bar. Logic, then UI.
 6. Calendar. Logic, then UI.

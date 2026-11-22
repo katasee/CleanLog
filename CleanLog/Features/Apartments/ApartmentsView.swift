@@ -1,11 +1,161 @@
 import SwiftUI
 
 struct ApartmentsView: View {
+    @State private var viewModel: ApartmentsViewModel
+
+    init(repository: any ApartmentRepository) {
+        _viewModel = State(initialValue: ApartmentsViewModel(repository: repository))
+    }
+
     var body: some View {
         NavigationStack {
-            Color.background
-                .ignoresSafeArea()
-                .navigationTitle(Text(.tabApartmentsTitle))
+            Group {
+                if viewModel.showsEmptyState {
+                    ApartmentsEmptyState()
+                } else {
+                    ApartmentList(viewModel: viewModel)
+                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                AddApartmentButton(action: add)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.background)
+            .navigationTitle(Text(.tabApartmentsTitle))
+            .modifier(DeletionConfirmation(viewModel: viewModel))
+            .alert(viewModel.errorMessage ?? "", isPresented: $viewModel.isShowingError) {}
+            .fullScreenCover(item: $viewModel.sheet) { sheet in
+                ApartmentFormView(viewModel: viewModel.makeFormViewModel(for: sheet))
+            }
+        }
+        .task {
+            await viewModel.observe()
+        }
+    }
+
+    private func add() {
+        withTransaction(\.disablesAnimations, true) {
+            viewModel.add()
         }
     }
 }
+
+private struct ApartmentList: View {
+    let viewModel: ApartmentsViewModel
+
+    var body: some View {
+        List {
+            Section {
+                ForEach(viewModel.rows) { row in
+                    Button {
+                        edit(row.id)
+                    } label: {
+                        ApartmentRowView(row: row)
+                    }
+                    .listRowBackground(Color.card)
+                    .swipeActions {
+                        Button(role: .destructive) {
+                            viewModel.requestDeletion(row.id)
+                        } label: {
+                            Label {
+                                Text(.apartmentsDeleteAction)
+                            } icon: {
+                                Image(systemName: "trash")
+                            }
+                        }
+                    }
+                }
+            } header: {
+                Text(.apartmentsCount(viewModel.count))
+                    .font(.subheadline)
+                    .foregroundStyle(Color.inkSecondary)
+                    .textCase(nil)
+            } footer: {
+                Text(.apartmentsFootnote)
+                    .font(.footnote)
+                    .foregroundStyle(Color.inkSecondary)
+            }
+        }
+        .scrollContentBackground(.hidden)
+    }
+
+    private func edit(_ id: UUID) {
+        withTransaction(\.disablesAnimations, true) {
+            viewModel.edit(id)
+        }
+    }
+}
+
+private struct ApartmentsEmptyState: View {
+    var body: some View {
+        ContentUnavailableView {
+            Label {
+                Text(.apartmentsEmptyTitle)
+                    .foregroundStyle(Color.ink)
+            } icon: {
+                Image(systemName: "building.2")
+                    .foregroundStyle(Color.inkSecondary)
+            }
+        }
+    }
+}
+
+private struct AddApartmentButton: View {
+    private enum Layout {
+        static let horizontalPadding: CGFloat = 16
+        static let bottomPadding: CGFloat = 8
+    }
+
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label {
+                Text(.apartmentsActionAdd)
+            } icon: {
+                Image(systemName: "plus")
+            }
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .buttonBorderShape(.capsule)
+        .controlSize(.extraLarge)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+        .padding(.horizontal, Layout.horizontalPadding)
+        .padding(.bottom, Layout.bottomPadding)
+    }
+}
+
+private struct DeletionConfirmation: ViewModifier {
+    @Bindable var viewModel: ApartmentsViewModel
+
+    func body(content: Content) -> some View {
+        content.alert(
+            Text(.apartmentsDeleteTitle(viewModel.pendingDeletion?.name ?? "")),
+            isPresented: $viewModel.isConfirmingDeletion,
+            presenting: viewModel.pendingDeletion
+        ) { _ in
+            Button(role: .destructive) {
+                Task { await viewModel.confirmDeletion() }
+            } label: {
+                Text(.apartmentsDeleteAction)
+            }
+            Button(role: .cancel, action: viewModel.cancelDeletion) {
+                Text(.commonActionCancel)
+            }
+        } message: { _ in
+            Text(.apartmentsDeleteMessage)
+        }
+    }
+}
+
+#if DEBUG
+    #Preview("Template") {
+        ApartmentsView(repository: FakeApartmentRepository(ApartmentsPreviewData.template))
+    }
+
+    #Preview("Empty") {
+        ApartmentsView(repository: FakeApartmentRepository())
+    }
+#endif

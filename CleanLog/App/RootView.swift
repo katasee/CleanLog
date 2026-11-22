@@ -7,6 +7,7 @@ private enum AppTab: Hashable {
 }
 
 struct RootView: View {
+    @Environment(AppDependencies.self) private var dependencies
     @State private var selectedTab: AppTab = .today
 
     var body: some View {
@@ -30,7 +31,7 @@ struct RootView: View {
                 }
             }
             Tab(value: .apartments) {
-                ApartmentsView()
+                ApartmentsView(repository: dependencies.apartments)
             } label: {
                 Label {
                     Text(.tabApartmentsTitle)
@@ -42,6 +43,9 @@ struct RootView: View {
     }
 }
 
-#Preview {
-    RootView()
-}
+#if DEBUG
+    #Preview {
+        RootView()
+            .environment(AppDependencies.preview())
+    }
+#endif

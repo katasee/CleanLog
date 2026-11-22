@@ -2,7 +2,7 @@ import Foundation
 
 nonisolated enum MoneyFormat {
     private static let minorUnitsPerZloty = 100
-    private static let currencySymbol = "zł"
+    static let currencySymbol = "zł"
     private static let noBreakSpace: Character = "\u{00A0}"
 
     static func string(_ money: Money, locale: Locale = .current) -> String {
