@@ -82,6 +82,7 @@ views. **Each token has one role:**
 | `Card` | content cards and list groups | `#FFFFFF` / `#1A2124` |
 | `Hairline` | hairlines between rows | ink 8% / white 10% |
 | `Warning` | a paused timer, a day that needs attention | `#9A5B00` / `#FFB340` |
+| `Destructive` | a destructive action that asks for confirmation first (a swipe to delete) | `#FF3B30` / `#FF453A` |
 
 Dark values are a first proposal; confirm them on a device before the first TestFlight. Never name a
 colorset after an existing `Color` or `UIColor` member (`Primary` collides with `Color.primary`,

@@ -145,13 +145,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add your apartments"
+            "value" : "You don't have any apartments yet"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Додай свої квартири"
+            "value" : "Поки ти не маєш жодної квартири"
           }
         }
       }
@@ -173,36 +173,19 @@
         }
       }
     },
-    "apartments.footnote" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A new price applies to future cleanings only — past months stay as they were."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Нова ціна діє лише для наступних прибирань — минулі місяці не змінюються."
-          }
-        }
-      }
-    },
     "apartments.form.error.duplicateName" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An apartment with this name already exists"
+            "value" : "An apartment with this number already exists"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Квартира з такою назвою вже є"
+            "value" : "Квартира з таким номером вже є"
           }
         }
       }
@@ -247,13 +230,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Name"
+            "value" : "Apartment number"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Назва"
+            "value" : "Номер квартири"
           }
         }
       }
@@ -288,6 +271,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Окремо у звіті"
+          }
+        }
+      }
+    },
+    "apartments.form.placeholder.name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. 106"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Напр. 106"
           }
         }
       }

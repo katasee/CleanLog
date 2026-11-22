@@ -31,7 +31,7 @@ private struct NameField: View {
 
     var body: some View {
         LabeledContent {
-            TextField(text: $viewModel.name) {
+            TextField(text: $viewModel.name, prompt: Text(.apartmentsFormPlaceholderName)) {
                 Text(.apartmentsFormFieldName)
             }
             .multilineTextAlignment(.trailing)
