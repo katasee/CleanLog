@@ -48,6 +48,15 @@ final class SwiftDataWorkDayRepository: WorkDayRepository {
         return try context.fetch(descriptor).lazy.map(\.domain).first { !$0.entries.isEmpty }
     }
 
+    func daysWithOpenSession(before day: DayKey) async throws -> [WorkDay] {
+        let value = day.storageValue
+        let descriptor = FetchDescriptor<WorkDayRecord>(
+            predicate: #Predicate { $0.dayValue < value },
+            sortBy: [SortDescriptor(\.dayValue)]
+        )
+        return try context.fetch(descriptor).map(\.domain).filter(\.hasOpenSession)
+    }
+
     func update(_ day: DayKey, _ change: (WorkDay) throws -> WorkDay) async throws {
         let stored = try storedRecord(day)
         let changed = try change(stored?.domain ?? .empty(day))

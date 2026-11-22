@@ -62,7 +62,36 @@ extension WorkDay {
     nonisolated func settingManualDuration(_ duration: Duration?) -> WorkDay {
         var copy = self
         copy.manualDuration = duration
+        if duration != nil {
+            copy.isTimeDropped = false
+        }
         return copy
+    }
+
+    nonisolated func droppingOverrunTimer(today: DayKey) -> WorkDay {
+        guard day < today, hasOpenSession else { return self }
+        var copy = self
+        copy.sessions = []
+        copy.isTimerFinished = false
+        copy.isTimeDropped = true
+        return copy
+    }
+
+    nonisolated var hasOpenSession: Bool {
+        sessions.contains { $0.end == nil }
+    }
+
+    nonisolated var timeSpan: WorkSpan? {
+        guard manualDuration == nil, let first = sessions.first, let last = sessions.last else { return nil }
+        let pauses = zip(sessions, sessions.dropFirst()).reduce(Duration.zero) { total, pair in
+            guard let previousEnd = pair.0.end else { return total }
+            return total + .seconds(max(pair.1.start.timeIntervalSince(previousEnd), 0))
+        }
+        return WorkSpan(
+            start: first.start,
+            end: last.end,
+            pauses: pauses
+        )
     }
 
     private nonisolated func requireToday(_ today: DayKey) throws(WorkDayError) {

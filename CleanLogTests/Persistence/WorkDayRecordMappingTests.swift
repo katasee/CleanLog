@@ -31,6 +31,7 @@ struct WorkDayRecordMappingTests {
         ]
         day.manualDuration = .seconds(4 * 3600)
         day.isTimerFinished = true
+        day.isTimeDropped = true
         return day
     }
 

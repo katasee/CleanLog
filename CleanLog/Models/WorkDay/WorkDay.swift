@@ -7,6 +7,7 @@ nonisolated struct WorkDay: Sendable, Hashable, Identifiable {
     var sessions: [WorkSession]
     var manualDuration: Duration?
     var isTimerFinished: Bool
+    var isTimeDropped: Bool
 
     static func empty(_ day: DayKey) -> WorkDay {
         WorkDay(
@@ -15,7 +16,8 @@ nonisolated struct WorkDay: Sendable, Hashable, Identifiable {
             entries: [],
             sessions: [],
             manualDuration: nil,
-            isTimerFinished: false
+            isTimerFinished: false,
+            isTimeDropped: false
         )
     }
 
@@ -36,6 +38,6 @@ nonisolated struct WorkDay: Sendable, Hashable, Identifiable {
     }
 
     var isBlank: Bool {
-        entries.isEmpty && !hasRecordedTime && !isTimerFinished
+        entries.isEmpty && !hasRecordedTime && !isTimerFinished && !isTimeDropped
     }
 }

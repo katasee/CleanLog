@@ -98,6 +98,22 @@ struct WorkDayRepositoryContractTests {
     }
 
     @Test(arguments: RepositoryKind.allCases)
+    func listsEveryEarlierDayWithAnOpenSession(kind: RepositoryKind) async throws {
+        let repository = kind.makeStore().workDays
+        for day in [key(12), key(10), key(13)] {
+            try await repository.update(day) { try $0.startingTimer(at: day.startDate(in: .warsaw), today: day) }
+        }
+        try await repository.update(key(11)) { day in
+            try day
+                .startingTimer(at: .warsaw(2026, 11, 11, 8), today: key(11))
+                .pausingTimer(at: .warsaw(2026, 11, 11, 9), today: key(11))
+        }
+
+        let open = try await repository.daysWithOpenSession(before: today)
+        #expect(open.map(\.day) == [key(10), key(12)])
+    }
+
+    @Test(arguments: RepositoryKind.allCases)
     func doesNotStoreABlankDay(kind: RepositoryKind) async throws {
         let repository = kind.makeStore().workDays
         try await repository.update(today) { $0 }
