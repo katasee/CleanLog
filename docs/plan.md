@@ -259,13 +259,14 @@ Notes for the sessions:
 
 ## Screen background (between Feature 3 and 4)
 
-**NEXT session:** build CL-14 from its plan (Tasks 1–3), review, PR; then Feature 4 (Today).
+**NEXT session:** if PR CL-14 is merged, delete `docs/superpowers/plans/2026-11-22-screen-background.md`
+and start Feature 4 (Today) with brainstorming; otherwise wait for the merge.
 
 Plan: `docs/superpowers/plans/2026-11-22-screen-background.md` · Spec: `docs/superpowers/specs/2026-11-22-screen-background-design.md`
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 14 | `feature/CL-14-gradient-background` | `main` | 1–3 | ~200 est. (end of the work) | planned | plan: `swiftui-pro` 1 fix folded in |
+| 14 | `feature/CL-14-gradient-background` | `main` | 1–3 | 271 code (end of the work) | PR open | done — SwiftUI clean; SOLID: 2 fixes (below) |
 
 Notes for the sessions:
 
@@ -273,6 +274,19 @@ Notes for the sessions:
   the user chose the canvas's per-screen placement (not one shared layout) and approach 1 (one
   `.screenBackground(_:)` modifier, circles per screen) over a `MeshGradient` or images. Dark circle
   colours are a proposal. Feature 3's plan file is deleted on this branch.
+- CL-14 (2026-11-22): built as planned, blur kept at the canvas's 70. Seen on the iPhone 16
+  simulator (iOS 26) through a temporary, uncommitted tweak (launch arguments pick the tab, the fake
+  repository with the preview template): Today, Statistics and Apartments in light and dark, the
+  list over its circles. **Not seen**: the form popup over the new background and the keyboard —
+  both need a tap. Review: `swiftui-pro` no findings (plan review had moved `.ignoresSafeArea()` onto
+  the `GeometryReader`, so `proxy.size` is the whole screen and the keyboard does not shrink it).
+  Fresh reviewer (Opus): no Critical or Important; fixed two rule breaks — the `Tone.color`
+  extension lived away from its type → a private `color(for:)` in the modifier; the new rule said
+  "never `Color.background`" though previews use it → "a screen never paints it itself (a
+  `#Preview` may)". Kept: `ForEach(circles, id: \.self)` (two equal circles would draw the same
+  pixels); the modifier's preview repeats Today's circles. `project.pbxproj` shows Xcode
+  reordering its build phases when the project is open — left uncommitted. Size 271 lines of code
+  and tests: under 300 as the natural end of this work.
 
 Next free branch number: **CL-15** (CL-10…14 are used above).
 
