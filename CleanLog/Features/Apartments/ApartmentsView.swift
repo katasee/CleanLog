@@ -16,6 +16,7 @@ struct ApartmentsView: View {
                 opacity: 0.4
             ),
         ]
+        static let pinnedButtonBottomPadding: CGFloat = 8
     }
 
     @State private var viewModel: ApartmentsViewModel
@@ -28,13 +29,14 @@ struct ApartmentsView: View {
         NavigationStack {
             Group {
                 if viewModel.showsEmptyState {
-                    ApartmentsEmptyState()
+                    ApartmentsEmptyState(add: add)
                 } else {
                     ApartmentList(viewModel: viewModel)
+                        .safeAreaInset(edge: .bottom) {
+                            AddApartmentButton(action: add)
+                                .padding(.bottom, Layout.pinnedButtonBottomPadding)
+                        }
                 }
-            }
-            .safeAreaInset(edge: .bottom) {
-                AddApartmentButton(action: add)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .screenBackground(Layout.backdrop)
@@ -71,7 +73,7 @@ private struct ApartmentList: View {
                     }
                     .listRowBackground(Color.card)
                     .swipeActions {
-                        Button(role: .destructive) {
+                        Button {
                             viewModel.requestDeletion(row.id)
                         } label: {
                             Label {
@@ -80,6 +82,7 @@ private struct ApartmentList: View {
                                 Image(systemName: "trash")
                             }
                         }
+                        .tint(Color.destructive)
                     }
                 }
             } header: {
@@ -87,10 +90,6 @@ private struct ApartmentList: View {
                     .font(.subheadline)
                     .foregroundStyle(Color.inkSecondary)
                     .textCase(nil)
-            } footer: {
-                Text(.apartmentsFootnote)
-                    .font(.footnote)
-                    .foregroundStyle(Color.inkSecondary)
             }
         }
         .scrollContentBackground(.hidden)
@@ -104,15 +103,33 @@ private struct ApartmentList: View {
 }
 
 private struct ApartmentsEmptyState: View {
+    private enum Layout {
+        static let iconToTitle: CGFloat = 16
+        static let titleToButton: CGFloat = 32
+        static let titlePadding: CGFloat = 32
+        static let iconCircleDiameter: CGFloat = 88
+    }
+
+    let add: () -> Void
+
+    @ScaledMetric(relativeTo: .largeTitle) private var iconCircleDiameter = Layout.iconCircleDiameter
+
     var body: some View {
-        ContentUnavailableView {
-            Label {
-                Text(.apartmentsEmptyTitle)
-                    .foregroundStyle(Color.ink)
-            } icon: {
+        VStack(spacing: Layout.titleToButton) {
+            VStack(spacing: Layout.iconToTitle) {
                 Image(systemName: "building.2")
-                    .foregroundStyle(Color.inkSecondary)
+                    .font(.largeTitle)
+                    .foregroundStyle(Color.accentColor)
+                    .frame(width: iconCircleDiameter, height: iconCircleDiameter)
+                    .background(Color.accentSoft, in: .circle)
+                    .accessibilityHidden(true)
+                Text(.apartmentsEmptyTitle)
+                    .font(.title2.weight(.semibold))
+                    .foregroundStyle(Color.ink)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, Layout.titlePadding)
             }
+            AddApartmentButton(action: add)
         }
     }
 }
@@ -120,7 +137,6 @@ private struct ApartmentsEmptyState: View {
 private struct AddApartmentButton: View {
     private enum Layout {
         static let horizontalPadding: CGFloat = 16
-        static let bottomPadding: CGFloat = 8
     }
 
     let action: () -> Void
@@ -140,7 +156,6 @@ private struct AddApartmentButton: View {
         .controlSize(.extraLarge)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .padding(.horizontal, Layout.horizontalPadding)
-        .padding(.bottom, Layout.bottomPadding)
     }
 }
 
@@ -152,9 +167,9 @@ private struct DeletionConfirmation: ViewModifier {
             Text(.apartmentsDeleteTitle(viewModel.pendingDeletion?.name ?? "")),
             isPresented: $viewModel.isConfirmingDeletion,
             presenting: viewModel.pendingDeletion
-        ) { _ in
+        ) { row in
             Button(role: .destructive) {
-                Task { await viewModel.confirmDeletion() }
+                Task { await viewModel.confirmDeletion(of: row) }
             } label: {
                 Text(.apartmentsDeleteAction)
             }

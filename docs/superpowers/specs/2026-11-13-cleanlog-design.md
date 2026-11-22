@@ -139,7 +139,7 @@ The same screen for any earlier date, reached by ‹ or the calendar.
 - An apartment has an optional, permanent **access code** (free text, e.g. `4821` or `1234#`),
   edited in the template and shown on the Today rows.
 - Names are unique (case- and edge-whitespace-insensitive).
-- A price change applies to new entries only; the footnote says so.
+- A price change applies to new entries only.
 
 ### Settings
 

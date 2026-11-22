@@ -288,7 +288,29 @@ Notes for the sessions:
   reordering its build phases when the project is open — left uncommitted. Size 271 lines of code
   and tests: under 300 as the natural end of this work.
 
-Next free branch number: **CL-15** (CL-10…14 are used above).
+## Apartments fixes after use (2026-11-22)
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 15 | `feature/CL-15-apartment-deletion` | `main` | — (bug fix + copy) | 186 | PR open (#15) | done — SwiftUI: 1 kept exception; SOLID clean (below) |
+
+- CL-15 (2026-11-22), from the user trying the app: **deleting never happened.** The alert's
+  dismissal reset `isConfirmingDeletion`, which cleared `pendingDeletion` before the button's `Task`
+  ran `confirmDeletion()`, so the guard returned; the swipe button's `role: .destructive` meanwhile
+  hid the row by itself. Fix: `confirmDeletion(of:)` takes the row the alert presents; the
+  once-guard is a set of IDs in progress; new test `deletesTheConfirmedRowAfterTheAlertDismisses`.
+  Then the real deletion crashed the `List` ("attempt to delete item 0 … only contains 0 items"):
+  the destructive role had already removed the row → the swipe button has no role and a new
+  `Destructive` colour token (system red, added to `code-style.md`). User's copy and layout
+  changes, recorded in the apartments spec: the empty state's button sits under its title (own
+  stack, 32 pt gap, icon on an `AccentSoft` circle — `ContentUnavailableView`'s action gap is
+  fixed, so the `swiftui-pro` "prefer `ContentUnavailableView`" rule is a kept exception); title
+  «Поки ти не маєш жодної квартири»; name field «Номер квартири» with a «Напр. 106» placeholder;
+  the new-price footnote is gone. Seen by the user in the simulator; tests, build and lint green.
+- **Open offer:** a grey line under the empty state's title telling what to do — the user has not
+  decided.
+
+Next free branch number: **CL-16** (CL-10…15 are used above).
 
 ## Roadmap (v1)
 

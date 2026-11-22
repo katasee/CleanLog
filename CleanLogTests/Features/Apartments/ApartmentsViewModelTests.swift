@@ -76,8 +76,8 @@ struct ApartmentsViewModelTests {
         #expect(editForm.priceText == "28")
     }
 
-    @Test func deletesOnlyAfterConfirmation() async {
-        await observing(viewModel) {
+    @Test func deletesOnlyAfterConfirmation() async throws {
+        try await observing(viewModel) {
             viewModel.requestDeletion(a100.id)
             #expect(viewModel.pendingDeletion?.name == "100")
             #expect(viewModel.isConfirmingDeletion)
@@ -87,10 +87,23 @@ struct ApartmentsViewModelTests {
             #expect(viewModel.rows.count == 2)
 
             viewModel.requestDeletion(a100.id)
-            await viewModel.confirmDeletion()
+            await viewModel.confirmDeletion(of: try #require(viewModel.pendingDeletion))
 
             await eventually { viewModel.rows.map(\.name) == ["101"] }
             #expect(viewModel.pendingDeletion == nil)
+            #expect(viewModel.errorMessage == nil)
+        }
+    }
+
+    @Test func deletesTheConfirmedRowAfterTheAlertDismisses() async throws {
+        try await observing(viewModel) {
+            viewModel.requestDeletion(a100.id)
+            let confirmed = try #require(viewModel.pendingDeletion)
+            viewModel.isConfirmingDeletion = false
+
+            await viewModel.confirmDeletion(of: confirmed)
+
+            await eventually { viewModel.rows.map(\.name) == ["101"] }
             #expect(viewModel.errorMessage == nil)
         }
     }
@@ -113,9 +126,10 @@ struct ApartmentsViewModelTests {
     @Test func reportsAFailedDeletion() async throws {
         try await observing(viewModel) {
             viewModel.requestDeletion(a100.id)
+            let confirmed = try #require(viewModel.pendingDeletion)
             try await repository.delete(a100.id)
 
-            await viewModel.confirmDeletion()
+            await viewModel.confirmDeletion(of: confirmed)
 
             #expect(viewModel.errorMessage != nil)
             #expect(viewModel.isShowingError)
@@ -125,13 +139,14 @@ struct ApartmentsViewModelTests {
         }
     }
 
-    @Test func confirmsADeletionOnce() async {
+    @Test func confirmsADeletionOnce() async throws {
         let viewModel = ApartmentsViewModel(repository: YieldingApartmentRepository([a100, a101]))
 
-        await observing(viewModel) {
+        try await observing(viewModel) {
             viewModel.requestDeletion(a100.id)
-            async let first: Void = viewModel.confirmDeletion()
-            async let second: Void = viewModel.confirmDeletion()
+            let confirmed = try #require(viewModel.pendingDeletion)
+            async let first: Void = viewModel.confirmDeletion(of: confirmed)
+            async let second: Void = viewModel.confirmDeletion(of: confirmed)
             _ = await (first, second)
 
             #expect(viewModel.errorMessage == nil)
