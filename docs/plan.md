@@ -314,12 +314,13 @@ Notes for the sessions:
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
 **NEXT session:** `git switch -c feature/CL-17-day-view-model feature/CL-16-today-domain` and build
-Tasks 5–7 of the plan, then review as the plan's Branches section says. PR base: CL-16 (or `main` once
-it is merged).
+Tasks 5–7 of the plan, then review as the plan's Branches section says. PR base: CL-16 (or the branch
+below it that is still open).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 16 | `feature/CL-16-today-domain` | `main` | 1–4 | 376 (code) | PR #16 open | done — concurrency clean; SOLID: 1 fix (below) |
+| 21 | `feature/CL-21-today-spec-plan` | `main` | — (spec, plan, design) | 912 (docs only) | PR open | — |
+| 16 | `feature/CL-16-today-domain` | CL-21 | 1–4 | 405 | PR #16 open | done — concurrency clean; SOLID: 1 fix (below) |
 | 17 | `feature/CL-17-day-view-model` | CL-16 | 5–7 | ~480 est. | not started | — |
 | 18 | `feature/CL-18-day-actions` | CL-17 | 8–9 | ~350 est. | not started | — |
 | 19 | `feature/CL-19-today-screen` | CL-18 | 10–12 | ~450 est. | not started | — |
@@ -351,7 +352,12 @@ Notes for the sessions:
   instead of `pair.0`/`pair.1`. Minor left: `DayKey(year:month:day: 1)` for a month's first day is
   spelled in `MonthKey` twice and in `DayFormat.month` — a `MonthKey.firstDay` would join them.
 
-Next free branch number: **CL-21** (CL-16…20 are reserved above).
+- The size rule counts the whole `git diff --shortstat <base>...HEAD`, docs included. CL-16 first
+  measured 1107+/204− because the spec and plan sat at its bottom; they moved to CL-21 (a branch at
+  the planning commit, no history rewritten) and CL-16 now stacks on it. A feature's spec and plan go
+  on their own branch from now on, never at the bottom of the first code branch.
+
+Next free branch number: **CL-22** (CL-16…21 are used above).
 
 ## Roadmap (v1)
 
