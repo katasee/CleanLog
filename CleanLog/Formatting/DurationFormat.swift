@@ -14,6 +14,12 @@ nonisolated enum DurationFormat {
         return "\(hours):\(twoDigits(minutes))"
     }
 
+    static func pause(_ duration: Duration, locale: Locale) -> String {
+        var style = Duration.UnitsFormatStyle(allowedUnits: [.hours, .minutes], width: .abbreviated)
+        style.locale = locale
+        return duration.formatted(style)
+    }
+
     private static func parts(of duration: Duration) -> (hours: Int64, minutes: Int64, seconds: Int64) {
         let total = max(duration.components.seconds, 0)
         return (
