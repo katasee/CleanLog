@@ -319,7 +319,7 @@ it is merged).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 16 | `feature/CL-16-today-domain` | `main` | 1–4 | 376 (code) | PR open | done — concurrency clean; SOLID: 1 fix (below) |
+| 16 | `feature/CL-16-today-domain` | `main` | 1–4 | 376 (code) | PR #16 open | done — concurrency clean; SOLID: 1 fix (below) |
 | 17 | `feature/CL-17-day-view-model` | CL-16 | 5–7 | ~480 est. | not started | — |
 | 18 | `feature/CL-18-day-actions` | CL-17 | 8–9 | ~350 est. | not started | — |
 | 19 | `feature/CL-19-today-screen` | CL-18 | 10–12 | ~450 est. | not started | — |
