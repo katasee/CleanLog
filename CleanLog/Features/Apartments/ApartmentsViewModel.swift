@@ -7,6 +7,7 @@ final class ApartmentsViewModel {
     private let locale: Locale
     private var apartments: [Apartment] = []
     private var hasLoaded = false
+    private var deletionsInProgress: Set<UUID> = []
 
     private(set) var rows: [ApartmentRow] = []
     var sheet: ApartmentSheet?
@@ -61,11 +62,12 @@ final class ApartmentsViewModel {
         pendingDeletion = nil
     }
 
-    func confirmDeletion() async {
-        guard let deletion = pendingDeletion else { return }
+    func confirmDeletion(of row: ApartmentRow) async {
         pendingDeletion = nil
+        guard deletionsInProgress.insert(row.id).inserted else { return }
+        defer { deletionsInProgress.remove(row.id) }
         do {
-            try await repository.delete(deletion.id)
+            try await repository.delete(row.id)
         } catch {
             errorMessage = String(localized: .apartmentsErrorDelete)
         }
