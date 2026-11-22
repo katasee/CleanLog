@@ -313,12 +313,13 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** `git switch feature/CL-16-today-domain` (already created from `main`, holds the spec
-and plan commits) and build Tasks 1–4 of the plan, then review as the plan's Branches section says.
+**NEXT session:** `git switch -c feature/CL-17-day-view-model feature/CL-16-today-domain` and build
+Tasks 5–7 of the plan, then review as the plan's Branches section says. PR base: CL-16 (or `main` once
+it is merged).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 16 | `feature/CL-16-today-domain` | `main` | 1–4 | ~450 est. | spec + plan committed; code next | — |
+| 16 | `feature/CL-16-today-domain` | `main` | 1–4 | 376 (code) | PR open | done — concurrency clean; SOLID: 1 fix (below) |
 | 17 | `feature/CL-17-day-view-model` | CL-16 | 5–7 | ~480 est. | not started | — |
 | 18 | `feature/CL-18-day-actions` | CL-17 | 8–9 | ~350 est. | not started | — |
 | 19 | `feature/CL-19-today-screen` | CL-18 | 10–12 | ~450 est. | not started | — |
@@ -340,6 +341,15 @@ Notes for the sessions:
   instead of iterating `NotificationCenter.notifications`. Details at the end of the plan file.
 - `SchemaV1` gains `isTimeDropped` in place (no TestFlight yet): delete the simulator app once after
   CL-16.
+
+- CL-16 (2026-11-22), built as planned with these calls: the last-tick auto-finish is
+  `(try? finishingTimer(...)) ?? self` after the today/all-ticked guard (it throws exactly for the
+  idle/finished "leave it" cases); `WorkDay.hasOpenSession` is new and shared by the drop rule and both
+  repositories; `DayFormat.month` needs no verbatim `LLLL` (a month-only skeleton is already the
+  standalone form); the en_US time has ICU's narrow no-break space (`7:40\u{202F}AM`). Review:
+  `swift-concurrency-pro` clean; SOLID — `timeSpan` named the zipped sessions `previous`/`next`
+  instead of `pair.0`/`pair.1`. Minor left: `DayKey(year:month:day: 1)` for a month's first day is
+  spelled in `MonthKey` twice and in `DayFormat.month` — a `MonthKey.firstDay` would join them.
 
 Next free branch number: **CL-21** (CL-16…20 are reserved above).
 

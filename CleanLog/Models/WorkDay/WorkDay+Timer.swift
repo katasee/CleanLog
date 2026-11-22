@@ -83,9 +83,10 @@ extension WorkDay {
 
     nonisolated var timeSpan: WorkSpan? {
         guard manualDuration == nil, let first = sessions.first, let last = sessions.last else { return nil }
-        let pauses = zip(sessions, sessions.dropFirst()).reduce(Duration.zero) { total, pair in
-            guard let previousEnd = pair.0.end else { return total }
-            return total + .seconds(max(pair.1.start.timeIntervalSince(previousEnd), 0))
+        let pauses = zip(sessions, sessions.dropFirst()).reduce(Duration.zero) { total, neighbours in
+            let (previous, next) = neighbours
+            guard let previousEnd = previous.end else { return total }
+            return total + .seconds(max(next.start.timeIntervalSince(previousEnd), 0))
         }
         return WorkSpan(
             start: first.start,
