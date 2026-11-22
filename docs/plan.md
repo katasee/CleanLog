@@ -159,11 +159,7 @@ Notes for the sessions:
   placeholder screens repeat the same `NavigationStack` + background + title; each is replaced by
   its feature's real screen, so a shared placeholder would be dead code then.
 
-## Feature 3 — Apartments
-
-**NEXT session:** if PR CL-12 is merged, delete `docs/superpowers/plans/2026-11-21-apartments.md`
-and do the gradient background branch (CL-14, brainstorm it first), then Feature 4 (Today);
-otherwise wait for the merge.
+## Feature 3 — Apartments (done)
 
 Plan: `docs/superpowers/plans/2026-11-21-apartments.md` · Spec: `docs/superpowers/specs/2026-11-21-apartments-design.md`
 
@@ -172,7 +168,7 @@ Plan: `docs/superpowers/plans/2026-11-21-apartments.md` · Spec: `docs/superpowe
 | 10 | `feature/CL-10-apartment-delete-name-order` | `main` | 1–3 | 298 code (+ spec and plan) | merged (PR #10) | done — concurrency clean; SOLID: 1 fix (below) |
 | 11 | `feature/CL-11-apartment-view-models` | `main` | 4–5 | 386 | merged (PR #11) | done — concurrency clean; SwiftUI clean; SOLID: 2 fixes (below) |
 | 13 | `feature/CL-13-apartment-form-view-model` | `main` | 6 | 310 | merged (PR #12) | done — concurrency clean; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
-| 12 | `feature/CL-12-apartments-screen` | `main` | 7–11 | 810 (530 Swift + 280 catalog JSON; end of feature) | PR open (#13) | done — SwiftUI: 2 fixes; SOLID: 1 fix; rework review: 1 fix (below) |
+| 12 | `feature/CL-12-apartments-screen` | `main` | 7–11 | 810 (530 Swift + 280 catalog JSON; end of feature) | merged (PR #13) | done — SwiftUI: 2 fixes; SOLID: 1 fix; rework review: 1 fix (below) |
 
 Notes for the sessions:
 
@@ -257,11 +253,28 @@ Notes for the sessions:
   flash the duplicate-name error → `allowsHitTesting(isShown)`. Kept: `ApartmentSheet` keeps its name
   for the cover route; the no-slide transaction appears three times (one call each). **Next branch:
   the canvas's gradient background for every screen** (the user's decision; not in this PR).
-- **Feature 3 is done once PR CL-12 is merged**: then delete the apartments plan file (the spec stays).
+- Feature 3 is done: PR CL-12 merged 2026-11-22; its plan file is deleted on CL-14 (the spec stays).
 - **For Feature 4:** «Як учора» must not copy apartments deleted since that day — filter the copy by
   the current template.
 
-Next free branch number: **CL-14** (CL-10…13 are used above).
+## Screen background (between Feature 3 and 4)
+
+**NEXT session:** build CL-14 from its plan (Tasks 1–3), review, PR; then Feature 4 (Today).
+
+Plan: `docs/superpowers/plans/2026-11-22-screen-background.md` · Spec: `docs/superpowers/specs/2026-11-22-screen-background-design.md`
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 14 | `feature/CL-14-gradient-background` | `main` | 1–3 | ~200 est. (end of the work) | planned | plan: `swiftui-pro` 1 fix folded in |
+
+Notes for the sessions:
+
+- Brainstorming (2026-11-22): the canvas "gradient" is a `#E6F7F8` fill with two blurred circles;
+  the user chose the canvas's per-screen placement (not one shared layout) and approach 1 (one
+  `.screenBackground(_:)` modifier, circles per screen) over a `MeshGradient` or images. Dark circle
+  colours are a proposal. Feature 3's plan file is deleted on this branch.
+
+Next free branch number: **CL-15** (CL-10…14 are used above).
 
 ## Roadmap (v1)
 
