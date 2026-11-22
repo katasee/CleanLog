@@ -26,7 +26,7 @@ past month.
    still fits the largest text sizes), the same sheet for a new apartment (`+`) and for editing (tap a
    row, fields prefilled).
 4. **Delete is a swipe on the row only**, always confirmed. There is no delete button in the form.
-5. **Empty state**: an icon, «Додай свої квартири» and a «Додати квартиру» button that opens the same
+5. **Empty state**: an icon, «Поки ти не маєш жодної квартири» and a «Додати квартиру» button that opens the same
    sheet. The `+` in the toolbar works too.
 6. **No Settings button yet.** It appears with Feature 9; a button that leads nowhere is dead UI.
 
@@ -39,7 +39,7 @@ the Screen and Sheet sections where they disagree.
    style of the canvas's «Додати квартири» on Today), pinned at the bottom of the Apartments screen
    above the tab bar, in the empty state and over the list alike. The list scrolls under it and its
    last row stays reachable. The toolbar `+` goes: one action, one button. The empty state keeps its
-   icon and «Додай свої квартири» but loses its own button.
+   icon and «Поки ти не маєш жодної квартири» but loses its own button.
 2. **The form is a centered popup over a blurred screen**, not a bottom sheet. It covers the whole
    app, the tab bar included, so nothing behind it can be tapped. The card fades and scales in and
    out; the keyboard pushes it up; at the largest text sizes it scrolls. A tap on the blurred
@@ -60,6 +60,12 @@ Builder's calls (correctable): the backdrop is the system thin material; the car
 with the card corner radius; adding focuses the name field, editing does not; the form view model's
 `title` and the `apartments.form.title.new` string are deleted; `apartments.action.add` becomes the
 big button's «Додати квартиру» and `apartments.empty.action` is deleted.
+
+Second revision (2026-11-22): in the empty state the «Додати квартиру» button sits right under
+«Поки ти не маєш жодної квартири», as the empty state's own action, instead of at the bottom of the screen. Over
+the list it stays pinned at the bottom above the tab bar. It is still the one button, same style.
+The footnote under the list about new prices goes, and the name field is labelled «Номер квартири»
+with a «Напр. 106» placeholder.
 
 Not in this change: the gradient background from the canvas — a separate branch right after this
 one, for every screen.
@@ -88,9 +94,6 @@ tie.
 │ │ 100              28 zł › │ │  name · price · chevron
 │ │ 106 [окремо у звіті] 56 zł › │  badge on AccentSoft
 │ └──────────────────────────┘ │  rows on Card
-│ Нова ціна діє лише для       │  footnote, InkSecondary
-│ наступних прибирань — минулі │
-│ місяці не змінюються.        │
 └──────────────────────────────┘
 ```
 
@@ -104,7 +107,7 @@ tie.
 
 ```
 Скасувати        Нова квартира        Зберегти
-Назва           [106            ]
+Номер квартири  [106            ]
 Ціна            [56             ] zł
 Код доступу     [4821           ]   (optional)
 Окремо у звіті  [ on ]
@@ -117,7 +120,7 @@ tie.
 - A price of 0 is allowed (the domain allows it), an empty price field is not.
 - «Зберегти» is disabled while the name is blank or the price does not parse.
 - «Скасувати» or swiping the sheet down discards the changes without asking.
-- A name taken by another apartment shows «Квартира з такою назвою вже є» under the name field after
+- A name taken by another apartment shows «Квартира з таким номером вже є» under the name field after
   «Зберегти»; the sheet stays open. Any other failed save shows a generic error message.
 - Saving closes the sheet; the list updates through the repository stream.
 
@@ -144,8 +147,8 @@ tie.
     `nameError`; `save() async -> Bool` (true closes the sheet). Built with the repository and the
     apartment being edited, if any.
 - **Views**: `ApartmentsView` (a `List` for swipe actions, rows on `Card`, the hidden list background
-  over `Background`, the footnote as a section footer), `ApartmentFormView` (a `Form` in a
-  `NavigationStack`, `presentationDetents([.medium, .large])`), `ContentUnavailableView` for the empty
+  over `Background`), `ApartmentFormView` (a `Form` in a
+  `NavigationStack`, `presentationDetents([.medium, .large])`), our own stack (icon on an `AccentSoft` circle, title, the button 32 pt below) for the empty
   state. Strings under `apartments.*` in both languages.
 
 ## Branches
