@@ -22,16 +22,4 @@ extension DayEntry {
             cleanedAt: nil
         )
     }
-
-    nonisolated func replanned() -> DayEntry {
-        DayEntry(
-            id: UUID(),
-            apartmentID: apartmentID,
-            name: name,
-            price: price,
-            isReportedSeparately: isReportedSeparately,
-            isCleaned: false,
-            cleanedAt: nil
-        )
-    }
 }

@@ -5,6 +5,7 @@ import Testing
 
 struct WorkDayPlanningTests {
     private let today = DayKey(year: 2026, month: 11, day: 13)
+    private let yesterday = DayKey(year: 2026, month: 11, day: 12)
     private let a100 = Apartment.fixture("100")
     private let a101 = Apartment.fixture("101")
     private let a102 = Apartment.fixture("102")
@@ -33,9 +34,8 @@ struct WorkDayPlanningTests {
         #expect(entry.price == Money(minorUnits: 2800))
     }
 
-    @Test func copiesAPlanFromItsSnapshotsUnticked() throws {
+    @Test func copiesAPlanUntickedWithFreshEntries() throws {
         let a205 = Apartment.fixture("205")
-        let yesterday = DayKey(year: 2026, month: 11, day: 12)
         let planned = WorkDay.empty(yesterday).planning([a100, a205])
         let source = try planned.settingCleaned(
             planned.entries[0].id,
@@ -43,7 +43,7 @@ struct WorkDayPlanningTests {
             now: .warsaw(2026, 11, 12, 10),
             today: today
         )
-        let copy = WorkDay.empty(today).copyingPlan(from: source)
+        let copy = WorkDay.empty(today).copyingPlan(from: source, template: [a100, a205])
         #expect(copy.entries.map(\.name) == ["100", "205"])
         #expect(copy.entries.allSatisfy { !$0.isCleaned })
         #expect(Set(copy.entries.map(\.id)).isDisjoint(with: source.entries.map(\.id)))
@@ -52,9 +52,26 @@ struct WorkDayPlanningTests {
 
     @Test func copyingSkipsApartmentsAlreadyOnTheDay() {
         let a205 = Apartment.fixture("205")
-        let source = WorkDay.empty(DayKey(year: 2026, month: 11, day: 12)).planning([a100, a205])
-        let copy = WorkDay.empty(today).planning([a100]).copyingPlan(from: source)
+        let source = WorkDay.empty(yesterday).planning([a100, a205])
+        let copy = WorkDay.empty(today).planning([a100]).copyingPlan(from: source, template: [a100, a205])
         #expect(copy.entries.map(\.name) == ["100", "205"])
+    }
+
+    @Test func copiesOnlyTemplateApartmentsAtTheirCurrentPrice() throws {
+        let source = WorkDay.fixture(yesterday, ticked: [a100], unticked: [a101, a102])
+        let raised = Apartment(
+            id: a100.id,
+            name: "100",
+            price: Money(minorUnits: 3000),
+            accessCode: nil,
+            isReportedSeparately: true,
+            createdAt: a100.createdAt
+        )
+        let copy = WorkDay.empty(today).copyingPlan(from: source, template: [raised, a102])
+        #expect(copy.entries.map(\.apartmentID) == [a100.id, a102.id])
+        #expect(copy.entries[0].price == Money(minorUnits: 3000))
+        #expect(copy.entries[0].isReportedSeparately)
+        #expect(copy.entries.allSatisfy { !$0.isCleaned && $0.cleanedAt == nil })
     }
 
     @Test func removesOnlyTheGivenEntry() {

@@ -5,8 +5,11 @@ extension WorkDay {
         addingUnplanned(apartments.map(DayEntry.init(planning:)))
     }
 
-    nonisolated func copyingPlan(from other: WorkDay) -> WorkDay {
-        addingUnplanned(other.entries.map { $0.replanned() })
+    nonisolated func copyingPlan(from other: WorkDay, template: [Apartment]) -> WorkDay {
+        let apartments = other.entries.compactMap { entry in
+            template.first { $0.id == entry.apartmentID }
+        }
+        return planning(apartments)
     }
 
     nonisolated func removingEntry(_ id: DayEntry.ID) -> WorkDay {
