@@ -5,8 +5,11 @@ extension WorkDay {
         addingUnplanned(apartments.map(DayEntry.init(planning:)))
     }
 
-    nonisolated func copyingPlan(from other: WorkDay) -> WorkDay {
-        addingUnplanned(other.entries.map { $0.replanned() })
+    nonisolated func copyingPlan(from other: WorkDay, template: [Apartment]) -> WorkDay {
+        let apartments = other.entries.compactMap { entry in
+            template.first { $0.id == entry.apartmentID }
+        }
+        return planning(apartments)
     }
 
     nonisolated func removingEntry(_ id: DayEntry.ID) -> WorkDay {
@@ -26,7 +29,12 @@ extension WorkDay {
         var copy = self
         copy.entries[index].isCleaned = isCleaned
         copy.entries[index].cleanedAt = isCleaned ? now : nil
-        return copy
+        return isCleaned ? copy.finishingTimerIfAllCleaned(now: now, today: today) : copy
+    }
+
+    private nonisolated func finishingTimerIfAllCleaned(now: Date, today: DayKey) -> WorkDay {
+        guard day == today, entries.allSatisfy(\.isCleaned) else { return self }
+        return (try? finishingTimer(at: now, today: today)) ?? self
     }
 
     private nonisolated func addingUnplanned(_ newEntries: [DayEntry]) -> WorkDay {

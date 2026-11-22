@@ -27,6 +27,12 @@
                 .max { $0.day < $1.day }
         }
 
+        func daysWithOpenSession(before day: DayKey) async throws -> [WorkDay] {
+            stored.values
+                .filter { $0.day < day && $0.hasOpenSession }
+                .sorted { $0.day < $1.day }
+        }
+
         func update(_ day: DayKey, _ change: (WorkDay) throws -> WorkDay) async throws {
             let current = stored[day]
             let changed = try change(current ?? .empty(day))

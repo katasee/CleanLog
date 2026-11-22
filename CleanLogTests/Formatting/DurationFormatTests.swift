@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 
 @testable import CleanLog
@@ -17,5 +18,10 @@ struct DurationFormatTests {
 
     @Test func dropsFractionsOfASecond() {
         #expect(DurationFormat.clock(.milliseconds(61_999)) == "0:01:01")
+    }
+
+    @Test func formatsAPause() {
+        #expect(DurationFormat.pause(.seconds(25 * 60), locale: Locale(identifier: "uk_UA")) == "25 хв")
+        #expect(DurationFormat.pause(.seconds(85 * 60), locale: Locale(identifier: "en_US")) == "1 hr, 25 min")
     }
 }

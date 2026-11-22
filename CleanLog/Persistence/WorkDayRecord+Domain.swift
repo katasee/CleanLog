@@ -12,7 +12,8 @@ extension WorkDayRecord {
             entries: (entries ?? []).sorted { $0.position < $1.position }.map(\.domain),
             sessions: (sessions ?? []).sorted { $0.position < $1.position }.map(\.domain),
             manualDuration: manualDurationSeconds.map { .seconds($0) },
-            isTimerFinished: isTimerFinished
+            isTimerFinished: isTimerFinished,
+            isTimeDropped: isTimeDropped
         )
     }
 
@@ -24,6 +25,7 @@ extension WorkDayRecord {
         dayValue = workDay.day.storageValue
         manualDurationSeconds = workDay.manualDuration.map { Int($0.components.seconds) }
         isTimerFinished = workDay.isTimerFinished
+        isTimeDropped = workDay.isTimeDropped
         entries = modelContext.synced(
             entries ?? [],
             to: workDay.entries,

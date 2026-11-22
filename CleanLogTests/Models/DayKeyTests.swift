@@ -46,4 +46,10 @@ struct DayKeyTests {
     @Test func knowsItsMonth() {
         #expect(DayKey(year: 2026, month: 11, day: 13).monthKey == MonthKey(year: 2026, month: 11))
     }
+
+    @Test(arguments: [(12, DayKind.past), (13, .today), (14, .future)])
+    func knowsItsKind(day: Int, kind: DayKind) {
+        let today = DayKey(year: 2026, month: 11, day: 13)
+        #expect(DayKey(year: 2026, month: 11, day: day).kind(relativeTo: today) == kind)
+    }
 }

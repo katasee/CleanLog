@@ -31,6 +31,7 @@ enum SchemaV1: VersionedSchema {
         var dayValue = 0
         var manualDurationSeconds: Int?
         var isTimerFinished = false
+        var isTimeDropped = false
         @Relationship(deleteRule: .cascade, inverse: \DayEntryRecord.day)
         var entries: [DayEntryRecord]? = []
         @Relationship(deleteRule: .cascade, inverse: \WorkSessionRecord.day)
