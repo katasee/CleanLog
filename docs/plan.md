@@ -266,7 +266,7 @@ Plan: `docs/superpowers/plans/2026-11-22-screen-background.md` · Spec: `docs/su
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 14 | `feature/CL-14-gradient-background` | `main` | 1–3 | 271 code (end of the work) | PR open | done — SwiftUI clean; SOLID: 2 fixes (below) |
+| 14 | `feature/CL-14-gradient-background` | `main` | 1–3 | 271 code (end of the work) | PR open (#14) | done — SwiftUI clean; SOLID: 2 fixes (below) |
 
 Notes for the sessions:
 
