@@ -23,6 +23,8 @@ final class DayViewModel {
     private(set) var cleanedCountText = ""
     private(set) var summary: DaySummary?
     private(set) var copyOffer: CopyOffer?
+    private(set) var timer: DayTimer?
+    private(set) var droppedNote: String?
 
     init(
         day: DayKey,
@@ -58,6 +60,10 @@ final class DayViewModel {
 
     var emptyTitle: String {
         String(localized: kind == .today ? .todayEmptyTitleToday : .todayEmptyTitleOther, locale: locale)
+    }
+
+    func timerText(at date: Date) -> String {
+        DurationFormat.clock(workDay?.workedDuration(now: date) ?? .zero)
     }
 
     func observe() async {
@@ -119,6 +125,14 @@ final class DayViewModel {
             calendar: calendar,
             locale: locale
         )
+        timer = DayTimer(
+            workDay,
+            kind: kind,
+            now: now(),
+            calendar: calendar,
+            locale: locale
+        )
+        droppedNote = workDay.isTimeDropped ? String(localized: .todayTimerDropped, locale: locale) : nil
         copyOffer = copySource.flatMap { source in
             CopyOffer(
                 copying: source,

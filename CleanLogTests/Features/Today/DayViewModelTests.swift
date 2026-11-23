@@ -27,6 +27,10 @@ struct DayViewModelTests {
         )
     }
 
+    private func at(_ hour: Int, _ minute: Int = 0) -> Date {
+        .warsaw(2026, 11, 13, hour, minute)
+    }
+
     private func observing(
         _ viewModel: DayViewModel,
         _ body: () async throws -> Void
@@ -210,6 +214,74 @@ struct DayViewModelTests {
         await observing(viewModel) {
             #expect(viewModel.showsEmptyState)
             #expect(viewModel.emptyTitle == "Квартир на цей день немає")
+        }
+    }
+
+    @Test func showsEveryTodayTimerState() async throws {
+        let planned = WorkDay.fixture(today, ticked: [], unticked: [a28])
+        let running = try planned.startingTimer(at: at(7, 30), today: today)
+        let paused = try running.pausingTimer(at: at(8, 45), today: today)
+        let finished = try paused.startingTimer(at: at(9, 10), today: today)
+            .finishingTimer(at: at(13, 5), today: today)
+        let expectations: [(WorkDay, DayTimer)] = [
+            (planned, .idle),
+            (running, .running(status: "Працюю · з 07:30")),
+            (paused, .paused),
+            (finished, .finished(total: "5:10", span: "07:30 – 13:05 · пауза 25 хв")),
+        ]
+
+        for (workDay, expected) in expectations {
+            let viewModel = makeViewModel(day: today, days: [workDay])
+            await observing(viewModel) {
+                #expect(viewModel.timer == expected)
+            }
+        }
+    }
+
+    @Test func showsAPastDayTotal() async throws {
+        let workDay = try WorkDay.fixture(yesterday, ticked: [a28])
+            .startingTimer(at: .warsaw(2026, 11, 12, 8), today: yesterday)
+            .finishingTimer(at: .warsaw(2026, 11, 12, 10, 15), today: yesterday)
+        let viewModel = makeViewModel(day: yesterday, days: [workDay])
+
+        await observing(viewModel) {
+            #expect(viewModel.timer == .past(total: "2:15", span: "08:00 – 10:15"))
+            #expect(viewModel.droppedNote == nil)
+        }
+    }
+
+    @Test func showsTheDroppedNote() async throws {
+        let workDay = try WorkDay.fixture(yesterday, ticked: [a28])
+            .startingTimer(at: .warsaw(2026, 11, 12, 8), today: yesterday)
+            .droppingOverrunTimer(today: today)
+        let viewModel = makeViewModel(day: yesterday, days: [workDay])
+
+        await observing(viewModel) {
+            #expect(viewModel.timer == .past(total: "0:00", span: nil))
+            #expect(viewModel.droppedNote == "Час не записано — таймер не зупинили")
+        }
+    }
+
+    @Test func hasNoTimerOnAFutureDay() async {
+        let viewModel = makeViewModel(
+            day: tomorrow,
+            days: [.fixture(tomorrow, ticked: [], unticked: [a28])]
+        )
+
+        await observing(viewModel) {
+            #expect(viewModel.timer == nil)
+        }
+    }
+
+    @Test func formatsTheTickingClock() async throws {
+        let workDay = try WorkDay.fixture(today, ticked: [], unticked: [a28])
+            .startingTimer(at: at(7, 30), today: today)
+            .pausingTimer(at: at(10), today: today)
+            .startingTimer(at: at(10, 25), today: today)
+        let viewModel = makeViewModel(day: today, days: [workDay])
+
+        await observing(viewModel) {
+            #expect(viewModel.timerText(at: at(11, 25)) == "3:30:00")
         }
     }
 
