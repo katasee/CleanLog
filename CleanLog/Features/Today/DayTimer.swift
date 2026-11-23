@@ -16,30 +16,57 @@ extension DayTimer {
         calendar: Calendar,
         locale: Locale
     ) {
-        let total = DurationFormat.short(workDay.workedDuration(now: now))
-        let span = workDay.timeSpan.flatMap { Self.text(of: $0, calendar: calendar, locale: locale) }
         switch (kind, workDay.timerState) {
         case (.future, _):
             return nil
         case (.past, _):
-            self = .past(total: total, span: span)
+            self = .past(
+                total: Self.total(of: workDay, now: now),
+                span: Self.span(
+                    of: workDay,
+                    calendar: calendar,
+                    locale: locale
+                )
+            )
         case (.today, .idle):
             self = .idle
         case (.today, .running):
-            let since = workDay.sessions.first?.start ?? now
-            let time = DayFormat.time(since, calendar: calendar, locale: locale)
+            let time = DayFormat.time(
+                workDay.sessions.first?.start ?? now,
+                calendar: calendar,
+                locale: locale
+            )
             self = .running(status: String(localized: .todayTimerRunning(time), locale: locale))
         case (.today, .paused):
             self = .paused
         case (.today, .finished):
-            self = .finished(total: total, span: span)
+            self = .finished(
+                total: Self.total(of: workDay, now: now),
+                span: Self.span(
+                    of: workDay,
+                    calendar: calendar,
+                    locale: locale
+                )
+            )
         }
     }
 
-    private static func text(of span: WorkSpan, calendar: Calendar, locale: Locale) -> String? {
-        guard let end = span.end else { return nil }
-        let start = DayFormat.time(span.start, calendar: calendar, locale: locale)
-        let finish = DayFormat.time(end, calendar: calendar, locale: locale)
+    private static func total(of workDay: WorkDay, now: Date) -> String {
+        DurationFormat.short(workDay.workedDuration(now: now))
+    }
+
+    private static func span(of workDay: WorkDay, calendar: Calendar, locale: Locale) -> String? {
+        guard let span = workDay.timeSpan, let end = span.end else { return nil }
+        let start = DayFormat.time(
+            span.start,
+            calendar: calendar,
+            locale: locale
+        )
+        let finish = DayFormat.time(
+            end,
+            calendar: calendar,
+            locale: locale
+        )
         guard span.pauses > .zero else {
             return String(localized: .todayTimerSpan(start, finish), locale: locale)
         }

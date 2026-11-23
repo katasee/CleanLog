@@ -76,7 +76,7 @@ final class DayViewModel {
 
     func setCleaned(_ id: DayEntry.ID, to isCleaned: Bool) async {
         let now = now()
-        await perform { [today] workDay in
+        await perform { workDay in
             try workDay.settingCleaned(
                 id,
                 to: isCleaned,
@@ -92,7 +92,7 @@ final class DayViewModel {
 
     func copyPlan() async {
         guard let copySource else { return }
-        await perform { [template] in $0.copyingPlan(from: copySource, template: template) }
+        await perform { $0.copyingPlan(from: copySource, template: template) }
     }
 
     func observe() async {
@@ -136,10 +136,10 @@ final class DayViewModel {
     private func dropOverrunTimers() async {
         do {
             for overrun in try await workDays.daysWithOpenSession(before: today) {
-                try await workDays.update(overrun.day) { [today] in $0.droppingOverrunTimer(today: today) }
+                try await workDays.update(overrun.day) { $0.droppingOverrunTimer(today: today) }
             }
         } catch {
-            fail("Could not drop the overrun timers", error)
+            showSaveError("Could not drop the overrun timers", error)
         }
     }
 
@@ -147,11 +147,11 @@ final class DayViewModel {
         do {
             try await workDays.update(day, change)
         } catch {
-            fail("Could not save the day", error)
+            showSaveError("Could not save the day", error)
         }
     }
 
-    private func fail(_ action: String, _ error: any Error) {
+    private func showSaveError(_ action: String, _ error: any Error) {
         logger.error("\(action): \(error)")
         errorMessage = String(localized: .todayErrorSave, locale: locale)
     }
