@@ -313,14 +313,14 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** `git switch feature/CL-22-day-summaries` (local, built): review from step 4; PR base CL-17.
+**NEXT session:** `git switch -c feature/CL-18-day-actions feature/CL-22-day-summaries`: Tasks 7–8, test-first; PR base CL-22.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 21 | `feature/CL-21-today-spec-plan` | `main` | — (spec, plan, design) | 912 (docs only) | merged (PR #17) | — |
 | 16 | `feature/CL-16-today-domain` | CL-21 | 1–4 | 405 | merged (PR #16) | done — concurrency clean; SOLID: 1 fix (below) |
 | 17 | `feature/CL-17-day-view-model` | `main` | 5, 6 (header, rows) | 500 | PR #18 open | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
-| 22 | `feature/CL-22-day-summaries` | CL-17 | 6 (summaries, «Як учора») | see below | built, not reviewed | — |
+| 22 | `feature/CL-22-day-summaries` | CL-17 | 6 (summaries, «Як учора») | 325 | PR #19 open | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
 | 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | ~470 est. | not started | — |
 | 23 | `feature/CL-23-day-timer-actions` | CL-18 | 9 | ~250 est. | not started | — |
 | 19 | `feature/CL-19-today-screen` | CL-23 | 10–12 | ~450 est. | not started | — |
@@ -361,6 +361,12 @@ Notes for the sessions:
   the copy offer to CL-22, Task 7 to CL-18, Task 9 to CL-23 (this table overrides the plan file's).
   `header`/`kind` are `let`; `String(localized:locale:)` also picks the language. Review: concurrency,
   SwiftUI clean; SOLID 1 fix. CL-18: `DayTimer.past` needs no `isTimeDropped` beside `droppedNote`.
+
+- CL-22 (2026-11-23): summaries and the copy offer as planned. Review: concurrency clean (the copy
+  source is fetched once, the flag set before the `await`); no views, SwiftUI clean; SOLID —
+  `DaySummary` formatted the earned and planned sums twice each, now once. Minor left: on today the
+  first day emission can render the month card with 0 zł before the month stream's first value — one
+  frame at most; make `monthDays` optional if it shows on a device.
 
 Next free branch number: **CL-24** (CL-16…23 are used above).
 
