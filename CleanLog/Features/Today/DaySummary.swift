@@ -24,16 +24,15 @@ extension DaySummary {
         calendar: Calendar,
         locale: Locale
     ) {
+        let earned = MoneyFormat.string(workDay.earned, locale: locale)
+        let planned = MoneyFormat.string(workDay.planned, locale: locale)
         switch kind {
         case .today:
             let stats = MonthStats.calculate(days: month, now: now)
             self = .today(
                 TodaySummary(
-                    earned: MoneyFormat.string(workDay.earned, locale: locale),
-                    planned: String(
-                        localized: .todaySummaryPlanned(MoneyFormat.string(workDay.planned, locale: locale)),
-                        locale: locale
-                    ),
+                    earned: earned,
+                    planned: String(localized: .todaySummaryPlanned(planned), locale: locale),
                     progress: Self.progress(of: workDay),
                     month: DayFormat.month(workDay.day.monthKey, calendar: calendar, locale: locale),
                     monthEarned: MoneyFormat.string(stats.earned, locale: locale),
@@ -41,9 +40,9 @@ extension DaySummary {
                 )
             )
         case .past:
-            self = .past(earned: MoneyFormat.string(workDay.earned, locale: locale))
+            self = .past(earned: earned)
         case .future:
-            self = .future(planned: MoneyFormat.string(workDay.planned, locale: locale))
+            self = .future(planned: planned)
         }
     }
 
