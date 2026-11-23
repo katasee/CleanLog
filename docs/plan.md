@@ -319,7 +319,7 @@ Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/sp
 |---|---|---|---|---|---|---|
 | 21 | `feature/CL-21-today-spec-plan` | `main` | — (spec, plan, design) | 912 (docs only) | merged (PR #17) | — |
 | 16 | `feature/CL-16-today-domain` | CL-21 | 1–4 | 405 | merged (PR #16) | done — concurrency clean; SOLID: 1 fix (below) |
-| 17 | `feature/CL-17-day-view-model` | `main` | 5, 6 (header, rows) | 500 | PR open | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
+| 17 | `feature/CL-17-day-view-model` | `main` | 5, 6 (header, rows) | 500 | PR #18 open | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
 | 22 | `feature/CL-22-day-summaries` | CL-17 | 6 (summaries, «Як учора») | see below | built, not reviewed | — |
 | 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | ~470 est. | not started | — |
 | 23 | `feature/CL-23-day-timer-actions` | CL-18 | 9 | ~250 est. | not started | — |
