@@ -313,7 +313,7 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** `git switch -c feature/CL-18-day-actions feature/CL-22-day-summaries`: Tasks 7–8 (timer card moved to CL-23 — see the CL-17 note), test-first; PR base CL-22.
+**NEXT session:** `git switch -c feature/CL-18-day-actions feature/CL-22-day-summaries`: Tasks 7–8, test-first; PR base CL-22.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
