@@ -313,17 +313,19 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** `git switch feature/CL-17-day-view-model` (already created from `main` after CL-16
-and CL-21 merged) and build Tasks 5–7 of the plan, then review as the plan's Branches section says.
-PR base: `main`.
+**NEXT session:** `git switch feature/CL-22-day-summaries` (exists locally, stacked on CL-17, built
+but not reviewed or pushed) and do its review as the plan's Branches section says (step 4 of "How a
+session runs" onward). PR base: `feature/CL-17-day-view-model`, or `main` once CL-17 is merged.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 21 | `feature/CL-21-today-spec-plan` | `main` | — (spec, plan, design) | 912 (docs only) | merged (PR #17) | — |
 | 16 | `feature/CL-16-today-domain` | CL-21 | 1–4 | 405 | merged (PR #16) | done — concurrency clean; SOLID: 1 fix (below) |
-| 17 | `feature/CL-17-day-view-model` | `main` | 5–7 | ~480 est. | not started | — |
-| 18 | `feature/CL-18-day-actions` | CL-17 | 8–9 | ~350 est. | not started | — |
-| 19 | `feature/CL-19-today-screen` | CL-18 | 10–12 | ~450 est. | not started | — |
+| 17 | `feature/CL-17-day-view-model` | `main` | 5, 6 (header, rows) | 489 | PR open | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
+| 22 | `feature/CL-22-day-summaries` | CL-17 | 6 (summaries, «Як учора») | see below | built, not reviewed | — |
+| 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | ~470 est. | not started | — |
+| 23 | `feature/CL-23-day-timer-actions` | CL-18 | 9 | ~250 est. | not started | — |
+| 19 | `feature/CL-19-today-screen` | CL-23 | 10–12 | ~450 est. | not started | — |
 | 20 | `feature/CL-20-today-states` | CL-19 | 13–14 | ~350 est. (end of feature) | not started | — |
 
 Notes for the sessions:
@@ -357,7 +359,21 @@ Notes for the sessions:
   the planning commit, no history rewritten) and CL-16 now stacks on it. A feature's spec and plan go
   on their own branch from now on, never at the bottom of the first code branch.
 
-Next free branch number: **CL-22** (CL-16…21 are used above).
+- CL-17 (2026-11-23): Tasks 5 and 6 together measured 792 lines (the catalog's JSON is 25 lines per
+  plain key and 40 per plural), so the branch was split before it was pushed: CL-17 keeps Task 5 and
+  the header, rows, progress text, empty title and `canTick`; the day and month sums and the copy
+  offer moved to CL-22 (built in the same session and committed locally, the full Task 6 tests passed
+  before the split); Task 7 (the timer card) moved to CL-18 and Task 9 to a new CL-23. Calls:
+  `header` and `kind` are `let` (fixed for a view model's day); `now` and the stored `calendar` arrive
+  with CL-22, which needs them; `String(localized:locale:)` in `Features/Today/` sets the resource's
+  locale, which also picks the catalog language (`titlesInTheGivenLanguage` checks English); the test
+  helper waits for `showsEmptyState || !rows.isEmpty` as in `ApartmentsViewModelTests`. Review:
+  `swift-concurrency-pro` clean (two loops in a discarding task group, cancelled with the view's
+  `.task`); `swiftui-pro` clean; SOLID — the `DayHeader(...)` expectations put their three arguments
+  one per line. For CL-18 (proposal): `DayTimer.past` needs no `isTimeDropped` when `droppedNote`
+  carries it — one source for the note.
+
+Next free branch number: **CL-24** (CL-16…23 are used above).
 
 ## Roadmap (v1)
 
