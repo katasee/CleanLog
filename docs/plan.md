@@ -360,7 +360,7 @@ Notes for the sessions:
 
 - CL-17 (2026-11-23): Tasks 5–6 measured 792 lines (a catalog key is 25–40 JSON lines), so it was
   split before the push: sums and the copy offer → CL-22 (built, committed locally), Task 7 → CL-18,
-  Task 9 → CL-23. `header`/`kind` are `let`; `now`/`calendar` come with CL-22; `String(localized:locale:)`
+  Task 9 → CL-23 (this table overrides the plan file's). `header`/`kind` are `let`; `now`/`calendar` come with CL-22; `String(localized:locale:)`
   also picks the catalog language. Review: concurrency and SwiftUI clean; SOLID — 1 fix (header test
   arguments one per line). For CL-18: `DayTimer.past` needs no `isTimeDropped` beside `droppedNote`.
 
