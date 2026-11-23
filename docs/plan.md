@@ -320,7 +320,7 @@ from step 4 on. PR base: CL-17, or `main` once CL-17 is merged.
 |---|---|---|---|---|---|---|
 | 21 | `feature/CL-21-today-spec-plan` | `main` | — (spec, plan, design) | 912 (docs only) | merged (PR #17) | — |
 | 16 | `feature/CL-16-today-domain` | CL-21 | 1–4 | 405 | merged (PR #16) | done — concurrency clean; SOLID: 1 fix (below) |
-| 17 | `feature/CL-17-day-view-model` | `main` | 5, 6 (header, rows) | 489 | PR open | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
+| 17 | `feature/CL-17-day-view-model` | `main` | 5, 6 (header, rows) | 498 | PR open | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
 | 22 | `feature/CL-22-day-summaries` | CL-17 | 6 (summaries, «Як учора») | see below | built, not reviewed | — |
 | 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | ~470 est. | not started | — |
 | 23 | `feature/CL-23-day-timer-actions` | CL-18 | 9 | ~250 est. | not started | — |
@@ -358,11 +358,10 @@ Notes for the sessions:
   the planning commit, no history rewritten) and CL-16 now stacks on it. A feature's spec and plan go
   on their own branch from now on, never at the bottom of the first code branch.
 
-- CL-17 (2026-11-23): Tasks 5–6 measured 792 lines (a catalog key is 25–40 JSON lines), so it was
-  split before the push: sums and the copy offer → CL-22 (built, committed locally), Task 7 → CL-18,
-  Task 9 → CL-23 (this table overrides the plan file's). `header`/`kind` are `let`; `now`/`calendar` come with CL-22; `String(localized:locale:)`
-  also picks the catalog language. Review: concurrency and SwiftUI clean; SOLID — 1 fix (header test
-  arguments one per line). For CL-18: `DayTimer.past` needs no `isTimeDropped` beside `droppedNote`.
+- CL-17 (2026-11-23): Tasks 5–6 were 792 lines (a catalog key is 25–40 JSON lines) → split: sums and
+  the copy offer to CL-22, Task 7 to CL-18, Task 9 to CL-23 (this table overrides the plan file's).
+  `header`/`kind` are `let`; `String(localized:locale:)` also picks the language. Review: concurrency,
+  SwiftUI clean; SOLID 1 fix. CL-18: `DayTimer.past` needs no `isTimeDropped` beside `droppedNote`.
 
 Next free branch number: **CL-24** (CL-16…23 are used above).
 
