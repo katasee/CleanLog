@@ -5,6 +5,7 @@ import os
 @Observable @MainActor
 final class DayViewModel {
     private let day: DayKey
+    private let today: DayKey
     private let workDays: any WorkDayRepository
     private let apartments: any ApartmentRepository
     private let now: () -> Date
@@ -25,6 +26,7 @@ final class DayViewModel {
     private(set) var copyOffer: CopyOffer?
     private(set) var timer: DayTimer?
     private(set) var droppedNote: String?
+    private(set) var errorMessage: String?
 
     init(
         day: DayKey,
@@ -36,6 +38,7 @@ final class DayViewModel {
         locale: Locale = .current
     ) {
         self.day = day
+        self.today = today
         self.workDays = workDays
         self.apartments = apartments
         self.now = now
@@ -62,11 +65,40 @@ final class DayViewModel {
         String(localized: kind == .today ? .todayEmptyTitleToday : .todayEmptyTitleOther, locale: locale)
     }
 
+    var isShowingError: Bool {
+        get { errorMessage != nil }
+        set { if !newValue { errorMessage = nil } }
+    }
+
     func timerText(at date: Date) -> String {
         DurationFormat.clock(workDay?.workedDuration(now: date) ?? .zero)
     }
 
+    func setCleaned(_ id: DayEntry.ID, to isCleaned: Bool) async {
+        let now = now()
+        await perform { [today] workDay in
+            try workDay.settingCleaned(
+                id,
+                to: isCleaned,
+                now: now,
+                today: today
+            )
+        }
+    }
+
+    func remove(_ id: DayEntry.ID) async {
+        await perform { $0.removingEntry(id) }
+    }
+
+    func copyPlan() async {
+        guard let copySource else { return }
+        await perform { [template] in $0.copyingPlan(from: copySource, template: template) }
+    }
+
     func observe() async {
+        if kind == .today {
+            await dropOverrunTimers()
+        }
         await withDiscardingTaskGroup { group in
             group.addTask { await self.observeDay() }
             group.addTask { await self.observeTemplate() }
@@ -99,6 +131,29 @@ final class DayViewModel {
             self.monthDays = monthDays
             refresh()
         }
+    }
+
+    private func dropOverrunTimers() async {
+        do {
+            for overrun in try await workDays.daysWithOpenSession(before: today) {
+                try await workDays.update(overrun.day) { [today] in $0.droppingOverrunTimer(today: today) }
+            }
+        } catch {
+            fail("Could not drop the overrun timers", error)
+        }
+    }
+
+    private func perform(_ change: (WorkDay) throws -> WorkDay) async {
+        do {
+            try await workDays.update(day, change)
+        } catch {
+            fail("Could not save the day", error)
+        }
+    }
+
+    private func fail(_ action: String, _ error: any Error) {
+        logger.error("\(action): \(error)")
+        errorMessage = String(localized: .todayErrorSave, locale: locale)
     }
 
     private func loadCopySource() async {

@@ -16,10 +16,24 @@ struct DayViewModelTests {
         apartments: FakeApartmentRepository = FakeApartmentRepository(),
         locale: Locale = Locale(identifier: "uk_UA")
     ) -> DayViewModel {
+        makeViewModel(
+            day: day,
+            workDays: FakeWorkDayRepository(days),
+            apartments: apartments,
+            locale: locale
+        )
+    }
+
+    private func makeViewModel(
+        day: DayKey,
+        workDays: any WorkDayRepository,
+        apartments: FakeApartmentRepository = FakeApartmentRepository(),
+        locale: Locale = Locale(identifier: "uk_UA")
+    ) -> DayViewModel {
         DayViewModel(
             day: day,
             today: today,
-            workDays: FakeWorkDayRepository(days),
+            workDays: workDays,
             apartments: apartments,
             now: { .warsaw(2026, 11, 13, 9) },
             calendar: .warsaw,
@@ -39,6 +53,13 @@ struct DayViewModelTests {
         defer { task.cancel() }
         await eventually { viewModel.showsEmptyState || !viewModel.rows.isEmpty }
         try await body()
+    }
+
+    private func stored(_ day: DayKey, in workDays: any WorkDayRepository) async -> WorkDay? {
+        for await workDay in workDays.day(day) {
+            return workDay
+        }
+        return nil
     }
 
     @Test func titlesTodayAndOtherDays() {
@@ -282,6 +303,101 @@ struct DayViewModelTests {
 
         await observing(viewModel) {
             #expect(viewModel.timerText(at: at(11, 25)) == "3:30:00")
+        }
+    }
+
+    @Test func ticksAndUnticks() async {
+        let workDay = WorkDay.fixture(today, ticked: [], unticked: [a28, a56])
+        let viewModel = makeViewModel(day: today, days: [workDay])
+        let id = workDay.entries[0].id
+
+        await observing(viewModel) {
+            await viewModel.setCleaned(id, to: true)
+            await eventually { viewModel.rows.first?.isCleaned == true }
+            await viewModel.setCleaned(id, to: false)
+            await eventually { viewModel.rows.first?.isCleaned == false }
+        }
+    }
+
+    @Test func ticksTheLastAndStopsTheTimer() async throws {
+        let workDay = try WorkDay.fixture(today, ticked: [a28], unticked: [a56])
+            .startingTimer(at: at(7, 30), today: today)
+        let viewModel = makeViewModel(day: today, days: [workDay])
+
+        await observing(viewModel) {
+            await viewModel.setCleaned(workDay.entries[1].id, to: true)
+            await eventually { viewModel.rows.allSatisfy(\.isCleaned) }
+            #expect(viewModel.timer == .finished(total: "1:30", span: "07:30 – 09:00"))
+        }
+    }
+
+    @Test func removesAnEntry() async {
+        let workDay = WorkDay.fixture(today, ticked: [], unticked: [a28, a56])
+        let viewModel = makeViewModel(day: today, days: [workDay])
+
+        await observing(viewModel) {
+            await viewModel.remove(workDay.entries[0].id)
+            await eventually { viewModel.rows.count == 1 }
+            #expect(viewModel.rows.first?.name == "106")
+        }
+    }
+
+    @Test func copiesThePlan() async {
+        let a100 = Apartment.fixture("100")
+        let a101 = Apartment.fixture("101")
+        let a102 = Apartment.fixture("102")
+        let viewModel = makeViewModel(
+            day: today,
+            days: [.fixture(yesterday, ticked: [a100, a101, a102])],
+            apartments: FakeApartmentRepository([a100, a102])
+        )
+
+        await observing(viewModel) {
+            await eventually { viewModel.copyOffer != nil }
+            await viewModel.copyPlan()
+            await eventually { viewModel.rows.map(\.name) == ["100", "102"] }
+            #expect(viewModel.copyOffer == nil)
+        }
+    }
+
+    @Test func dropsOverrunTimersWhenShowingToday() async throws {
+        let tenth = DayKey(year: 2026, month: 11, day: 10)
+        let workDays = FakeWorkDayRepository([
+            try .fixture(tenth, ticked: [a28]).startingTimer(at: .warsaw(2026, 11, 10, 8), today: tenth),
+            try .fixture(yesterday, ticked: [a28]).startingTimer(at: .warsaw(2026, 11, 12, 8), today: yesterday),
+        ])
+        let viewModel = makeViewModel(day: today, workDays: workDays)
+
+        try await observing(viewModel) {
+            #expect(await stored(tenth, in: workDays)?.isTimeDropped == true)
+            #expect(await stored(yesterday, in: workDays)?.isTimeDropped == true)
+            let stillOpen = try await workDays.daysWithOpenSession(before: today)
+            #expect(stillOpen.isEmpty)
+        }
+    }
+
+    @Test func doesNotSweepFromAnotherDay() async throws {
+        let tenth = DayKey(year: 2026, month: 11, day: 10)
+        let workDays = FakeWorkDayRepository([
+            try .fixture(tenth, ticked: [a28]).startingTimer(at: .warsaw(2026, 11, 10, 8), today: tenth)
+        ])
+        let viewModel = makeViewModel(day: yesterday, workDays: workDays)
+
+        await observing(viewModel) {
+            #expect(await stored(tenth, in: workDays)?.hasOpenSession == true)
+        }
+    }
+
+    @Test func surfacesARefusedWrite() async {
+        let workDay = WorkDay.fixture(today, ticked: [], unticked: [a28])
+        let viewModel = makeViewModel(day: today, workDays: FailingWorkDayRepository([workDay]))
+
+        await observing(viewModel) {
+            await viewModel.setCleaned(workDay.entries[0].id, to: true)
+            #expect(viewModel.isShowingError)
+            #expect(viewModel.errorMessage == "Не вдалося зберегти зміну")
+            viewModel.isShowingError = false
+            #expect(viewModel.errorMessage == nil)
         }
     }
 

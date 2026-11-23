@@ -481,6 +481,23 @@
         }
       }
     },
+    "today.error.save" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't save the change"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося зберегти зміну"
+          }
+        }
+      }
+    },
     "today.header.future" : {
       "extractionState" : "manual",
       "localizations" : {
