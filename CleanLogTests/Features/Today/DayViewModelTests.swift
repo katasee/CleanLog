@@ -7,6 +7,8 @@ struct DayViewModelTests {
     private let today = DayKey(year: 2026, month: 11, day: 13)
     private let yesterday = DayKey(year: 2026, month: 11, day: 12)
     private let tomorrow = DayKey(year: 2026, month: 11, day: 14)
+    private let a28 = Apartment.fixture("100")
+    private let a56 = Apartment.fixture("106", minorUnits: 5600, separate: true)
 
     private func makeViewModel(
         day: DayKey,
@@ -19,6 +21,7 @@ struct DayViewModelTests {
             today: today,
             workDays: FakeWorkDayRepository(days),
             apartments: apartments,
+            now: { .warsaw(2026, 11, 13, 9) },
             calendar: .warsaw,
             locale: locale
         )
@@ -111,6 +114,83 @@ struct DayViewModelTests {
             )
             #expect(viewModel.cleanedCountText == "1 з 2 прибрано")
             #expect(!viewModel.showsEmptyState)
+        }
+    }
+
+    @Test func summarizesToday() async {
+        let otherA28 = Apartment.fixture("101")
+        let viewModel = makeViewModel(
+            day: today,
+            days: [
+                .fixture(DayKey(year: 2026, month: 11, day: 5), ticked: [a28, otherA28]),
+                .fixture(today, ticked: [a28], unticked: [a56]),
+            ],
+            apartments: FakeApartmentRepository([a28, a56, otherA28])
+        )
+        let expected = DaySummary.today(
+            TodaySummary(
+                earned: "28\u{00A0}zł",
+                planned: "з 84\u{00A0}zł",
+                progress: 1.0 / 3,
+                month: "Листопад",
+                monthEarned: "84\u{00A0}zł",
+                monthCount: "3 квартири"
+            )
+        )
+
+        await observing(viewModel) {
+            await eventually { viewModel.summary == expected }
+        }
+    }
+
+    @Test func summarizesPastAndFutureDays() async {
+        let past = makeViewModel(
+            day: yesterday,
+            days: [.fixture(yesterday, ticked: [a28], unticked: [a56])]
+        )
+        await observing(past) {
+            #expect(past.summary == .past(earned: "28\u{00A0}zł"))
+        }
+
+        let future = makeViewModel(
+            day: tomorrow,
+            days: [.fixture(tomorrow, ticked: [], unticked: [a28, a56])]
+        )
+        await observing(future) {
+            #expect(future.summary == .future(planned: "84\u{00A0}zł"))
+        }
+    }
+
+    @Test func offersTheCopyWithTheFilteredCount() async {
+        let a100 = Apartment.fixture("100")
+        let a101 = Apartment.fixture("101")
+        let a102 = Apartment.fixture("102")
+        let viewModel = makeViewModel(
+            day: today,
+            days: [.fixture(yesterday, ticked: [a100, a101, a102])],
+            apartments: FakeApartmentRepository([a100, a102])
+        )
+
+        await observing(viewModel) {
+            #expect(viewModel.showsEmptyState)
+            #expect(viewModel.emptyTitle == "Які квартири сьогодні?")
+            await eventually { viewModel.copyOffer == CopyOffer(count: 2, text: "Як учора · 2 квартири") }
+        }
+    }
+
+    @Test func offersNoCopyWhenNothingRemains() async throws {
+        let a101 = Apartment.fixture("101")
+        let apartments = FakeApartmentRepository([a28, a101])
+        let viewModel = makeViewModel(
+            day: today,
+            days: [.fixture(yesterday, ticked: [a101])],
+            apartments: apartments
+        )
+
+        try await observing(viewModel) {
+            await eventually { viewModel.copyOffer?.count == 1 }
+            try await apartments.delete(a101.id)
+            await eventually { viewModel.copyOffer == nil }
         }
     }
 
