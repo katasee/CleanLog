@@ -313,9 +313,8 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** `git switch feature/CL-22-day-summaries` (exists locally, stacked on CL-17, built
-but not reviewed or pushed) and do its review as the plan's Branches section says (step 4 of "How a
-session runs" onward). PR base: `feature/CL-17-day-view-model`, or `main` once CL-17 is merged.
+**NEXT session:** `git switch feature/CL-22-day-summaries` (local, built, not reviewed) and review it
+from step 4 on. PR base: CL-17, or `main` once CL-17 is merged.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -359,19 +358,11 @@ Notes for the sessions:
   the planning commit, no history rewritten) and CL-16 now stacks on it. A feature's spec and plan go
   on their own branch from now on, never at the bottom of the first code branch.
 
-- CL-17 (2026-11-23): Tasks 5 and 6 together measured 792 lines (the catalog's JSON is 25 lines per
-  plain key and 40 per plural), so the branch was split before it was pushed: CL-17 keeps Task 5 and
-  the header, rows, progress text, empty title and `canTick`; the day and month sums and the copy
-  offer moved to CL-22 (built in the same session and committed locally, the full Task 6 tests passed
-  before the split); Task 7 (the timer card) moved to CL-18 and Task 9 to a new CL-23. Calls:
-  `header` and `kind` are `let` (fixed for a view model's day); `now` and the stored `calendar` arrive
-  with CL-22, which needs them; `String(localized:locale:)` in `Features/Today/` sets the resource's
-  locale, which also picks the catalog language (`titlesInTheGivenLanguage` checks English); the test
-  helper waits for `showsEmptyState || !rows.isEmpty` as in `ApartmentsViewModelTests`. Review:
-  `swift-concurrency-pro` clean (two loops in a discarding task group, cancelled with the view's
-  `.task`); `swiftui-pro` clean; SOLID — the `DayHeader(...)` expectations put their three arguments
-  one per line. For CL-18 (proposal): `DayTimer.past` needs no `isTimeDropped` when `droppedNote`
-  carries it — one source for the note.
+- CL-17 (2026-11-23): Tasks 5–6 measured 792 lines (a catalog key is 25–40 JSON lines), so it was
+  split before the push: sums and the copy offer → CL-22 (built, committed locally), Task 7 → CL-18,
+  Task 9 → CL-23. `header`/`kind` are `let`; `now`/`calendar` come with CL-22; `String(localized:locale:)`
+  also picks the catalog language. Review: concurrency and SwiftUI clean; SOLID — 1 fix (header test
+  arguments one per line). For CL-18: `DayTimer.past` needs no `isTimeDropped` beside `droppedNote`.
 
 Next free branch number: **CL-24** (CL-16…23 are used above).
 
