@@ -36,18 +36,46 @@ struct DayViewModelTests {
 
     @Test func titlesTodayAndOtherDays() {
         let todayHeader = makeViewModel(day: today).header
-        #expect(todayHeader == DayHeader(title: "Сьогодні", subtitle: "Пʼятниця, 13 листопада", isToday: true))
+        #expect(
+            todayHeader
+                == DayHeader(
+                    title: "Сьогодні",
+                    subtitle: "Пʼятниця, 13 листопада",
+                    isToday: true
+                )
+        )
 
         let pastHeader = makeViewModel(day: yesterday).header
-        #expect(pastHeader == DayHeader(title: "12 листопада", subtitle: "Четвер · минулий день", isToday: false))
+        #expect(
+            pastHeader
+                == DayHeader(
+                    title: "12 листопада",
+                    subtitle: "Четвер · минулий день",
+                    isToday: false
+                )
+        )
 
         let futureHeader = makeViewModel(day: tomorrow).header
-        #expect(futureHeader == DayHeader(title: "14 листопада", subtitle: "Субота · майбутній день", isToday: false))
+        #expect(
+            futureHeader
+                == DayHeader(
+                    title: "14 листопада",
+                    subtitle: "Субота · майбутній день",
+                    isToday: false
+                )
+        )
     }
 
     @Test func titlesInTheGivenLanguage() {
         let viewModel = makeViewModel(day: yesterday, locale: Locale(identifier: "en_US"))
-        #expect(viewModel.header == DayHeader(title: "November 12", subtitle: "Thursday · past day", isToday: false))
+        #expect(
+            viewModel.header
+                == DayHeader(
+                    title: "November 12",
+                    subtitle: "Thursday · past day",
+                    isToday: false
+                )
+        )
     }
 
     @Test func listsRowsWithTheTemplateAccessCode() async {
