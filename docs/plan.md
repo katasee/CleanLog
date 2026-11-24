@@ -313,8 +313,9 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** `git switch -c feature/CL-19-today-screen feature/CL-23-day-timer-actions` (or `main` once CL-23 is
-merged): Tasks 10–12; PR base CL-23.
+**NEXT session:** `git switch feature/CL-24-timer-card` (already built and merged with CL-19's review
+fixes): review its diff against CL-19 (`swiftui-pro`, `swift-concurrency-pro` for the `TimelineView` and
+the `Task {}` button actions, SOLID), push, PR with base CL-19 (or `main` once merged).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -324,8 +325,10 @@ merged): Tasks 10–12; PR base CL-23.
 | 22 | `feature/CL-22-day-summaries` | CL-17 | 6 (summaries, «Як учора») | 325 | merged (PRs #19, #21) | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
 | 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | 452 | merged (PR #20) | done — concurrency clean; SwiftUI clean; SOLID: 3 fixes (below) |
 | 23 | `feature/CL-23-day-timer-actions` | `main` | 9 | 137 | PR #22 open | done — concurrency clean; SwiftUI clean; SOLID clean (below) |
-| 19 | `feature/CL-19-today-screen` | CL-23 | 10–12 | ~450 est. | not started | — |
-| 20 | `feature/CL-20-today-states` | CL-19 | 13–14 | ~350 est. (end of feature) | not started | — |
+| 19 | `feature/CL-19-today-screen` | `main` | 10 | 387 | PR #23 open | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
+| 24 | `feature/CL-24-timer-card` | CL-19 | 11 | 384 | built, not reviewed | — |
+| 25 | `feature/CL-25-day-list` | CL-24 | 12 | ~350 est. | not started | — |
+| 20 | `feature/CL-20-today-states` | CL-25 | 13–14 | ~350 est. (end of feature) | not started | — |
 
 Notes for the sessions:
 
@@ -389,7 +392,22 @@ Notes for the sessions:
   was cut, and joining UI Task 10 would break the logic/UI rule. Review: concurrency clean (`now()` read
   before every `await`, each change on the stored day); SwiftUI clean (no views); SOLID clean.
 
-Next free branch number: **CL-24** (CL-16…23 are used above).
+- CL-19 (2026-11-24): based on `main` (CL-23 merged as PR #22). Tasks 10–12 measured ~900 lines (each
+  task's catalog keys are 50–120 JSON lines) → split: Task 10 stays here, Task 11 (the timer card) went
+  to CL-24, Task 12 (sums and the list) to CL-25. Calls: `TodayView` hides the navigation bar and draws
+  its own header; `DayView` is one `List` whose header cards are clear rows (`CardRow`), ready for
+  CL-25's apartment section; the save-error alert is already on `DayView` (the plan had it in Task 14);
+  the «Сьогодні» glass button sits in the header now (Task 14 listed it); `AppDependencies.preview`
+  takes repositories. Checked on the iPhone 16 simulator: today's header renders under the backdrop
+  (taps could not be driven from the CLI — no accessibility access for scripted clicks). Review:
+  concurrency — the midnight `.task(id:)` slept once per day, so a wake-up that found the same day (the
+  clock set back) never re-armed it → one `.task` loops `advanceAtEachMidnight()`; SwiftUI — that logic
+  moved out of `.task` into a method; SOLID — the step actions are named methods (`stepBack`,
+  `stepForward`), the preview fixture states `isReportedSeparately` instead of deriving it from the
+  price. Minor left: `DayView.init` builds a `DayViewModel` (with the header's date formatting) on every
+  `TodayView` body run — rare (selection and scene-phase changes), the convention's pattern.
+
+Next free branch number: **CL-26** (CL-16…25 are used above).
 
 ## Roadmap (v1)
 

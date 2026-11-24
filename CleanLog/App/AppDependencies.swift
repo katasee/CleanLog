@@ -22,8 +22,11 @@ final class AppDependencies {
 
 #if DEBUG
     extension AppDependencies {
-        static func preview() -> AppDependencies {
-            AppDependencies(apartments: FakeApartmentRepository(), workDays: FakeWorkDayRepository())
+        static func preview(
+            apartments: any ApartmentRepository = FakeApartmentRepository(),
+            workDays: any WorkDayRepository = FakeWorkDayRepository()
+        ) -> AppDependencies {
+            AppDependencies(apartments: apartments, workDays: workDays)
         }
     }
 #endif

@@ -515,6 +515,23 @@
         }
       }
     },
+    "today.header.next" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next day"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Наступний день"
+          }
+        }
+      }
+    },
     "today.header.past" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -528,6 +545,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ · минулий день"
+          }
+        }
+      }
+    },
+    "today.header.previous" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous day"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Попередній день"
+          }
+        }
+      }
+    },
+    "today.header.showToday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сьогодні"
           }
         }
       }
