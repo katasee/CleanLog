@@ -57,7 +57,7 @@ private struct CheckCircle: View {
             if isChecked {
                 Image(systemName: "checkmark.circle.fill")
                     .symbolRenderingMode(.palette)
-                    .foregroundStyle(Color.card, Color.accent)
+                    .foregroundStyle(Color.onAccent, Color.accent)
             } else {
                 Image(systemName: "circle")
                     .foregroundStyle(Color.inkSecondary)

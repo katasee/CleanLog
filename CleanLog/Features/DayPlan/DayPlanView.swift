@@ -209,7 +209,7 @@ private struct DayPlanTileButton: View {
                     .monospacedDigit()
             }
             .multilineTextAlignment(.center)
-            .foregroundStyle(tile.isSelected ? Color.card : Color.ink)
+            .foregroundStyle(tile.isSelected ? Color.onAccent : Color.ink)
             .padding(TileLayout.textSpacing)
             .frame(maxWidth: .infinity, minHeight: minHeight)
             .background(
