@@ -509,7 +509,7 @@ merged, so CL-34 had to be reopened against `main` as PR #35.
 | 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | 805 (docs, 277 of it the deleted plan; the user kept it one branch) | merged (PR #32) | plan review done (in the plan) |
 | 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | merged (PR #33) | done — concurrency clean; SOLID: 1 fix (below) |
 | 34 | `feature/CL-34-calendar-day-card` | `main` (`main` merged in) | 4 | 401 | PR #35 open (PR #34 merged into CL-32 after CL-32 merged) | done — concurrency clean; SOLID clean (below) |
-| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5 | 647 (over the cap, below) | PR open | done — `swiftui-pro`: 3 fixes; SOLID: 1 fix (below) |
+| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5 | 690 (over the cap, below) | PR open | done — `swiftui-pro`: 3 fixes; SOLID: 1 fix (below) |
 | 35 | `feature/CL-35-calendar-button` | CL-33 | 6 | — | next | `swiftui-pro`, SOLID |
 
 Notes for the sessions:
@@ -535,7 +535,7 @@ Notes for the sessions:
   selection. Seven catalog keys (`calendar.card.dayOff/earned/planned/today`, `calendar.quick.*`; the plan
   said six). Review: concurrency clean (`observeSelectedDay()` mirrors `observeMonth()`: the `where` guard and
   the assignment run with no suspension between them); SOLID clean. Build, full tests, lint green.
-- CL-33 (2026-11-24): Task 5. Size 647: the sheet alone is 420 lines and the branch was 605 after Task 5,
+- CL-33 (2026-11-24): Task 5. Size 690 with the docs (647 code): the sheet alone is 420 lines, the branch 605 after Task 5,
   so Task 6 moved to CL-35. Deviations: `StepButton` left `DayHeaderView` for `UICommons/`, and the ✕ is a
   new `UICommons/GlassIconButton` (Task 6's calendar button uses both); the card is pinned in a bottom
   `safeAreaInset` (the artboard's card sits at the bottom) and keeps its height while `card` is `nil` by
