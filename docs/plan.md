@@ -459,7 +459,7 @@ CL-28 and do the plan's Tasks 1–3.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 28 | `feature/CL-28-day-plan-spec` | `main` | — (spec, plan; deletes the Today plan) | 952 (docs only: 473 new, 483 the deleted Today plan) | PR open | plan review done (in the plan) |
+| 28 | `feature/CL-28-day-plan-spec` | `main` | — (spec, plan; deletes the Today plan) | 952 (docs only: 473 new, 483 the deleted Today plan) | PR #29 open | plan review done (in the plan) |
 | 29 | `feature/CL-29-day-plan-logic` | CL-28 | 1–3 | — | next | `swift-concurrency-pro`, `swiftui-pro`, SOLID |
 | 30 | `feature/CL-30-day-plan-sheet` | CL-29 | 4–5 | — | — | `swiftui-pro`, SOLID |
 
