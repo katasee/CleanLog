@@ -12,10 +12,7 @@ private enum TileLayout {
 
 struct DayPlanView: View {
     private enum Layout {
-        static let spacing: CGFloat = 16
-        static let gridSpacing: CGFloat = 10
         static let margin: CGFloat = 18
-        static let headerPadding: CGFloat = 4
         static let backdrop = [
             BackdropCircle(
                 tone: .glow,
@@ -35,8 +32,6 @@ struct DayPlanView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: DayPlanViewModel
 
-    @ScaledMetric(relativeTo: .title3) private var tileMinWidth = TileLayout.minWidth
-
     init(day: DayKey, today: DayKey, dependencies: AppDependencies) {
         self.init(
             viewModel: DayPlanViewModel(
@@ -55,23 +50,8 @@ struct DayPlanView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: Layout.spacing) {
-                    DayPlanHeader(selectedCountText: viewModel.selectedCountText)
-                        .padding(.horizontal, Layout.headerPadding)
-                    if let emptyMessage = viewModel.emptyMessage {
-                        Text(verbatim: emptyMessage)
-                            .font(.body)
-                            .foregroundStyle(Color.inkSecondary)
-                            .padding(.horizontal, Layout.headerPadding)
-                    }
-                    LazyVGrid(columns: columns, spacing: Layout.gridSpacing) {
-                        ForEach(viewModel.tiles) { tile in
-                            DayPlanTileButton(tile: tile, action: { viewModel.toggleSelection(of: tile.id) })
-                        }
-                        NewApartmentTile(action: viewModel.startNewApartment)
-                    }
-                }
-                .padding(Layout.margin)
+                DayPlanGrid(viewModel: viewModel)
+                    .padding(Layout.margin)
             }
             .screenBackground(Layout.backdrop)
             .safeAreaInset(edge: .bottom) {
@@ -118,10 +98,6 @@ struct DayPlanView: View {
         }
     }
 
-    private var columns: [GridItem] {
-        [GridItem(.adaptive(minimum: tileMinWidth), spacing: Layout.gridSpacing)]
-    }
-
     private func close() {
         dismiss()
     }
@@ -134,6 +110,45 @@ struct DayPlanView: View {
         if await viewModel.confirm() {
             dismiss()
         }
+    }
+}
+
+private struct DayPlanGrid: View {
+    private enum Layout {
+        static let spacing: CGFloat = 16
+        static let gridSpacing: CGFloat = 10
+        static let headerPadding: CGFloat = 4
+    }
+
+    let viewModel: DayPlanViewModel
+
+    @ScaledMetric(relativeTo: .title3) private var tileMinWidth = TileLayout.minWidth
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Layout.spacing) {
+            DayPlanHeader(selectedCountText: viewModel.selectedCountText)
+                .padding(.horizontal, Layout.headerPadding)
+            if let emptyMessage = viewModel.emptyMessage {
+                Text(verbatim: emptyMessage)
+                    .font(.body)
+                    .foregroundStyle(Color.inkSecondary)
+                    .padding(.horizontal, Layout.headerPadding)
+            }
+            LazyVGrid(columns: columns, spacing: Layout.gridSpacing) {
+                ForEach(viewModel.tiles) { tile in
+                    DayPlanTileButton(tile: tile, onToggle: toggleSelection)
+                }
+                NewApartmentTile(action: viewModel.startNewApartment)
+            }
+        }
+    }
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: tileMinWidth), spacing: Layout.gridSpacing)]
+    }
+
+    private func toggleSelection(of id: Apartment.ID) {
+        viewModel.toggleSelection(of: id)
     }
 }
 
@@ -179,12 +194,12 @@ private struct SelectedCount: View {
 
 private struct DayPlanTileButton: View {
     let tile: DayPlanTile
-    let action: () -> Void
+    let onToggle: (Apartment.ID) -> Void
 
     @ScaledMetric(relativeTo: .title3) private var minHeight = TileLayout.minHeight
 
     var body: some View {
-        Button(action: action) {
+        Button(action: toggle) {
             VStack(spacing: TileLayout.textSpacing) {
                 Text(verbatim: tile.name)
                     .font(.title3.weight(.bold))
@@ -207,6 +222,10 @@ private struct DayPlanTileButton: View {
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(tile.isSelected ? .isSelected : [])
         .sensoryFeedback(.selection, trigger: tile.isSelected)
+    }
+
+    private func toggle() {
+        onToggle(tile.id)
     }
 }
 
