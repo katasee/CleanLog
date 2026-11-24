@@ -518,6 +518,23 @@
         }
       }
     },
+    "dayPlan.error.save" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't add the apartments"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося додати квартири"
+          }
+        }
+      }
+    },
     "dayPlan.search.prompt" : {
       "extractionState" : "manual",
       "localizations" : {

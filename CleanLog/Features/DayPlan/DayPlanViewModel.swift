@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import os
 
 @Observable @MainActor
 final class DayPlanViewModel {
@@ -7,6 +8,8 @@ final class DayPlanViewModel {
     private let workDays: any WorkDayRepository
     private let day: DayKey
     private let locale: Locale
+    private let logger = Logger(subsystem: "CleanLog", category: "DayPlanViewModel")
+    private var isSaving = false
     private var template: [Apartment]?
     private var plannedIDs: Set<UUID>?
     private var selectedIDs: Set<UUID> = []
@@ -14,6 +17,7 @@ final class DayPlanViewModel {
     let title: String
     var searchText = ""
     var newApartmentForm: ApartmentFormViewModel?
+    private(set) var errorMessage: String?
 
     init(
         day: DayKey,
@@ -72,7 +76,12 @@ final class DayPlanViewModel {
     }
 
     var canConfirm: Bool {
-        !chosen.isEmpty
+        !isSaving && !chosen.isEmpty
+    }
+
+    var isShowingError: Bool {
+        get { errorMessage != nil }
+        set { if !newValue { errorMessage = nil } }
     }
 
     func toggle(_ id: Apartment.ID) {
@@ -91,6 +100,21 @@ final class DayPlanViewModel {
             locale: locale,
             onAdd: { [weak self] apartment in self?.toggle(apartment.id) }
         )
+    }
+
+    func confirm() async -> Bool {
+        guard canConfirm else { return false }
+        isSaving = true
+        defer { isSaving = false }
+        let chosen = chosen
+        do {
+            try await workDays.update(day) { $0.planning(chosen) }
+            return true
+        } catch {
+            logger.error("Could not plan the day: \(error)")
+            errorMessage = String(localized: .dayPlanErrorSave, locale: locale)
+            return false
+        }
     }
 
     func observe() async {

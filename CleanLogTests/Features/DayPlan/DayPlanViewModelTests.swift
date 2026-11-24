@@ -43,6 +43,13 @@ struct DayPlanViewModelTests {
         try await body()
     }
 
+    private func stored(_ day: DayKey, in workDays: any WorkDayRepository) async -> WorkDay? {
+        for await workDay in workDays.day(day) {
+            return workDay
+        }
+        return nil
+    }
+
     private func tile(_ name: String, in viewModel: DayPlanViewModel) -> DayPlanTile? {
         viewModel.tiles.first { $0.name == name }
     }
@@ -192,6 +199,90 @@ struct DayPlanViewModelTests {
 
             await eventually { tile("101", in: viewModel) == nil }
             #expect(viewModel.confirmTitle == "Обери квартири")
+        }
+    }
+
+    @Test func confirmPlansTheSelectionInTemplateOrder() async throws {
+        let workDays = FakeWorkDayRepository([.fixture(today, ticked: [], unticked: [a100])])
+        let viewModel = makeViewModel(workDays: workDays)
+
+        try await observing(viewModel) {
+            viewModel.toggle(a106.id)
+            viewModel.toggle(a101.id)
+
+            #expect(await viewModel.confirm())
+
+            let day = try #require(await stored(today, in: workDays))
+            #expect(day.entries.map(\.name) == ["100", "101", "106"])
+            #expect(day.entries.allSatisfy { !$0.isCleaned })
+        }
+    }
+
+    @Test func confirmOnAFutureDay() async throws {
+        let workDays = FakeWorkDayRepository()
+        let viewModel = makeViewModel(day: tomorrow, workDays: workDays)
+
+        try await observing(viewModel) {
+            viewModel.toggle(a101.id)
+
+            #expect(await viewModel.confirm())
+
+            let day = try #require(await stored(tomorrow, in: workDays))
+            #expect(day.entries.map(\.name) == ["101"])
+        }
+    }
+
+    @Test func confirmLeavesAFinishedTimerFinished() async throws {
+        let finished = try WorkDay.fixture(today, ticked: [a100])
+            .startingTimer(at: .warsaw(2026, 11, 13, 8), today: today)
+            .finishingTimer(at: .warsaw(2026, 11, 13, 10), today: today)
+        let workDays = FakeWorkDayRepository([finished])
+        let viewModel = makeViewModel(workDays: workDays)
+
+        try await observing(viewModel) {
+            viewModel.toggle(a101.id)
+
+            #expect(await viewModel.confirm())
+
+            let day = try #require(await stored(today, in: workDays))
+            #expect(day.isTimerFinished)
+            #expect(day.sessions == finished.sessions)
+        }
+    }
+
+    @Test func failedSaveKeepsTheSelection() async {
+        let failing = FailingWorkDayRepository([.fixture(today, ticked: [], unticked: [a100])])
+        let viewModel = makeViewModel(workDays: failing)
+
+        await observing(viewModel) {
+            viewModel.toggle(a101.id)
+
+            #expect(await !viewModel.confirm())
+            #expect(viewModel.errorMessage == "Не вдалося додати квартири")
+            #expect(viewModel.isShowingError)
+            #expect(viewModel.confirmTitle == "Додати 1 квартиру · 28\u{00A0}zł")
+            #expect(viewModel.canConfirm)
+
+            viewModel.isShowingError = false
+            #expect(viewModel.errorMessage == nil)
+        }
+    }
+
+    @Test func secondConfirmWhileSavingDoesNothing() async {
+        let gated = GatedWorkDayRepository([.fixture(today, ticked: [], unticked: [a100])])
+        let viewModel = makeViewModel(workDays: gated)
+
+        await observing(viewModel) {
+            viewModel.toggle(a101.id)
+
+            let first = Task { await viewModel.confirm() }
+            await eventually { gated.updateCount == 1 }
+            #expect(!viewModel.canConfirm)
+            #expect(await !viewModel.confirm())
+
+            gated.release()
+            #expect(await first.value)
+            #expect(gated.updateCount == 1)
         }
     }
 }
