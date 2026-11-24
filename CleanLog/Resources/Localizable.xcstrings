@@ -685,6 +685,23 @@
         }
       }
     },
+    "today.summary.futurePlanned" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planned"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заплановано"
+          }
+        }
+      }
+    },
     "today.summary.monthCount" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -738,6 +755,23 @@
         }
       }
     },
+    "today.summary.pastEarned" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Earned that day"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заробіток за день"
+          }
+        }
+      }
+    },
     "today.summary.planned" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -751,6 +785,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "з %@"
+          }
+        }
+      }
+    },
+    "today.summary.today" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сьогодні"
           }
         }
       }
