@@ -506,7 +506,7 @@ plan's Tasks 5–6 (its PR targets CL-34, or whichever branch below it is still 
 |---|---|---|---|---|---|---|
 | 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | 805 (docs, 277 of it the deleted plan; the user kept it one branch) | merged (PR #32) | plan review done (in the plan) |
 | 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | PR #33 open | done — concurrency clean; SOLID: 1 fix (below) |
-| 34 | `feature/CL-34-calendar-day-card` | CL-32 | 4 | 384 + this note | PR open | done — concurrency clean; SOLID clean (below) |
+| 34 | `feature/CL-34-calendar-day-card` | CL-32 | 4 | 401 | PR #34 open | done — concurrency clean; SOLID clean (below) |
 | 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5–6 | — | next | `swiftui-pro`, SOLID |
 
 Notes for the sessions:
