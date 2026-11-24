@@ -12,11 +12,17 @@ struct ApartmentFormViewModelTests {
         repository = FakeApartmentRepository([a100, a6piw])
     }
 
-    private func makeForm(editing apartment: Apartment?) -> ApartmentFormViewModel {
+    private func makeForm(
+        editing apartment: Apartment?,
+        suggestedName: String = "",
+        onAdd: @escaping (Apartment) -> Void = { _ in }
+    ) -> ApartmentFormViewModel {
         ApartmentFormViewModel(
             repository: repository,
             editing: apartment,
-            locale: Locale(identifier: "uk_UA")
+            suggestedName: suggestedName,
+            locale: Locale(identifier: "uk_UA"),
+            onAdd: onAdd
         )
     }
 
@@ -34,6 +40,39 @@ struct ApartmentFormViewModelTests {
         #expect(form.accessCode.isEmpty)
         #expect(!form.isReportedSeparately)
         #expect(!form.canSave)
+    }
+
+    @Test func prefillsTheSuggestedNameForANewApartment() {
+        let form = makeForm(editing: nil, suggestedName: "107")
+
+        #expect(form.name == "107")
+    }
+
+    @Test func ignoresTheSuggestedNameForAnEdit() {
+        let form = makeForm(editing: a100, suggestedName: "107")
+
+        #expect(form.name == "100")
+    }
+
+    @Test func reportsTheAddedApartment() async throws {
+        var added: Apartment?
+        let form = makeForm(editing: nil) { added = $0 }
+        form.name = "107"
+        form.priceText = "28"
+
+        #expect(await form.save())
+
+        let stored = try #require(await stored("107"))
+        #expect(added == stored)
+    }
+
+    @Test func doesNotReportAnEdit() async {
+        var added: Apartment?
+        let form = makeForm(editing: a100) { added = $0 }
+        form.priceText = "30"
+
+        #expect(await form.save())
+        #expect(added == nil)
     }
 
     @Test func prefillsAnEditedApartment() {

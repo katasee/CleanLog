@@ -454,14 +454,14 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-24-day-plan.md` · Spec: `docs/superpowers/specs/2026-11-24-day-plan-design.md`
 
-**NEXT session:** once CL-28's PR is merged (or on top of it), create `feature/CL-29-day-plan-logic` from
-CL-28 and do the plan's Tasks 1–3.
+**NEXT session:** create `feature/CL-30-day-plan-sheet` from CL-29 and do the plan's Tasks 4–5. The view
+model's interface as built is in the plan (Task 2, "As built on CL-29").
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 28 | `feature/CL-28-day-plan-spec` | `main` | — (spec, plan; deletes the Today plan) | 952 (docs only: 473 new, 483 the deleted Today plan) | PR #29 open | plan review done (in the plan) |
-| 29 | `feature/CL-29-day-plan-logic` | CL-28 | 1–3 | — | next | `swift-concurrency-pro`, `swiftui-pro`, SOLID |
-| 30 | `feature/CL-30-day-plan-sheet` | CL-29 | 4–5 | — | — | `swiftui-pro`, SOLID |
+| 29 | `feature/CL-29-day-plan-logic` | CL-28 | 1–3 | 889 (277 of it string-catalog JSON) | PR open | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
+| 30 | `feature/CL-30-day-plan-sheet` | CL-29 | 4–5 | — | next | `swiftui-pro`, SOLID |
 
 Notes for the sessions:
 
@@ -472,6 +472,15 @@ Notes for the sessions:
   auto-start could run past midnight and lose the day's time). Builder check: 2 questions, one settled
   by Claude (the form is not pushed), one by the user (the timer). Size 952, docs only: the user kept it
   one branch, as CL-21 (2026-11-24). Execution: native, one fresh session per branch.
+- CL-29 (2026-11-24): Tasks 1–3 as planned. Size 889 with the docs, over the cap: 277 lines are the 14 catalog keys
+  (xcstrings JSON, about 20 lines a key) and no split gets Task 2 under 500, so the user kept it one
+  branch. Review — `swift-concurrency-pro`: `GatedWorkDayRepository` gated `update` on one
+  `AsyncStream`, so a regressed double confirm would trap on a second consumer instead of failing the
+  test; now one checked continuation per waiter. `swiftui-pro`: the search uses
+  `localizedStandardContains`. SOLID / clean code: `toggle(_:)` → `toggleSelection(of:)` (the naming
+  rule), and the «Нова» callback selects instead of toggling; the `stored(_:in:)` helper copied into both
+  view-model suites → `WorkDayRepository.stored(_:)` in `CleanLogTests/Support/`. Build, full test run,
+  lint green.
 
 Next free branch number: **CL-31** (CL-16…30 are used above; CL-26 is the iCloud spec, merged as PR #24).
 

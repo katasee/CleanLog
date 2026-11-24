@@ -30,11 +30,14 @@ source folders.
 | `Resources/` | `Assets.xcassets`, `Localizable.xcstrings` | — |
 
 Features: `Today` (the day screen, today or any past day), `DayPlan` (the add-apartments sheet),
-`Calendar`, `Stats`, `Report`, `Apartments` (the template), `Settings`.
+`Calendar`, `Stats`, `Report`, `Apartments` (the template), `ApartmentForm` (the add/edit apartment
+form, opened from Apartments and DayPlan), `Settings`.
 
 - **Organize by feature, never by layer inside the app.** No top-level `Views/` or `ViewModels/`.
 - A type referenced by two features moves to `Models/` (domain) or `UICommons/` (view) the moment
   the second one needs it. Two copies that agree today is not one rule that cannot disagree.
+- **A screen used by two features is its own feature folder** (`Features/ApartmentForm/`), not a
+  `UICommons/` view: it has a view model and talks to a repository.
 - **An extension of our type lives beside the type; an extension of a foreign type lives where it
   is used.** There is no `Extensions/` folder.
 - A type that only serves one neighbour lives in the neighbour's file, supporting type first.
