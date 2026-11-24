@@ -5,10 +5,10 @@
         static let today = DayKey(.now, calendar: .current)
 
         static let template: [Apartment] = [
-            apartment("100", minorUnits: 2800, accessCode: "4821"),
-            apartment("101", minorUnits: 2800, accessCode: "1937"),
-            apartment("102", minorUnits: 2800, accessCode: nil),
-            apartment("106", minorUnits: 5600, accessCode: "7409"),
+            apartment("100", accessCode: "4821"),
+            apartment("101", accessCode: "1937"),
+            apartment("102", accessCode: nil),
+            apartment("106", accessCode: "7409", isReportedSeparately: true),
         ]
 
         static func dependencies(_ days: [WorkDay] = []) -> AppDependencies {
@@ -38,13 +38,17 @@
             )
         }
 
-        private static func apartment(_ name: String, minorUnits: Int, accessCode: String?) -> Apartment {
+        private static func apartment(
+            _ name: String,
+            accessCode: String?,
+            isReportedSeparately: Bool = false
+        ) -> Apartment {
             Apartment(
                 id: UUID(),
                 name: name,
-                price: Money(minorUnits: minorUnits),
+                price: Money(minorUnits: isReportedSeparately ? 5600 : 2800),
                 accessCode: accessCode,
-                isReportedSeparately: minorUnits > 2800,
+                isReportedSeparately: isReportedSeparately,
                 createdAt: .now
             )
         }
