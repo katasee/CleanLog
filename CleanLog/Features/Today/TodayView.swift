@@ -18,11 +18,55 @@ struct TodayView: View {
         ]
     }
 
+    @Environment(AppDependencies.self) private var dependencies
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var selection = TodaySelection(today: DayKey(.now, calendar: .current))
+
     var body: some View {
         NavigationStack {
-            Color.clear
-                .screenBackground(Layout.backdrop)
-                .navigationTitle(Text(.tabTodayTitle))
+            DayView(
+                day: selection.day,
+                today: selection.today,
+                dependencies: dependencies,
+                onStep: step,
+                onShowToday: showToday
+            )
+            .id(selection)
+            .screenBackground(Layout.backdrop)
+            .toolbarVisibility(.hidden, for: .navigationBar)
+        }
+        .task(id: selection.today) {
+            let untilNextDay = TodaySelection.timeUntilNextDay(after: .now, calendar: .current)
+            guard (try? await Task.sleep(for: untilNextDay)) != nil else { return }
+            advanceToCurrentDay()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                advanceToCurrentDay()
+            }
         }
     }
+
+    private func step(by days: Int) {
+        selection.step(by: days, calendar: .current)
+    }
+
+    private func showToday() {
+        selection.showToday()
+    }
+
+    private func advanceToCurrentDay() {
+        selection.advance(to: DayKey(.now, calendar: .current))
+    }
 }
+
+#if DEBUG
+    #Preview {
+        TodayView()
+            .environment(
+                TodayPreviewData.dependencies([
+                    TodayPreviewData.day(sessions: [TodayPreviewData.session(startedHoursAgo: 2)])
+                ])
+            )
+    }
+#endif
