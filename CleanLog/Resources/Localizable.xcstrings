@@ -824,6 +824,23 @@
         }
       }
     },
+    "today.empty.add" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add apartments"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати квартири"
+          }
+        }
+      }
+    },
     "today.empty.copy" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1026,6 +1043,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сьогодні"
+          }
+        }
+      }
+    },
+    "today.list.add" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add apartment"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати квартиру"
           }
         }
       }

@@ -1,6 +1,13 @@
 import SwiftUI
 
 struct DayView: View {
+    private enum DaySheet: Identifiable {
+        case manualDuration
+        case dayPlan
+
+        var id: Self { self }
+    }
+
     private enum Layout {
         static let cardInsets = EdgeInsets(
             top: 8,
@@ -11,8 +18,11 @@ struct DayView: View {
     }
 
     @State private var viewModel: DayViewModel
-    @State private var isEditingDuration = false
+    @State private var sheet: DaySheet?
 
+    private let day: DayKey
+    private let today: DayKey
+    private let dependencies: AppDependencies
     private let onStep: (Int) -> Void
     private let onShowToday: () -> Void
 
@@ -31,6 +41,9 @@ struct DayView: View {
                 apartments: dependencies.apartments
             )
         )
+        self.day = day
+        self.today = today
+        self.dependencies = dependencies
         self.onStep = onStep
         self.onShowToday = onShowToday
     }
@@ -57,18 +70,23 @@ struct DayView: View {
                         .modifier(CardRow(insets: Layout.cardInsets))
                 }
                 if viewModel.showsEmptyState {
-                    EmptyDayView(viewModel: viewModel)
+                    EmptyDayView(viewModel: viewModel, onAddApartments: planDay)
                         .modifier(CardRow(insets: Layout.cardInsets))
                 }
             }
             if !viewModel.rows.isEmpty {
-                DayListView(viewModel: viewModel)
+                DayListView(viewModel: viewModel, onAddApartment: planDay)
             }
         }
         .scrollContentBackground(.hidden)
         .alert(viewModel.errorMessage ?? "", isPresented: $viewModel.isShowingError) {}
-        .sheet(isPresented: $isEditingDuration) {
-            ManualDurationSheet(viewModel: viewModel)
+        .sheet(item: $sheet) { sheet in
+            switch sheet {
+            case .manualDuration:
+                ManualDurationSheet(viewModel: viewModel)
+            case .dayPlan:
+                DayPlanView(day: day, today: today, dependencies: dependencies)
+            }
         }
         .task {
             await viewModel.observe()
@@ -76,7 +94,11 @@ struct DayView: View {
     }
 
     private func editDuration() {
-        isEditingDuration = true
+        sheet = .manualDuration
+    }
+
+    private func planDay() {
+        sheet = .dayPlan
     }
 }
 
