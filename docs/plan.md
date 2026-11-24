@@ -325,7 +325,7 @@ the `Task {}` button actions, SOLID), push, PR with base CL-19 (or `main` once m
 | 22 | `feature/CL-22-day-summaries` | CL-17 | 6 (summaries, «Як учора») | 325 | merged (PRs #19, #21) | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
 | 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | 452 | merged (PR #20) | done — concurrency clean; SwiftUI clean; SOLID: 3 fixes (below) |
 | 23 | `feature/CL-23-day-timer-actions` | `main` | 9 | 137 | PR #22 open | done — concurrency clean; SwiftUI clean; SOLID clean (below) |
-| 19 | `feature/CL-19-today-screen` | `main` | 10 | 387 | PR open | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
+| 19 | `feature/CL-19-today-screen` | `main` | 10 | 387 | PR #23 open | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
 | 24 | `feature/CL-24-timer-card` | CL-19 | 11 | 384 | built, not reviewed | — |
 | 25 | `feature/CL-25-day-list` | CL-24 | 12 | ~350 est. | not started | — |
 | 20 | `feature/CL-20-today-states` | CL-25 | 13–14 | ~350 est. (end of feature) | not started | — |
