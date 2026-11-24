@@ -9,8 +9,10 @@ struct TimerCardView: View {
     let viewModel: DayViewModel
     let timer: DayTimer
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
-        HStack(spacing: Layout.spacing) {
+        cardLayout {
             VStack(alignment: .leading, spacing: Layout.textSpacing) {
                 TimerStatus(timer: timer)
                 TimerClock(viewModel: viewModel, timer: timer)
@@ -22,6 +24,12 @@ struct TimerCardView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .cardSurface()
+    }
+
+    private var cardLayout: AnyLayout {
+        dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: Layout.spacing))
+            : AnyLayout(HStackLayout(spacing: Layout.spacing))
     }
 }
 
@@ -37,9 +45,9 @@ private struct TimerStatus: View {
         HStack(spacing: Layout.spacing) {
             switch timer {
             case .running(let status):
-                StatusDot(color: Color.accentColor, diameter: Layout.dotDiameter)
+                StatusDot(color: Color.accent, diameter: Layout.dotDiameter)
                 Text(verbatim: status)
-                    .foregroundStyle(Color.accentColor)
+                    .foregroundStyle(Color.accent)
             case .paused:
                 StatusDot(color: Color.warning, diameter: Layout.dotDiameter)
                 Text(.todayTimerPaused)
