@@ -69,22 +69,28 @@ private struct SingleSummaryCard: View {
     var body: some View {
         ViewThatFits(in: .horizontal) {
             HStack(alignment: .firstTextBaseline) {
-                Text(title)
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(Color.inkSecondary)
+                SummaryTitle(title: title)
                 Spacer(minLength: SummaryLayout.cardSpacing)
                 AmountText(amount: amount)
             }
             VStack(alignment: .leading, spacing: SummaryLayout.contentSpacing) {
-                Text(title)
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(Color.inkSecondary)
+                SummaryTitle(title: title)
                 AmountText(amount: amount)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .cardSurface()
         .accessibilityElement(children: .combine)
+    }
+}
+
+private struct SummaryTitle: View {
+    let title: LocalizedStringResource
+
+    var body: some View {
+        Text(title)
+            .font(.subheadline.weight(.medium))
+            .foregroundStyle(Color.inkSecondary)
     }
 }
 
