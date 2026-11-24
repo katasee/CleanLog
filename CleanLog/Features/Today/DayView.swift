@@ -47,6 +47,10 @@ struct DayView: View {
                     TimerCardView(viewModel: viewModel, timer: timer)
                         .modifier(CardRow(insets: Layout.cardInsets))
                 }
+                if let summary = viewModel.summary {
+                    DaySummaryView(summary: summary)
+                        .modifier(CardRow(insets: Layout.cardInsets))
+                }
             }
             if !viewModel.rows.isEmpty {
                 DayListView(viewModel: viewModel)

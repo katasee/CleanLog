@@ -313,10 +313,8 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** `feature/CL-27-day-summaries` (stacked on CL-25, PR #26; already built and
-committed) — review its diff (`git diff feature/CL-25-day-list...HEAD`) with `swiftui-pro` and the
-SOLID / conventions pass, build, full test run, lint, then push and open its PR against CL-25 (or
-`main` once CL-25 is merged). Then CL-20.
+**NEXT session:** `feature/CL-20-today-states` — create it from `feature/CL-27-day-summaries` (or
+`main` once PR #27 is merged), plan Tasks 13–14.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -327,9 +325,9 @@ SOLID / conventions pass, build, full test run, lint, then push and open its PR 
 | 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | 452 | merged (PR #20) | done — concurrency clean; SwiftUI clean; SOLID: 3 fixes (below) |
 | 23 | `feature/CL-23-day-timer-actions` | `main` | 9 | 137 | merged (PR #22) | done — concurrency clean; SwiftUI clean; SOLID clean (below) |
 | 19 | `feature/CL-19-today-screen` | `main` | 10 | 387 | merged (PR #23) | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
-| 24 | `feature/CL-24-timer-card` | `main` | 11 | 392 | PR #25 open | done — concurrency clean; SwiftUI clean; conventions: 2 fixes (below) |
-| 25 | `feature/CL-25-day-list` | `main` | 12 (the list) | 330 | PR #26 open | done — concurrency clean; SwiftUI: 1 fix; SOLID clean (below) |
-| 27 | `feature/CL-27-day-summaries` | CL-25 | 12 (the summary cards) | 232 | built, not reviewed | — |
+| 24 | `feature/CL-24-timer-card` | `main` | 11 | 392 | merged (PR #25) | done — concurrency clean; SwiftUI clean; conventions: 2 fixes (below) |
+| 25 | `feature/CL-25-day-list` | `main` | 12 (the list) | 330 | merged (PR #26) | done — concurrency clean; SwiftUI: 1 fix; SOLID clean (below) |
+| 27 | `feature/CL-27-day-summaries` | `main` | 12 (the summary cards) | 256 | PR #27 open | done — SwiftUI: 1 fix; SOLID clean (below) |
 | 20 | `feature/CL-20-today-states` | CL-27 | 13–14 | ~350 est. (end of feature) | not started | — |
 
 Notes for the sessions:
@@ -430,6 +428,12 @@ Notes for the sessions:
   skill's one-type-per-file rule yields to the convention's supporting-type rule; SOLID clean.
   Open: the spec's «ще немає квартир» text on today's card with nothing planned waits for CL-20's
   empty state, which may cover that case.
+
+- CL-27 (2026-11-24): based on `main` after CL-25 merged (PR #26; merged in, never rebased). The today
+  card pair (today with progress, the month) stacks at accessibility sizes (`AnyLayout`); past and
+  future days show one card. Review: no concurrency code; SwiftUI — the single card wrote its title
+  styling twice in its `ViewThatFits`, now `SummaryTitle`; SOLID clean (no logic or formatter in the
+  view). Build, full tests, lint green.
 
 Next free branch number: **CL-28** (CL-16…27 are used above; CL-26 is the iCloud spec, merged as PR #24).
 
