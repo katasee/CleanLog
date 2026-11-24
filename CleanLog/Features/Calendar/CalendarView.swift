@@ -116,6 +116,7 @@ private struct CalendarHeader: View {
                     .font(.headline)
                     .foregroundStyle(Color.ink)
                     .multilineTextAlignment(.center)
+                    .layoutPriority(1)
                     .accessibilityAddTraits(.isHeader)
                 StepButton(
                     systemImage: "chevron.right",
@@ -128,6 +129,7 @@ private struct CalendarHeader: View {
                 .frame(width: Layout.target, height: Layout.target)
                 .accessibilityHidden(true)
         }
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
 }
 
@@ -142,15 +144,21 @@ private struct CalendarQuickPicks: View {
     var body: some View {
         ViewThatFits(in: .horizontal) {
             HStack(spacing: Layout.spacing) {
-                buttons
+                CalendarQuickPickButtons(picks: picks, onSelect: onSelect)
             }
             VStack(spacing: Layout.spacing) {
-                buttons
+                CalendarQuickPickButtons(picks: picks, onSelect: onSelect)
             }
         }
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
+}
 
-    private var buttons: some View {
+private struct CalendarQuickPickButtons: View {
+    let picks: [CalendarQuickPick]
+    let onSelect: (DayKey) -> Void
+
+    var body: some View {
         ForEach(picks) { pick in
             CalendarQuickPickButton(pick: pick, onSelect: onSelect)
         }
@@ -273,10 +281,8 @@ private struct CalendarCellView: View {
             .frame(maxWidth: maxWidth, minHeight: height)
             .background(cell.isSelected ? Color.accent : Color.clear, in: .rect(cornerRadius: Layout.cornerRadius))
             .overlay {
-                if cell.isToday && !cell.isSelected {
-                    RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                        .strokeBorder(Color.accent, lineWidth: Layout.ringWidth)
-                }
+                RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                    .strokeBorder(ringColor, lineWidth: Layout.ringWidth)
             }
             .contentShape(.rect(cornerRadius: Layout.cornerRadius))
         }
@@ -285,6 +291,10 @@ private struct CalendarCellView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: cell.accessibilityLabel))
         .accessibilityAddTraits(cell.isSelected ? [.isButton, .isSelected] : .isButton)
+    }
+
+    private var ringColor: Color {
+        cell.isToday && !cell.isSelected ? Color.accent : Color.clear
     }
 
     private var foreground: Color {
@@ -322,11 +332,9 @@ private struct CalendarDayCardView: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.capsule)
-            .controlSize(.large)
-            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+            .prominentActionStyle()
         }
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .cardSurface()
     }
 }
@@ -341,20 +349,28 @@ private struct CalendarDayCardText: View {
     var body: some View {
         ViewThatFits(in: .horizontal) {
             HStack(alignment: .lastTextBaseline) {
-                dateLines
+                CalendarDayCardDate(card: card)
                 Spacer(minLength: 0)
-                summary
+                CalendarDayCardSummary(text: card.summaryText)
             }
             VStack(alignment: .leading, spacing: Layout.textSpacing) {
-                dateLines
-                summary
+                CalendarDayCardDate(card: card)
+                CalendarDayCardSummary(text: card.summaryText)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .combine)
     }
+}
 
-    private var dateLines: some View {
+private struct CalendarDayCardDate: View {
+    private enum Layout {
+        static let textSpacing: CGFloat = 2
+    }
+
+    let card: CalendarDayCard
+
+    var body: some View {
         VStack(alignment: .leading, spacing: Layout.textSpacing) {
             Text(verbatim: card.weekdayText)
                 .font(.subheadline.weight(.medium))
@@ -364,9 +380,13 @@ private struct CalendarDayCardText: View {
                 .foregroundStyle(Color.ink)
         }
     }
+}
 
-    private var summary: some View {
-        Text(verbatim: card.summaryText)
+private struct CalendarDayCardSummary: View {
+    let text: String
+
+    var body: some View {
+        Text(verbatim: text)
             .font(.headline)
             .monospacedDigit()
             .foregroundStyle(Color.ink)

@@ -270,11 +270,8 @@ private struct ConfirmButton: View {
                 .monospacedDigit()
                 .frame(maxWidth: .infinity)
         }
-        .buttonStyle(.borderedProminent)
-        .buttonBorderShape(.capsule)
-        .controlSize(.large)
+        .prominentActionStyle()
         .disabled(!isEnabled)
-        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
 }
 
