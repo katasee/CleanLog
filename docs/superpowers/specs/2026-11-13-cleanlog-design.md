@@ -23,6 +23,8 @@ an Apple Developer account.
 - The report is generated in exactly the format below, with no mistakes.
 - Today's and this month's earnings are always visible.
 - Time worked → hours and earnings per hour.
+- A new phone loses nothing: install the app with the same Apple ID and the template and history
+  are there.
 - Enough substance to pass App Store review (Guideline 4.2, minimum functionality).
 
 ## Non-goals (v1)
@@ -32,21 +34,21 @@ an Apple Developer account.
 - Cleaning types (regular / deep).
 - A timer per apartment.
 - Android, iPad, landscape.
-- iCloud sync — but the store must be CloudKit-compatible so it can be switched on later.
 - Charts in Statistics (removed after the design review: the numbers are what matters).
 
 ## Anti-goals
 
 - A daily flow slower or more complicated than writing it in notes.
 - A report that differs from what the boss is used to.
-- Losing data: deleting an apartment or changing a price rewrites past months.
+- Losing data: deleting an apartment or changing a price rewrites past months, or a new phone
+  starts empty.
 - Anything hard-coded to one person or company.
 
 ## Constraints
 
 - iOS 18.0+, iPhone only, portrait. SwiftUI, SwiftData, Swift Testing, Swift 6.
 - Liquid Glass on iOS 26 (system bars and sheets, plus our own controls), material fallback on 18.
-- All data on the device. No data collection (the App Store still needs a privacy policy page).
+- Data on the device and in the user's own private iCloud database; no server of ours. No data collection (the App Store still needs a privacy policy page).
 - Languages: Ukrainian and English (no Polish). Złoty (zł) only for now; no currency setting.
 
 ## Approaches considered
@@ -146,6 +148,7 @@ The same screen for any earlier date, reached by ‹ or the calendar.
 - Reminder on the last day of the month at 18:00 to send the report (permission asked only when
   switched on).
 - Optional morning reminder to plan the day, with a time (off by default).
+- iCloud status: when iCloud is off, a line saying the data is kept on this phone only.
 - Privacy policy link, version.
 
 ## Report format
@@ -196,6 +199,25 @@ session and resuming starts a new one; a session crossing midnight belongs to th
 state is timestamps, so it survives the app being killed. A Live Activity with the running time is
 planned for after v1's core screens.
 
+## iCloud sync
+
+Decided 2026-11-24, in v1, so the first TestFlight data already lives in iCloud. The point: when the
+user changes or resets her phone, she installs CleanLog, signs in with the same Apple ID and carries
+on. An iPhone backup does not cover that (it restores only a whole phone, and a deleted app takes its
+data with it); a manual export would be forgotten.
+
+- SwiftData syncs the store with the user's **private** CloudKit database (`cloudKitDatabase:
+  .private(…)`): no server, no account, no sign-in screen. Capabilities: iCloud + CloudKit, background
+  remote notifications.
+- Changes that arrive from iCloud refresh the screens like local saves: the repository streams yield
+  again on a remote change.
+- Duplicates are merged by the repositories: two devices that created the same `DayKey` or an
+  apartment with the same name while offline end up as one day / one apartment.
+- No iCloud account or iCloud off for the app: the app works locally as before and Settings says so.
+- Not synced: the reminder settings — on a new phone they are switched on again (the notification
+  permission has to be granted again anyway).
+- The CloudKit schema is deployed to production before the first TestFlight build.
+
 ## Testing
 
 - Unit tests for the report builder (the October example, including `6piw`, `133kol`, `+155` and the
@@ -211,7 +233,6 @@ planned for after v1's core screens.
 
 ## Later (not v1)
 
-- iCloud sync.
 - App Store submission: screenshots, description, privacy policy page.
 - Home-screen widget, Live Activity.
 - PDF/CSV export.
