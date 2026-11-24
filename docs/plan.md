@@ -505,7 +505,7 @@ plan's Task 4 (its PR targets CL-32, or `main` once CL-32 is merged).
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | 805 (docs, 277 of it the deleted plan; the user kept it one branch) | merged (PR #32) | plan review done (in the plan) |
-| 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | SIZE32 | PR open | done — concurrency clean; SOLID: 1 fix (below) |
+| 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | PR open | done — concurrency clean; SOLID: 1 fix (below) |
 | 34 | `feature/CL-34-calendar-day-card` | CL-32 | 4 | — | next | `swift-concurrency-pro`, SOLID |
 | 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5–6 | — | — | `swiftui-pro`, SOLID |
 
