@@ -313,7 +313,7 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** `git switch -c feature/CL-18-day-actions feature/CL-22-day-summaries`: Tasks 7–8, test-first; PR base CL-22.
+**NEXT session:** `git switch -c feature/CL-23-day-timer-actions feature/CL-18-day-actions`: Task 9, test-first; PR base CL-18.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -321,7 +321,7 @@ Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/sp
 | 16 | `feature/CL-16-today-domain` | CL-21 | 1–4 | 405 | merged (PR #16) | done — concurrency clean; SOLID: 1 fix (below) |
 | 17 | `feature/CL-17-day-view-model` | `main` | 5, 6 (header, rows) | 500 | PR #18 open | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
 | 22 | `feature/CL-22-day-summaries` | CL-17 | 6 (summaries, «Як учора») | 325 | PR #19 open | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
-| 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | ~470 est. | not started | — |
+| 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | 452 | PR #20 open | done — concurrency clean; SwiftUI clean; SOLID: 3 fixes (below) |
 | 23 | `feature/CL-23-day-timer-actions` | CL-18 | 9 | ~250 est. | not started | — |
 | 19 | `feature/CL-19-today-screen` | CL-23 | 10–12 | ~450 est. | not started | — |
 | 20 | `feature/CL-20-today-states` | CL-19 | 13–14 | ~350 est. (end of feature) | not started | — |
@@ -367,6 +367,17 @@ Notes for the sessions:
   `DaySummary` formatted the earned and planned sums twice each, now once. Minor left: on today the
   first day emission can render the month card with 0 zł before the month stream's first value — one
   frame at most; make `monthDays` optional if it shows on a device.
+
+- CL-18 (2026-11-23): Tasks 7–8 as planned, with these calls: the tick is `setCleaned(_:to:)`, not the
+  plan's `toggle(_:)` (the naming rule; the row passes the value it wants, so a double tap cannot
+  undo itself); `DayTimer.past` carries no `isTimeDropped` (the view reads `droppedNote`); a failed
+  overrun sweep shows the same «Не вдалося зберегти зміну» as a failed tap — never swallowed; the
+  copy-source read still only logs. `FailingWorkDayRepository` in `CleanLogTests/Support/` throws on
+  every `update`. Review: concurrency clean (each change runs on the stored day handed to the
+  closure, `now()` read before the `await`, the sweep ends before the streams start); SwiftUI clean (no
+  views); SOLID — `fail` → `showSaveError`, dropped capture lists on non-escaping closures,
+  `DayTimer.init` formats the total and span only for the cases that show them (and 3+ argument calls
+  one per line). Minor left: `DaySummary` still has a 3-argument `DayFormat.month(…)` on one line.
 
 Next free branch number: **CL-24** (CL-16…23 are used above).
 
