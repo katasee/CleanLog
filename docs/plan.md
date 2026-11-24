@@ -407,7 +407,7 @@ Notes for the sessions:
   price. Minor left: `DayView.init` builds a `DayViewModel` (with the header's date formatting) on every
   `TodayView` body run — rare (selection and scene-phase changes), the convention's pattern.
 
-Next free branch number: **CL-26** (CL-16…25 are used above).
+Next free branch number: **CL-27** (CL-16…25 are used above; CL-26 is the iCloud spec branch, PR from `main`).
 
 ## Roadmap (v1)
 
@@ -423,6 +423,8 @@ branches as above.
 7. Statistics. Logic, then UI.
 8. Report and WhatsApp. Logic, then UI.
 9. Settings and reminders. Logic, then UI.
-10. First launch, app icon, Bundle ID, privacy policy, TestFlight.
+10. iCloud sync (spec: "iCloud sync"): private CloudKit database, remote-change refresh, duplicate
+    merging, the iCloud status line in Settings. Logic, then UI.
+11. First launch, app icon, Bundle ID, privacy policy, TestFlight.
 
-Later: Live Activity, home-screen widget, iCloud sync, PDF/CSV export.
+Later: Live Activity, home-screen widget, PDF/CSV export.
