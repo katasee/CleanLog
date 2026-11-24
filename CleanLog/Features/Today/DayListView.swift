@@ -11,6 +11,7 @@ struct DayListView: View {
     }
 
     let viewModel: DayViewModel
+    let onAddApartment: () -> Void
 
     var body: some View {
         Section {
@@ -19,6 +20,9 @@ struct DayListView: View {
                     .listRowInsets(Layout.rowInsets)
                     .listRowBackground(Color.card)
             }
+            AddApartmentRow(action: onAddApartment)
+                .listRowInsets(Layout.rowInsets)
+                .listRowBackground(Color.card)
         } header: {
             DayListHeader(progress: viewModel.cleanedCountText)
         }
@@ -58,6 +62,28 @@ private struct DayListRow: View {
 
     private func remove() {
         Task { await viewModel.remove(row.id) }
+    }
+}
+
+private struct AddApartmentRow: View {
+    private enum Layout {
+        static let minHeight: CGFloat = 44
+    }
+
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label {
+                Text(.todayListAdd)
+            } icon: {
+                Image(systemName: "plus")
+            }
+            .font(.body.weight(.semibold))
+            .foregroundStyle(Color.accent)
+            .frame(maxWidth: .infinity, minHeight: Layout.minHeight, alignment: .leading)
+            .contentShape(.rect)
+        }
     }
 }
 

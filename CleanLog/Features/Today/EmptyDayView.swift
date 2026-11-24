@@ -8,6 +8,7 @@ struct EmptyDayView: View {
     }
 
     let viewModel: DayViewModel
+    let onAddApartments: () -> Void
 
     @ScaledMetric(relativeTo: .largeTitle) private var iconCircleDiameter = Layout.iconCircleDiameter
 
@@ -24,6 +25,7 @@ struct EmptyDayView: View {
                 .foregroundStyle(Color.ink)
                 .multilineTextAlignment(.center)
                 .accessibilityAddTraits(.isHeader)
+            AddApartmentsButton(action: onAddApartments)
             if let copyOffer = viewModel.copyOffer {
                 CopyPlanButton(title: copyOffer.text, action: copyPlan)
             }
@@ -35,6 +37,26 @@ struct EmptyDayView: View {
 
     private func copyPlan() {
         Task { await viewModel.copyPlan() }
+    }
+}
+
+private struct AddApartmentsButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label {
+                Text(.todayEmptyAdd)
+            } icon: {
+                Image(systemName: "plus")
+            }
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .buttonBorderShape(.capsule)
+        .controlSize(.extraLarge)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
 }
 
@@ -75,7 +97,7 @@ private struct CopyPlanButton: View {
         }
 
         var body: some View {
-            EmptyDayView(viewModel: viewModel)
+            EmptyDayView(viewModel: viewModel, onAddApartments: {})
                 .task {
                     await viewModel.observe()
                 }
