@@ -24,8 +24,8 @@ stay one tap, and nothing on the screen may be a button that leads nowhere.
 
 ## Non-goals (this feature)
 
-- **The Day plan sheet** and every button that opens it: the empty state's «Додати квартири», the past
-  day's «+ Додати квартиру» row and the floating add button. They arrive with Feature 5, together
+- **The Day plan sheet** and every button that opens it: the empty state's «Додати квартири» and the
+  list's «+ Додати квартиру» row (on every day since 2026-11-24; the floating add button was dropped). They arrive with Feature 5, together
   with the sheet (the user's decision, 2026-11-22: no button without its screen). Until then a fresh
   install cannot make its first plan; the app is handed to the user after Feature 5.
 - **The calendar button and sheet** — Feature 6.

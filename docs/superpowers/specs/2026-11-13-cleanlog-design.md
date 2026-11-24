@@ -61,8 +61,8 @@ an Apple Developer account.
 
 ## Screens
 
-A system `TabView` with three tabs — **Today**, **Statistics**, **Apartments** — and a floating
-add button beside the tab bar. Settings open from a toolbar button on Apartments.
+A system `TabView` with three tabs — **Today**, **Statistics**, **Apartments**. There is no floating
+add button (dropped 2026-11-24): a day's apartments are added from the Today screen. Settings open from a toolbar button on Apartments.
 
 ### Today
 
@@ -96,7 +96,7 @@ The same screen for any earlier date, reached by ‹ or the calendar.
   **Сьогодні** button jumps back.
 - The timer card shows the day's total ("5:10", "07:30 – 13:05 · пауза 25 хв") with **Змінити** to
   set the duration by hand (for a forgotten timer).
-- Rows can be ticked and unticked; **+ Додати квартиру** adds one that was forgotten.
+- Rows can be ticked and unticked; the list's **+ Додати квартиру** row adds one that was forgotten.
 - Changes flow into Statistics and the report at once.
 
 ### Calendar (sheet)
@@ -110,11 +110,15 @@ The same screen for any earlier date, reached by ‹ or the calendar.
 
 ### Day plan (sheet)
 
-- A grid of template apartments (name + price), multi-select; apartments already on the day are
-  shown selected. A search field filters by name.
-- **Нова** creates an apartment (name, price, "окремо у звіті"), saves it to the template and adds it
-  to the day.
-- The confirm button sums the selection: "Додати 7 квартир · 224 zł".
+Opened from the empty day's **Додати квартири** and from a **+ Додати квартиру** row at the end of the
+day's list (on every day). Design: `docs/superpowers/specs/2026-11-24-day-plan-design.md`.
+
+- A grid of the template apartments **not yet on the day** (name + price), multi-select. The sheet only
+  adds; removing stays the swipe on the day. A search field filters by name.
+- **Нова** creates an apartment (name, price, "окремо у звіті"), saves it to the template and returns to
+  the grid with it selected.
+- The confirm button sums the selection: "Додати 7 квартир · 224 zł". Nothing changes until it is
+  tapped.
 
 ### Statistics
 
