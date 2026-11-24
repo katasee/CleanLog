@@ -14,12 +14,14 @@ struct DayViewModelTests {
         day: DayKey,
         days: [WorkDay] = [],
         apartments: FakeApartmentRepository = FakeApartmentRepository(),
+        now: @escaping () -> Date = { .warsaw(2026, 11, 13, 9) },
         locale: Locale = Locale(identifier: "uk_UA")
     ) -> DayViewModel {
         makeViewModel(
             day: day,
             workDays: FakeWorkDayRepository(days),
             apartments: apartments,
+            now: now,
             locale: locale
         )
     }
@@ -28,6 +30,7 @@ struct DayViewModelTests {
         day: DayKey,
         workDays: any WorkDayRepository,
         apartments: FakeApartmentRepository = FakeApartmentRepository(),
+        now: @escaping () -> Date = { .warsaw(2026, 11, 13, 9) },
         locale: Locale = Locale(identifier: "uk_UA")
     ) -> DayViewModel {
         DayViewModel(
@@ -35,7 +38,7 @@ struct DayViewModelTests {
             today: today,
             workDays: workDays,
             apartments: apartments,
-            now: { .warsaw(2026, 11, 13, 9) },
+            now: now,
             calendar: .warsaw,
             locale: locale
         )
@@ -398,6 +401,85 @@ struct DayViewModelTests {
             #expect(viewModel.errorMessage == "Не вдалося зберегти зміну")
             viewModel.isShowingError = false
             #expect(viewModel.errorMessage == nil)
+        }
+    }
+
+    @Test func runsTheTimerThroughItsStates() async {
+        let clock = TestClock(at(7, 30))
+        let viewModel = makeViewModel(
+            day: today,
+            days: [.fixture(today, ticked: [], unticked: [a28])],
+            now: { clock.now }
+        )
+
+        await observing(viewModel) {
+            await viewModel.startTimer()
+            await eventually { viewModel.timer == .running(status: "Працюю · з 07:30") }
+            clock.now = at(8, 45)
+            await viewModel.pauseTimer()
+            await eventually { viewModel.timer == .paused }
+            clock.now = at(9, 10)
+            await viewModel.startTimer()
+            await eventually { viewModel.timer == .running(status: "Працюю · з 07:30") }
+            clock.now = at(13, 5)
+            await viewModel.finishTimer()
+            await eventually { viewModel.timer == .finished(total: "5:10", span: "07:30 – 13:05 · пауза 25 хв") }
+            clock.now = at(13, 30)
+            await viewModel.startTimer()
+            await eventually { viewModel.timer == .running(status: "Працюю · з 07:30") }
+            #expect(!viewModel.isShowingError)
+        }
+    }
+
+    @Test func surfacesARefusedTimerChange() async {
+        let viewModel = makeViewModel(
+            day: today,
+            days: [.fixture(today, ticked: [], unticked: [a28])]
+        )
+
+        await observing(viewModel) {
+            await viewModel.pauseTimer()
+            #expect(viewModel.errorMessage == "Не вдалося зберегти зміну")
+            #expect(viewModel.timer == .idle)
+        }
+    }
+
+    @Test func setsAndResetsTheManualDuration() async throws {
+        let workDay = try WorkDay.fixture(yesterday, ticked: [a28])
+            .startingTimer(at: .warsaw(2026, 11, 12, 8), today: yesterday)
+            .finishingTimer(at: .warsaw(2026, 11, 12, 10, 15), today: yesterday)
+        let viewModel = makeViewModel(day: yesterday, days: [workDay])
+
+        await observing(viewModel) {
+            await viewModel.setManualDuration(DurationParts(hours: 5, minutes: 10))
+            await eventually { viewModel.timer == .past(total: "5:10", span: nil) }
+            await viewModel.resetManualDuration()
+            await eventually { viewModel.timer == .past(total: "2:15", span: "08:00 – 10:15") }
+        }
+    }
+
+    @Test func clearsTheDroppedNoteWithAManualDuration() async throws {
+        let workDay = try WorkDay.fixture(yesterday, ticked: [a28])
+            .startingTimer(at: .warsaw(2026, 11, 12, 8), today: yesterday)
+            .droppingOverrunTimer(today: today)
+        let viewModel = makeViewModel(day: yesterday, days: [workDay])
+
+        await observing(viewModel) {
+            await viewModel.setManualDuration(DurationParts(hours: 4, minutes: 0))
+            await eventually { viewModel.droppedNote == nil }
+            #expect(viewModel.timer == .past(total: "4:00", span: nil))
+        }
+    }
+
+    @Test func prefillsThePickerWithTheWorkedTime() async throws {
+        let workDay = try WorkDay.fixture(yesterday, ticked: [a28])
+            .startingTimer(at: .warsaw(2026, 11, 12, 8), today: yesterday)
+            .finishingTimer(at: .warsaw(2026, 11, 12, 10, 15).addingTimeInterval(40), today: yesterday)
+        let viewModel = makeViewModel(day: yesterday, days: [workDay])
+
+        #expect(viewModel.manualDurationParts == DurationParts(hours: 0, minutes: 0))
+        await observing(viewModel) {
+            #expect(viewModel.manualDurationParts == DurationParts(hours: 2, minutes: 15))
         }
     }
 

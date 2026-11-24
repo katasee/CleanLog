@@ -313,16 +313,17 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** `git switch -c feature/CL-23-day-timer-actions feature/CL-18-day-actions`: Task 9, test-first; PR base CL-18.
+**NEXT session:** `git switch -c feature/CL-19-today-screen feature/CL-23-day-timer-actions` (or `main` once CL-23 is
+merged): Tasks 10–12; PR base CL-23.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 21 | `feature/CL-21-today-spec-plan` | `main` | — (spec, plan, design) | 912 (docs only) | merged (PR #17) | — |
 | 16 | `feature/CL-16-today-domain` | CL-21 | 1–4 | 405 | merged (PR #16) | done — concurrency clean; SOLID: 1 fix (below) |
-| 17 | `feature/CL-17-day-view-model` | `main` | 5, 6 (header, rows) | 500 | PR #18 open | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
-| 22 | `feature/CL-22-day-summaries` | CL-17 | 6 (summaries, «Як учора») | 325 | PR #19 open | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
-| 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | 452 | PR #20 open | done — concurrency clean; SwiftUI clean; SOLID: 3 fixes (below) |
-| 23 | `feature/CL-23-day-timer-actions` | CL-18 | 9 | ~250 est. | not started | — |
+| 17 | `feature/CL-17-day-view-model` | `main` | 5, 6 (header, rows) | 500 | merged (PR #18) | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
+| 22 | `feature/CL-22-day-summaries` | CL-17 | 6 (summaries, «Як учора») | 325 | merged (PRs #19, #21) | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
+| 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | 452 | merged (PR #20) | done — concurrency clean; SwiftUI clean; SOLID: 3 fixes (below) |
+| 23 | `feature/CL-23-day-timer-actions` | `main` | 9 | 137 | PR #22 open | done — concurrency clean; SwiftUI clean; SOLID clean (below) |
 | 19 | `feature/CL-19-today-screen` | CL-23 | 10–12 | ~450 est. | not started | — |
 | 20 | `feature/CL-20-today-states` | CL-19 | 13–14 | ~350 est. (end of feature) | not started | — |
 
@@ -378,6 +379,15 @@ Notes for the sessions:
   views); SOLID — `fail` → `showSaveError`, dropped capture lists on non-escaping closures,
   `DayTimer.init` formats the total and span only for the cases that show them (and 3+ argument calls
   one per line). Minor left: `DaySummary` still has a 3-argument `DayFormat.month(…)` on one line.
+
+- CL-23 (2026-11-24): based on `main`, not CL-18 — PRs #20 and #21 had merged CL-17/22/18 into `main`.
+  Task 9 as planned: `startTimer`/`pauseTimer`/`finishTimer` (start also resumes and restarts after
+  «Стоп»), `setManualDuration(_:)`/`resetManualDuration()`, `manualDurationParts` rounded down to
+  minutes; `DurationParts` lives in `Features/Today/` with `init(roundingDown:)` and `duration`. A refused
+  timer change (pause while idle) shows «Не вдалося зберегти зміну». Tests drive time through
+  `TestClock` in `CleanLogTests/Support/`. 137 lines, under the 300 floor: the split was fixed when CL-18
+  was cut, and joining UI Task 10 would break the logic/UI rule. Review: concurrency clean (`now()` read
+  before every `await`, each change on the stored day); SwiftUI clean (no views); SOLID clean.
 
 Next free branch number: **CL-24** (CL-16…23 are used above).
 
