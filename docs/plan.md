@@ -509,7 +509,7 @@ merged, so CL-34 had to be reopened against `main` as PR #35.
 | 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | 805 (docs, 277 of it the deleted plan; the user kept it one branch) | merged (PR #32) | plan review done (in the plan) |
 | 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | merged (PR #33) | done — concurrency clean; SOLID: 1 fix (below) |
 | 34 | `feature/CL-34-calendar-day-card` | `main` (`main` merged in) | 4 | 401 | PR #35 open (PR #34 merged into CL-32 after CL-32 merged) | done — concurrency clean; SOLID clean (below) |
-| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5 | 690 (over the cap, below) | PR open | done — `swiftui-pro`: 3 fixes; SOLID: 1 fix (below) |
+| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5 | 690 (over the cap, below) | PR #36 open | done — `swiftui-pro`: 3 fixes; SOLID: 1 fix (below) |
 | 35 | `feature/CL-35-calendar-button` | CL-33 | 6 | — | next | `swiftui-pro`, SOLID |
 
 Notes for the sessions:
