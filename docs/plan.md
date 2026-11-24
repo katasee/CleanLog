@@ -327,7 +327,7 @@ Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/sp
 | 19 | `feature/CL-19-today-screen` | `main` | 10 | 387 | merged (PR #23) | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
 | 24 | `feature/CL-24-timer-card` | `main` | 11 | 392 | merged (PR #25) | done — concurrency clean; SwiftUI clean; conventions: 2 fixes (below) |
 | 25 | `feature/CL-25-day-list` | `main` | 12 (the list) | 330 | merged (PR #26) | done — concurrency clean; SwiftUI: 1 fix; SOLID clean (below) |
-| 27 | `feature/CL-27-day-summaries` | `main` | 12 (the summary cards) | 239 | PR open | done — SwiftUI: 1 fix; SOLID clean (below) |
+| 27 | `feature/CL-27-day-summaries` | `main` | 12 (the summary cards) | 256 | PR #27 open | done — SwiftUI: 1 fix; SOLID clean (below) |
 | 20 | `feature/CL-20-today-states` | CL-27 | 13–14 | ~350 est. (end of feature) | not started | — |
 
 Notes for the sessions:
