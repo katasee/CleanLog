@@ -51,11 +51,14 @@ final class CalendarViewModel {
     func observeMonth() async {
         let month = shownMonth
         for await monthDays in workDays.days(in: month) where month == shownMonth {
-            earnings = Dictionary(
-                uniqueKeysWithValues: monthDays.filter(\.hasCleanedEntries).map { ($0.day, $0.earned) }
-            )
+            earnings = Self.earnings(in: monthDays)
             refresh()
         }
+    }
+
+    private static func earnings(in monthDays: [WorkDay]) -> [DayKey: Money] {
+        let earned = monthDays.filter(\.hasCleanedEntries).map { ($0.day, $0.earned) }
+        return Dictionary(earned) { first, _ in first }
     }
 
     private func refresh() {
