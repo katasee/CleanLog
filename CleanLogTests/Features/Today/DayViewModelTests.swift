@@ -58,13 +58,6 @@ struct DayViewModelTests {
         try await body()
     }
 
-    private func stored(_ day: DayKey, in workDays: any WorkDayRepository) async -> WorkDay? {
-        for await workDay in workDays.day(day) {
-            return workDay
-        }
-        return nil
-    }
-
     @Test func titlesTodayAndOtherDays() {
         let todayHeader = makeViewModel(day: today).header
         #expect(
@@ -385,8 +378,8 @@ struct DayViewModelTests {
         let viewModel = makeViewModel(day: today, workDays: workDays)
 
         try await observing(viewModel) {
-            #expect(await stored(tenth, in: workDays)?.isTimeDropped == true)
-            #expect(await stored(yesterday, in: workDays)?.isTimeDropped == true)
+            #expect(await workDays.stored(tenth)?.isTimeDropped == true)
+            #expect(await workDays.stored(yesterday)?.isTimeDropped == true)
             let stillOpen = try await workDays.daysWithOpenSession(before: today)
             #expect(stillOpen.isEmpty)
         }
@@ -400,7 +393,7 @@ struct DayViewModelTests {
         let viewModel = makeViewModel(day: yesterday, workDays: workDays)
 
         await observing(viewModel) {
-            #expect(await stored(tenth, in: workDays)?.hasOpenSession == true)
+            #expect(await workDays.stored(tenth)?.hasOpenSession == true)
         }
     }
 

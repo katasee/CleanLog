@@ -4,7 +4,8 @@ import Foundation
 
 final class GatedWorkDayRepository: WorkDayRepository {
     private let wrapped: FakeWorkDayRepository
-    private let gate = AsyncStream<Void>.makeStream()
+    private var waiting: [CheckedContinuation<Void, Never>] = []
+    private var isReleased = false
     private(set) var updateCount = 0
 
     init(_ days: [WorkDay]) {
@@ -12,7 +13,9 @@ final class GatedWorkDayRepository: WorkDayRepository {
     }
 
     func release() {
-        gate.continuation.finish()
+        isReleased = true
+        waiting.forEach { $0.resume() }
+        waiting = []
     }
 
     func day(_ day: DayKey) -> AsyncStream<WorkDay> {
@@ -33,7 +36,9 @@ final class GatedWorkDayRepository: WorkDayRepository {
 
     func update(_ day: DayKey, _ change: (WorkDay) throws -> WorkDay) async throws {
         updateCount += 1
-        for await _ in gate.stream {}
+        if !isReleased {
+            await withCheckedContinuation { waiting.append($0) }
+        }
         try await wrapped.update(day, change)
     }
 }

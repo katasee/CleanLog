@@ -84,7 +84,7 @@ final class DayPlanViewModel {
         set { if !newValue { errorMessage = nil } }
     }
 
-    func toggle(_ id: Apartment.ID) {
+    func toggleSelection(of id: Apartment.ID) {
         if selectedIDs.contains(id) {
             selectedIDs.remove(id)
         } else {
@@ -98,7 +98,7 @@ final class DayPlanViewModel {
             editing: nil,
             suggestedName: tiles.isEmpty ? trimmedSearch : "",
             locale: locale,
-            onAdd: { [weak self] apartment in self?.toggle(apartment.id) }
+            onAdd: { [weak self] apartment in self?.select(apartment.id) }
         )
     }
 
@@ -137,8 +137,12 @@ final class DayPlanViewModel {
         searchText.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    private func select(_ id: Apartment.ID) {
+        selectedIDs.insert(id)
+    }
+
     private func matchesSearch(_ apartment: Apartment) -> Bool {
-        trimmedSearch.isEmpty || apartment.name.range(of: trimmedSearch, options: .caseInsensitive) != nil
+        trimmedSearch.isEmpty || apartment.name.localizedStandardContains(trimmedSearch)
     }
 
     private func observeTemplate() async {
