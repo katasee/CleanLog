@@ -21,11 +21,19 @@ struct DayHeaderView: View {
         HStack(alignment: .bottom) {
             VStack(alignment: .leading, spacing: Layout.titleSpacing) {
                 HStack(spacing: Layout.stepSpacing) {
-                    StepButton(systemImage: "chevron.left", label: .todayHeaderPrevious) { onStep(-1) }
+                    StepButton(
+                        systemImage: "chevron.left",
+                        label: .todayHeaderPrevious,
+                        action: stepBack
+                    )
                     Text(verbatim: header.subtitle)
                         .font(.subheadline.weight(.medium))
                         .foregroundStyle(Color.inkSecondary)
-                    StepButton(systemImage: "chevron.right", label: .todayHeaderNext) { onStep(1) }
+                    StepButton(
+                        systemImage: "chevron.right",
+                        label: .todayHeaderNext,
+                        action: stepForward
+                    )
                 }
                 Text(verbatim: header.title)
                     .font(.largeTitle.weight(.bold))
@@ -45,6 +53,14 @@ struct DayHeaderView: View {
                 .buttonStyle(.plain)
             }
         }
+    }
+
+    private func stepBack() {
+        onStep(-1)
+    }
+
+    private func stepForward() {
+        onStep(1)
     }
 }
 

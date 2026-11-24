@@ -35,10 +35,8 @@ struct TodayView: View {
             .screenBackground(Layout.backdrop)
             .toolbarVisibility(.hidden, for: .navigationBar)
         }
-        .task(id: selection.today) {
-            let untilNextDay = TodaySelection.timeUntilNextDay(after: .now, calendar: .current)
-            guard (try? await Task.sleep(for: untilNextDay)) != nil else { return }
-            advanceToCurrentDay()
+        .task {
+            await advanceAtEachMidnight()
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
@@ -53,6 +51,14 @@ struct TodayView: View {
 
     private func showToday() {
         selection.showToday()
+    }
+
+    private func advanceAtEachMidnight() async {
+        while true {
+            let untilNextDay = TodaySelection.timeUntilNextDay(after: .now, calendar: .current)
+            guard (try? await Task.sleep(for: untilNextDay)) != nil else { return }
+            advanceToCurrentDay()
+        }
     }
 
     private func advanceToCurrentDay() {
