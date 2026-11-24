@@ -329,7 +329,7 @@ sheet) with `superpowers:brainstorming`.
 | 24 | `feature/CL-24-timer-card` | `main` | 11 | 392 | merged (PR #25) | done — concurrency clean; SwiftUI clean; conventions: 2 fixes (below) |
 | 25 | `feature/CL-25-day-list` | `main` | 12 (the list) | 330 | merged (PR #26) | done — concurrency clean; SwiftUI: 1 fix; SOLID clean (below) |
 | 27 | `feature/CL-27-day-summaries` | `main` | 12 (the summary cards) | 256 | merged (PR #27) | done — SwiftUI: 1 fix; SOLID clean (below) |
-| 20 | `feature/CL-20-today-states` | `main` | 13–14 | ~530 (end of feature) | built, PR next | done — concurrency, SwiftUI, SOLID clean (below) |
+| 20 | `feature/CL-20-today-states` | `main` | 13–14 | 531 (end of feature) | PR #28 open | done — concurrency, SwiftUI, SOLID clean (below) |
 
 Notes for the sessions:
 
