@@ -18,18 +18,6 @@ struct DayListView: View {
                 DayListRow(viewModel: viewModel, row: row)
                     .listRowInsets(Layout.rowInsets)
                     .listRowBackground(Color.card)
-                    .swipeActions {
-                        Button {
-                            Task { await viewModel.remove(row.id) }
-                        } label: {
-                            Label {
-                                Text(.todayListRemove)
-                            } icon: {
-                                Image(systemName: "minus.circle")
-                            }
-                        }
-                        .tint(Color.destructive)
-                    }
             }
         } header: {
             DayListHeader(progress: viewModel.cleanedCountText)
@@ -42,16 +30,34 @@ private struct DayListRow: View {
     let row: DayRow
 
     var body: some View {
-        if viewModel.canTick {
-            Button {
-                Task { await viewModel.setCleaned(row.id, to: !row.isCleaned) }
-            } label: {
+        Group {
+            if viewModel.canTick {
+                Button(action: tick) {
+                    DayRowView(row: row)
+                }
+                .sensoryFeedback(.success, trigger: row.isCleaned) { _, isCleaned in isCleaned }
+            } else {
                 DayRowView(row: row)
             }
-            .sensoryFeedback(.success, trigger: row.isCleaned) { _, isCleaned in isCleaned }
-        } else {
-            DayRowView(row: row)
         }
+        .swipeActions {
+            Button(action: remove) {
+                Label {
+                    Text(.todayListRemove)
+                } icon: {
+                    Image(systemName: "minus.circle")
+                }
+            }
+            .tint(Color.destructive)
+        }
+    }
+
+    private func tick() {
+        Task { await viewModel.setCleaned(row.id, to: !row.isCleaned) }
+    }
+
+    private func remove() {
+        Task { await viewModel.remove(row.id) }
     }
 }
 
