@@ -462,7 +462,7 @@ Plan: `docs/superpowers/plans/2026-11-24-day-plan.md` · Spec: `docs/superpowers
 |---|---|---|---|---|---|---|
 | 28 | `feature/CL-28-day-plan-spec` | `main` | — (spec, plan; deletes the Today plan) | 952 (docs only: 473 new, 483 the deleted Today plan) | merged (PR #29) | plan review done (in the plan) |
 | 29 | `feature/CL-29-day-plan-logic` | CL-28 | 1–3 | 889 (277 of it string-catalog JSON) | merged (PR #30) | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
-| 30 | `feature/CL-30-day-plan-sheet` | `main` (CL-29 merged in) | 4–5 | 480 with this note | PR open | done — SwiftUI: 1 fix; SOLID: clean, 1 open point (below) |
+| 30 | `feature/CL-30-day-plan-sheet` | `main` (CL-29 merged in) | 4–5 | 480 with this note | PR #31 open | done — SwiftUI: 1 fix; SOLID: clean, 1 open point (below) |
 
 Notes for the sessions:
 
