@@ -80,6 +80,7 @@ views. **Each token has one role:**
 | `BackdropGlow` | the stronger backdrop circle | `#8CE2EA` / `#0F4C4F` |
 | `BackdropMist` | the softer backdrop circle | `#C3F0F3` / `#12302F` |
 | `Card` | content cards and list groups | `#FFFFFF` / `#1A2124` |
+| `OnAccent` | text and glyphs on an `AccentColor` fill (a selected tile, a checkmark) | `#FFFFFF` / `#1A2124` |
 | `Hairline` | hairlines between rows | ink 8% / white 10% |
 | `Warning` | a paused timer, a day that needs attention | `#9A5B00` / `#FFB340` |
 | `Destructive` | a destructive action that asks for confirmation first (a swipe to delete) | `#FF3B30` / `#FF453A` |
