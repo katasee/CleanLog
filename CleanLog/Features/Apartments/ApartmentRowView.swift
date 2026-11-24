@@ -1,21 +1,5 @@
 import SwiftUI
 
-private struct SeparateBadge: View {
-    private enum Layout {
-        static let horizontalPadding: CGFloat = 8
-        static let verticalPadding: CGFloat = 3
-    }
-
-    var body: some View {
-        Text(.apartmentsBadgeSeparate)
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(Color.accent)
-            .padding(.horizontal, Layout.horizontalPadding)
-            .padding(.vertical, Layout.verticalPadding)
-            .background(Color.accentSoft, in: .capsule)
-    }
-}
-
 struct ApartmentRowView: View {
     private enum Layout {
         static let spacing: CGFloat = 12
@@ -34,7 +18,7 @@ struct ApartmentRowView: View {
                     .font(.body.weight(.semibold))
                     .foregroundStyle(Color.ink)
                 if row.isReportedSeparately {
-                    SeparateBadge()
+                    Badge(title: .apartmentsBadgeSeparate)
                 }
             }
             Spacer(minLength: 0)

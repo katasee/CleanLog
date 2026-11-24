@@ -394,6 +394,23 @@
         }
       }
     },
+    "today.badge.separate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "separate"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "окремо"
+          }
+        }
+      }
+    },
     "today.empty.copy" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -613,6 +630,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld з %2$lld прибрано"
+          }
+        }
+      }
+    },
+    "today.list.remove" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прибрати"
+          }
+        }
+      }
+    },
+    "today.list.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apartments"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Квартири"
+          }
+        }
+      }
+    },
+    "today.row.accessCode" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Door code"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Код домофону"
           }
         }
       }
