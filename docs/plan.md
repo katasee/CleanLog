@@ -313,9 +313,10 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** create `feature/CL-25-day-list` from `feature/CL-24-timer-card` (PR #25 open, base
-`main`) and build Task 12 (the summary cards and the apartment list); its PR targets CL-24, or `main`
-once CL-24 is merged.
+**NEXT session:** `feature/CL-27-day-summaries` (stacked on CL-25, PR #26; already built and
+committed) — review its diff (`git diff feature/CL-25-day-list...HEAD`) with `swiftui-pro` and the
+SOLID / conventions pass, build, full test run, lint, then push and open its PR against CL-25 (or
+`main` once CL-25 is merged). Then CL-20.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -327,8 +328,9 @@ once CL-24 is merged.
 | 23 | `feature/CL-23-day-timer-actions` | `main` | 9 | 137 | merged (PR #22) | done — concurrency clean; SwiftUI clean; SOLID clean (below) |
 | 19 | `feature/CL-19-today-screen` | `main` | 10 | 387 | merged (PR #23) | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
 | 24 | `feature/CL-24-timer-card` | `main` | 11 | 392 | PR #25 open | done — concurrency clean; SwiftUI clean; conventions: 2 fixes (below) |
-| 25 | `feature/CL-25-day-list` | CL-24 | 12 | ~350 est. | not started | — |
-| 20 | `feature/CL-20-today-states` | CL-25 | 13–14 | ~350 est. (end of feature) | not started | — |
+| 25 | `feature/CL-25-day-list` | `main` | 12 (the list) | 330 | PR #26 open | done — concurrency clean; SwiftUI: 1 fix; SOLID clean (below) |
+| 27 | `feature/CL-27-day-summaries` | CL-25 | 12 (the summary cards) | 232 | built, not reviewed | — |
+| 20 | `feature/CL-20-today-states` | CL-27 | 13–14 | ~350 est. (end of feature) | not started | — |
 
 Notes for the sessions:
 
@@ -417,7 +419,19 @@ Notes for the sessions:
   double tap on «Почати»/«Продовжити» can land on «Стоп», which takes its place — undone with one tap
   (spec decision 2), revisit if it happens on a device.
 
-Next free branch number: **CL-27** (CL-16…25 are used above; CL-26 is the iCloud spec, merged as PR #24).
+- CL-25 (2026-11-24): based on `main` (CL-24 merged as PR #25). Task 12 measured 556 lines → split: the
+  apartment list stays here, the summary cards went to CL-27 (232 lines, under the 300 floor: joining
+  CL-20 would put that branch past 500). The «окремо» badge moved from Apartments to `UICommons/Badge`
+  with the text as a parameter — each feature keeps its own key, since Apartments says «окремо у
+  звіті». The checkmark is drawn in `Card` on `Accent` (white would fail on the dark accent); rows get
+  explicit 4/18 insets for the canvas' 58 pt height. Checked on the iPhone 16 simulator with the preview
+  fakes (swipes and taps could not be driven from the CLI). Review: concurrency clean (the two button
+  `Task {}`s as in CL-24); SwiftUI — the tick and remove actions are named methods on `DayListRow`; the
+  skill's one-type-per-file rule yields to the convention's supporting-type rule; SOLID clean.
+  Open: the spec's «ще немає квартир» text on today's card with nothing planned waits for CL-20's
+  empty state, which may cover that case.
+
+Next free branch number: **CL-28** (CL-16…27 are used above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
 
