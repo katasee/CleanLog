@@ -101,10 +101,16 @@ The same screen for any earlier date, reached by ‹ or the calendar.
 
 ### Calendar (sheet)
 
-- Quick buttons: **Сьогодні**, **Учора**, **Тиждень тому**.
-- A month grid, weeks starting on the locale's first weekday (Monday for uk). Each worked day
-  shows its earnings in small type; today is ringed; the selected day is filled. Month paging ‹ ›.
-- A card for the selected day (weekday, date, count, earnings) with **Відкрити день**.
+Opened from a calendar button in the day header, on every day. Design:
+`docs/superpowers/specs/2026-11-24-calendar-design.md`.
+
+- Quick buttons: **Сьогодні**, **Учора**, **Тиждень тому** — they select the day; they do not open it.
+- A month grid, weeks starting on the locale's first weekday (Monday for uk). A day that earned
+  something shows the amount in small type; planned or empty days show the number alone. Today is
+  ringed; the selected day is filled. Month paging ‹ ›.
+- A card for the selected day: weekday, date, and «4 квартири · 140 zł» when something was cleaned,
+  «5 квартир» when it is only planned, «вихідний» otherwise; **Відкрити день** closes the sheet and
+  shows that day.
 - Future days are selectable (the canvas still shows them disabled; the spec wins): the list for
   tomorrow usually arrives the evening before.
 
