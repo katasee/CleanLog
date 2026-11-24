@@ -323,7 +323,7 @@ merged): Tasks 10–12; PR base CL-23.
 | 17 | `feature/CL-17-day-view-model` | `main` | 5, 6 (header, rows) | 500 | merged (PR #18) | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
 | 22 | `feature/CL-22-day-summaries` | CL-17 | 6 (summaries, «Як учора») | 325 | merged (PRs #19, #21) | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
 | 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | 452 | merged (PR #20) | done — concurrency clean; SwiftUI clean; SOLID: 3 fixes (below) |
-| 23 | `feature/CL-23-day-timer-actions` | `main` | 9 | 137 | PR open | done — concurrency clean; SwiftUI clean; SOLID clean (below) |
+| 23 | `feature/CL-23-day-timer-actions` | `main` | 9 | 137 | PR #22 open | done — concurrency clean; SwiftUI clean; SOLID clean (below) |
 | 19 | `feature/CL-19-today-screen` | CL-23 | 10–12 | ~450 est. | not started | — |
 | 20 | `feature/CL-20-today-states` | CL-19 | 13–14 | ~350 est. (end of feature) | not started | — |
 
