@@ -16,6 +16,20 @@ struct DayPlanView: View {
         static let gridSpacing: CGFloat = 10
         static let margin: CGFloat = 18
         static let headerPadding: CGFloat = 4
+        static let backdrop = [
+            BackdropCircle(
+                tone: .glow,
+                origin: CGPoint(x: 170, y: -90),
+                diameter: 340,
+                opacity: 0.55
+            ),
+            BackdropCircle(
+                tone: .mist,
+                origin: CGPoint(x: -140, y: 360),
+                diameter: 300,
+                opacity: 0.6
+            ),
+        ]
     }
 
     @Environment(\.dismiss) private var dismiss
@@ -59,6 +73,7 @@ struct DayPlanView: View {
                 }
                 .padding(Layout.margin)
             }
+            .screenBackground(Layout.backdrop)
             .safeAreaInset(edge: .bottom) {
                 ConfirmButton(
                     title: viewModel.confirmTitle,
@@ -240,6 +255,7 @@ private struct ConfirmButton: View {
         .buttonBorderShape(.capsule)
         .controlSize(.large)
         .disabled(!isEnabled)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
 }
 
