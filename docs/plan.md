@@ -454,14 +454,15 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-24-day-plan.md` · Spec: `docs/superpowers/specs/2026-11-24-day-plan-design.md`
 
-**NEXT session:** create `feature/CL-30-day-plan-sheet` from CL-29 and do the plan's Tasks 4–5. The view
-model's interface as built is in the plan (Task 2, "As built on CL-29").
+**NEXT session:** Feature 5 is built; once PRs #29, CL-29 and CL-30 merge, delete the plan file
+(`docs/superpowers/plans/2026-11-24-day-plan.md`). Then Feature 6 (Calendar): brainstorm, starting with
+`superpowers:brainstorming`.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 28 | `feature/CL-28-day-plan-spec` | `main` | — (spec, plan; deletes the Today plan) | 952 (docs only: 473 new, 483 the deleted Today plan) | PR #29 open | plan review done (in the plan) |
 | 29 | `feature/CL-29-day-plan-logic` | CL-28 | 1–3 | 889 (277 of it string-catalog JSON) | PR open | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
-| 30 | `feature/CL-30-day-plan-sheet` | CL-29 | 4–5 | — | next | `swiftui-pro`, SOLID |
+| 30 | `feature/CL-30-day-plan-sheet` | CL-29 | 4–5 | 469 + this note | PR open | done — SwiftUI: 1 fix; SOLID: clean, 1 open point (below) |
 
 Notes for the sessions:
 
@@ -482,6 +483,19 @@ Notes for the sessions:
   view-model suites → `WorkDayRepository.stored(_:)` in `CleanLogTests/Support/`. Build, full test run,
   lint green.
 
+- CL-30 (2026-11-24): Tasks 4–5 as planned. Tile numbers from the `AddSheet` artboard (74 pt high, radius 22,
+  gap 10, three columns at default size through an adaptive grid with a 96 pt minimum scaled with
+  `.title3`). On the iPhone 16 simulator (fixtures swapped in temporarily) the plain iOS 26 sheet is white,
+  so the `Card` tiles vanished: the sheet now sets its own `.screenBackground` with the artboard's two
+  circles. At the largest accessibility size the grid is one column, nothing clips; the confirm button
+  wrapped to two lines and is capped at `accessibility1` like the day screen's copy button. The toolbar ✓
+  stays on both iOS versions (its label is the confirm title). Review: `swiftui-pro` — the sheet's `body`
+  was ~60 lines with an inline tile closure, now `DayPlanGrid` with a named toggle; SOLID clean. **Open
+  point for the user:** a selected tile's text is `Color.card` on `AccentColor` (white in light, dark
+  `#1A2124` on `#3FC2B7` in dark, where white would fail contrast); that gives `Card` a second role. The
+  alternative inside the token table is an `AccentSoft` fill with accent text, which departs from the
+  artboard's solid fill. Not checked visually: a selected tile, dark mode. Build, full tests, lint green.
+
 Next free branch number: **CL-31** (CL-16…30 are used above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
@@ -493,7 +507,7 @@ branches as above.
 2. Design system — done.
 3. Apartments (template) — done.
 4. Today — done.
-5. Day plan — in progress (above): the sheet, opened from the empty day and the list's «+ Додати квартиру» row (no floating add
+5. Day plan — built, PRs open (above): the sheet, opened from the empty day and the list's «+ Додати квартиру» row (no floating add
    button). Logic, then UI.
 6. Calendar. Logic, then UI.
 7. Statistics. Logic, then UI.
