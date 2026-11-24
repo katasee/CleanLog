@@ -27,6 +27,14 @@ struct TodaySelectionTests {
         #expect(selection.isShowingToday)
     }
 
+    @Test func showsAnyDayAndKeepsToday() {
+        var selection = TodaySelection(today: today)
+        selection.show(DayKey(year: 2026, month: 10, day: 2))
+        #expect(selection.day == DayKey(year: 2026, month: 10, day: 2))
+        #expect(selection.today == today)
+        #expect(!selection.isShowingToday)
+    }
+
     @Test func followsMidnightOnlyFromToday() {
         let tomorrow = DayKey(year: 2026, month: 11, day: 14)
         var onToday = TodaySelection(today: today)

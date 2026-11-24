@@ -34,4 +34,17 @@ struct DayFormatTests {
         #expect(DayFormat.time(.warsaw(2026, 11, 13, 7, 40), calendar: .warsaw, locale: uk) == "07:40")
         #expect(DayFormat.time(.warsaw(2026, 11, 13, 7, 40), calendar: .warsaw, locale: en) == "7:40\u{202F}AM")
     }
+
+    @Test func formatsTheMonthAndYear() {
+        let november = MonthKey(year: 2026, month: 11)
+        #expect(DayFormat.monthAndYear(november, calendar: .warsaw, locale: uk) == "Листопад 2026\u{202F}р.")
+        #expect(DayFormat.monthAndYear(november, calendar: .warsaw, locale: en) == "November 2026")
+    }
+
+    @Test func startsTheWeekdaySymbolsOnTheFirstWeekday() {
+        let mondayFirst = DayFormat.weekdaySymbols(calendar: .mondayFirst, locale: uk)
+        #expect(mondayFirst == ["пн", "вт", "ср", "чт", "пт", "сб", "нд"])
+        let sundayFirst = DayFormat.weekdaySymbols(calendar: .sundayFirst, locale: en)
+        #expect(sundayFirst == ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"])
+    }
 }
