@@ -499,14 +499,16 @@ the selected tile and the day row's checkmark.
 
 Plan: `docs/superpowers/plans/2026-11-24-calendar.md` · Spec: `docs/superpowers/specs/2026-11-24-calendar-design.md`
 
-**NEXT session:** create `feature/CL-33-calendar-sheet` from `feature/CL-34-calendar-day-card` and do the
-plan's Tasks 5–6 (its PR targets CL-34, or whichever branch below it is still unmerged, or `main`).
+**NEXT session:** CL-34 is not on `main` yet (PR #34 merged into `feature/CL-32-calendar-logic` after
+that branch had already merged), so it needs its own PR to `main` first. Then create
+`feature/CL-33-calendar-sheet` from `feature/CL-34-calendar-day-card` and do the plan's Tasks 5–6 (its PR
+targets CL-34 while that is unmerged, or `main`).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | 805 (docs, 277 of it the deleted plan; the user kept it one branch) | merged (PR #32) | plan review done (in the plan) |
-| 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | PR #33 open | done — concurrency clean; SOLID: 1 fix (below) |
-| 34 | `feature/CL-34-calendar-day-card` | CL-32 | 4 | 401 | PR #34 open | done — concurrency clean; SOLID clean (below) |
+| 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | merged (PR #33) | done — concurrency clean; SOLID: 1 fix (below) |
+| 34 | `feature/CL-34-calendar-day-card` | CL-32 | 4 | 401 | PR #34 merged into CL-32 after CL-32 merged; not on `main` yet | done — concurrency clean; SOLID clean (below) |
 | 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5–6 | — | next | `swiftui-pro`, SOLID |
 
 Notes for the sessions:
@@ -545,7 +547,7 @@ branches as above.
 3. Apartments (template) — done.
 4. Today — done.
 5. Day plan — done.
-6. Calendar — designed and planned (above). Logic, then UI.
+6. Calendar — in progress (above): grid logic merged, day card awaiting `main`, sheet next. Logic, then UI.
 7. Statistics. Logic, then UI.
 8. Report and WhatsApp. Logic, then UI.
 9. Settings and reminders. Logic, then UI.
