@@ -2,9 +2,10 @@ import Foundation
 import Observation
 
 @Observable @MainActor
-final class ApartmentFormViewModel {
+final class ApartmentFormViewModel: Identifiable {
     private let repository: any ApartmentRepository
     private let apartment: Apartment?
+    private let onAdd: (Apartment) -> Void
     private var isSaving = false
 
     var name: String {
@@ -19,11 +20,14 @@ final class ApartmentFormViewModel {
     init(
         repository: any ApartmentRepository,
         editing apartment: Apartment?,
-        locale: Locale = .current
+        suggestedName: String = "",
+        locale: Locale = .current,
+        onAdd: @escaping (Apartment) -> Void = { _ in }
     ) {
         self.repository = repository
         self.apartment = apartment
-        name = apartment?.name ?? ""
+        self.onAdd = onAdd
+        name = apartment?.name ?? suggestedName
         priceText = apartment.map { MoneyInput.string($0.price, locale: locale) } ?? ""
         accessCode = apartment?.accessCode ?? ""
         isReportedSeparately = apartment?.isReportedSeparately ?? false
@@ -73,7 +77,7 @@ final class ApartmentFormViewModel {
         if let apartment {
             try await repository.update(apartment.applying(draft))
         } else {
-            _ = try await repository.add(draft)
+            onAdd(try await repository.add(draft))
         }
     }
 }
