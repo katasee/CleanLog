@@ -464,10 +464,13 @@ struct DayViewModelTests {
         let viewModel = makeViewModel(day: yesterday, days: [workDay])
 
         await observing(viewModel) {
+            #expect(!viewModel.canResetManualDuration)
             await viewModel.setManualDuration(DurationParts(hours: 5, minutes: 10))
             await eventually { viewModel.timer == .past(total: "5:10", span: nil) }
+            #expect(viewModel.canResetManualDuration)
             await viewModel.resetManualDuration()
             await eventually { viewModel.timer == .past(total: "2:15", span: "08:00 – 10:15") }
+            #expect(!viewModel.canResetManualDuration)
         }
     }
 

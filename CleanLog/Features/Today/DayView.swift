@@ -11,6 +11,7 @@ struct DayView: View {
     }
 
     @State private var viewModel: DayViewModel
+    @State private var isEditingDuration = false
 
     private let onStep: (Int) -> Void
     private let onShowToday: () -> Void
@@ -44,8 +45,12 @@ struct DayView: View {
                 )
                 .modifier(CardRow(insets: Layout.cardInsets))
                 if let timer = viewModel.timer {
-                    TimerCardView(viewModel: viewModel, timer: timer)
-                        .modifier(CardRow(insets: Layout.cardInsets))
+                    TimerCardView(
+                        viewModel: viewModel,
+                        timer: timer,
+                        onEditDuration: editDuration
+                    )
+                    .modifier(CardRow(insets: Layout.cardInsets))
                 }
                 if let summary = viewModel.summary {
                     DaySummaryView(summary: summary)
@@ -62,9 +67,16 @@ struct DayView: View {
         }
         .scrollContentBackground(.hidden)
         .alert(viewModel.errorMessage ?? "", isPresented: $viewModel.isShowingError) {}
+        .sheet(isPresented: $isEditingDuration) {
+            ManualDurationSheet(viewModel: viewModel)
+        }
         .task {
             await viewModel.observe()
         }
+    }
+
+    private func editDuration() {
+        isEditingDuration = true
     }
 }
 
