@@ -2,7 +2,7 @@ import Foundation
 
 struct TodaySummary: Equatable {
     let earned: String
-    let planned: String
+    let planned: String?
     let progress: Double
     let month: String
     let monthEarned: String
@@ -32,7 +32,7 @@ extension DaySummary {
             self = .today(
                 TodaySummary(
                     earned: earned,
-                    planned: String(localized: .todaySummaryPlanned(planned), locale: locale),
+                    planned: Self.plannedText(of: workDay, planned: planned, locale: locale),
                     progress: Self.progress(of: workDay),
                     month: DayFormat.month(workDay.day.monthKey, calendar: calendar, locale: locale),
                     monthEarned: MoneyFormat.string(stats.earned, locale: locale),
@@ -44,6 +44,11 @@ extension DaySummary {
         case .future:
             self = .future(planned: planned)
         }
+    }
+
+    private static func plannedText(of workDay: WorkDay, planned: String, locale: Locale) -> String? {
+        guard !workDay.entries.isEmpty else { return nil }
+        return String(localized: .todaySummaryPlanned(planned), locale: locale)
     }
 
     private static func progress(of workDay: WorkDay) -> Double {

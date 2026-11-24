@@ -171,6 +171,19 @@ struct DayViewModelTests {
         }
     }
 
+    @Test func summarizesTodayWithNothingPlanned() async {
+        let viewModel = makeViewModel(day: today)
+
+        await observing(viewModel) {
+            guard case .today(let summary) = viewModel.summary else {
+                Issue.record("Expected today's summary, got \(String(describing: viewModel.summary))")
+                return
+            }
+            #expect(summary.earned == "0\u{00A0}zł")
+            #expect(summary.planned == nil)
+        }
+    }
+
     @Test func summarizesPastAndFutureDays() async {
         let past = makeViewModel(
             day: yesterday,

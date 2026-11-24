@@ -755,6 +755,23 @@
         }
       }
     },
+    "today.summary.nothingPlanned" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no apartments yet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ще немає квартир"
+          }
+        }
+      }
+    },
     "today.summary.pastEarned" : {
       "extractionState" : "manual",
       "localizations" : {
