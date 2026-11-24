@@ -35,6 +35,11 @@ struct DayFormatTests {
         #expect(DayFormat.time(.warsaw(2026, 11, 13, 7, 40), calendar: .warsaw, locale: en) == "7:40\u{202F}AM")
     }
 
+    @Test func formatsTheDayNumber() {
+        #expect(DayFormat.dayNumber(nov12, calendar: .warsaw, locale: uk) == "12")
+        #expect(DayFormat.dayNumber(DayKey(year: 2026, month: 11, day: 1), calendar: .warsaw, locale: en) == "1")
+    }
+
     @Test func formatsTheMonthAndYear() {
         let november = MonthKey(year: 2026, month: 11)
         #expect(DayFormat.monthAndYear(november, calendar: .warsaw, locale: uk) == "Листопад 2026\u{202F}р.")

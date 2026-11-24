@@ -11,6 +11,10 @@ nonisolated enum DayFormat {
         day.startDate(in: calendar).formatted(style(calendar: calendar, locale: locale).day().month(.wide))
     }
 
+    static func dayNumber(_ day: DayKey, calendar: Calendar, locale: Locale) -> String {
+        day.startDate(in: calendar).formatted(style(calendar: calendar, locale: locale).day())
+    }
+
     static func weekday(_ day: DayKey, calendar: Calendar, locale: Locale) -> String {
         day.startDate(in: calendar).formatted(style(calendar: calendar, locale: locale).weekday(.wide))
     }
