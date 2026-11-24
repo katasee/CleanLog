@@ -43,6 +43,10 @@ struct DayView: View {
                     onShowToday: onShowToday
                 )
                 .modifier(CardRow(insets: Layout.cardInsets))
+                if let timer = viewModel.timer {
+                    TimerCardView(viewModel: viewModel, timer: timer)
+                        .modifier(CardRow(insets: Layout.cardInsets))
+                }
             }
         }
         .scrollContentBackground(.hidden)

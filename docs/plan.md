@@ -313,9 +313,9 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** `git switch feature/CL-24-timer-card` (already built and merged with CL-19's review
-fixes): review its diff against CL-19 (`swiftui-pro`, `swift-concurrency-pro` for the `TimelineView` and
-the `Task {}` button actions, SOLID), push, PR with base CL-19 (or `main` once merged).
+**NEXT session:** create `feature/CL-25-day-list` from `feature/CL-24-timer-card` (PR #25 open, base
+`main`) and build Task 12 (the summary cards and the apartment list); its PR targets CL-24, or `main`
+once CL-24 is merged.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -324,9 +324,9 @@ the `Task {}` button actions, SOLID), push, PR with base CL-19 (or `main` once m
 | 17 | `feature/CL-17-day-view-model` | `main` | 5, 6 (header, rows) | 500 | merged (PR #18) | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
 | 22 | `feature/CL-22-day-summaries` | CL-17 | 6 (summaries, «Як учора») | 325 | merged (PRs #19, #21) | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
 | 18 | `feature/CL-18-day-actions` | CL-22 | 7–8 | 452 | merged (PR #20) | done — concurrency clean; SwiftUI clean; SOLID: 3 fixes (below) |
-| 23 | `feature/CL-23-day-timer-actions` | `main` | 9 | 137 | PR #22 open | done — concurrency clean; SwiftUI clean; SOLID clean (below) |
-| 19 | `feature/CL-19-today-screen` | `main` | 10 | 387 | PR #23 open | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
-| 24 | `feature/CL-24-timer-card` | CL-19 | 11 | 384 | built, not reviewed | — |
+| 23 | `feature/CL-23-day-timer-actions` | `main` | 9 | 137 | merged (PR #22) | done — concurrency clean; SwiftUI clean; SOLID clean (below) |
+| 19 | `feature/CL-19-today-screen` | `main` | 10 | 387 | merged (PR #23) | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
+| 24 | `feature/CL-24-timer-card` | `main` | 11 | 392 | PR #25 open | done — concurrency clean; SwiftUI clean; conventions: 2 fixes (below) |
 | 25 | `feature/CL-25-day-list` | CL-24 | 12 | ~350 est. | not started | — |
 | 20 | `feature/CL-20-today-states` | CL-25 | 13–14 | ~350 est. (end of feature) | not started | — |
 
@@ -407,7 +407,17 @@ Notes for the sessions:
   price. Minor left: `DayView.init` builds a `DayViewModel` (with the header's date formatting) on every
   `TodayView` body run — rare (selection and scene-phase changes), the convention's pattern.
 
-Next free branch number: **CL-27** (CL-16…25 are used above; CL-26 is the iCloud spec branch, PR from `main`).
+- CL-24 (2026-11-24): Task 11 as planned; «Змінити» and its `today.timer.edit` key wait for Task 14 with
+  the picker sheet, so no key ships unused. Base is `main` (CL-19 merged as PR #23). Review: concurrency
+  clean (each button's `Task {}` inherits the main actor and calls a non-throwing intent that shows its
+  own error; the `TimelineView` exists only while running); SwiftUI clean; conventions — at
+  accessibility text sizes the clock and the two scaled 52 pt buttons did not fit one row, so the card
+  stacks its controls under the text (`AnyLayout`, as in `ApartmentRowView`); `Color.accentColor` →
+  the generated `Color.accent`. Minor left: `ApartmentsView` still uses `Color.accentColor`; a fast
+  double tap on «Почати»/«Продовжити» can land on «Стоп», which takes its place — undone with one tap
+  (spec decision 2), revisit if it happens on a device.
+
+Next free branch number: **CL-27** (CL-16…25 are used above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
 
