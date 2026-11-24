@@ -454,15 +454,15 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-24-day-plan.md` · Spec: `docs/superpowers/specs/2026-11-24-day-plan-design.md`
 
-**NEXT session:** Feature 5 is built; once PRs #29, CL-29 and CL-30 merge, delete the plan file
+**NEXT session:** Feature 5 is built; once the CL-30 PR merges, delete the plan file
 (`docs/superpowers/plans/2026-11-24-day-plan.md`). Then Feature 6 (Calendar): brainstorm, starting with
 `superpowers:brainstorming`.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 28 | `feature/CL-28-day-plan-spec` | `main` | — (spec, plan; deletes the Today plan) | 952 (docs only: 473 new, 483 the deleted Today plan) | PR #29 open | plan review done (in the plan) |
-| 29 | `feature/CL-29-day-plan-logic` | CL-28 | 1–3 | 889 (277 of it string-catalog JSON) | PR open | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
-| 30 | `feature/CL-30-day-plan-sheet` | CL-29 | 4–5 | 469 + this note | PR open | done — SwiftUI: 1 fix; SOLID: clean, 1 open point (below) |
+| 28 | `feature/CL-28-day-plan-spec` | `main` | — (spec, plan; deletes the Today plan) | 952 (docs only: 473 new, 483 the deleted Today plan) | merged (PR #29) | plan review done (in the plan) |
+| 29 | `feature/CL-29-day-plan-logic` | CL-28 | 1–3 | 889 (277 of it string-catalog JSON) | merged (PR #30) | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
+| 30 | `feature/CL-30-day-plan-sheet` | `main` (CL-29 merged in) | 4–5 | 480 with this note | PR open | done — SwiftUI: 1 fix; SOLID: clean, 1 open point (below) |
 
 Notes for the sessions:
 
