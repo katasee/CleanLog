@@ -313,9 +313,7 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** once CL-20's PR is merged, delete the Today plan file
-(`docs/superpowers/plans/2026-11-22-today.md`) on a docs branch, then start Feature 5 (the Day plan
-sheet) with `superpowers:brainstorming`.
+Done: CL-20 merged as PR #28; the plan file was deleted on CL-28.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -329,7 +327,7 @@ sheet) with `superpowers:brainstorming`.
 | 24 | `feature/CL-24-timer-card` | `main` | 11 | 392 | merged (PR #25) | done — concurrency clean; SwiftUI clean; conventions: 2 fixes (below) |
 | 25 | `feature/CL-25-day-list` | `main` | 12 (the list) | 330 | merged (PR #26) | done — concurrency clean; SwiftUI: 1 fix; SOLID clean (below) |
 | 27 | `feature/CL-27-day-summaries` | `main` | 12 (the summary cards) | 256 | merged (PR #27) | done — SwiftUI: 1 fix; SOLID clean (below) |
-| 20 | `feature/CL-20-today-states` | `main` | 13–14 | 531 (end of feature) | PR #28 open | done — concurrency, SwiftUI, SOLID clean (below) |
+| 20 | `feature/CL-20-today-states` | `main` | 13–14 | 531 (end of feature) | merged (PR #28) | done — concurrency, SwiftUI, SOLID clean (below) |
 
 Notes for the sessions:
 
@@ -452,7 +450,29 @@ Notes for the sessions:
   button `Task {}`s as in CL-24, the sheet dismisses before its write so a save error's alert can show
   on `DayView`; SwiftUI clean; SOLID clean. Full tests, Debug and Release builds, lint green.
 
-Next free branch number: **CL-28** (CL-16…27 are used above; CL-26 is the iCloud spec, merged as PR #24).
+## Feature 5 — Day plan
+
+Plan: `docs/superpowers/plans/2026-11-24-day-plan.md` · Spec: `docs/superpowers/specs/2026-11-24-day-plan-design.md`
+
+**NEXT session:** once CL-28's PR is merged (or on top of it), create `feature/CL-29-day-plan-logic` from
+CL-28 and do the plan's Tasks 1–3.
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 28 | `feature/CL-28-day-plan-spec` | `main` | — (spec, plan; deletes the Today plan) | see below | in progress | plan review done (in the plan) |
+| 29 | `feature/CL-29-day-plan-logic` | CL-28 | 1–3 | — | next | `swift-concurrency-pro`, `swiftui-pro`, SOLID |
+| 30 | `feature/CL-30-day-plan-sheet` | CL-29 | 4–5 | — | — | `swiftui-pro`, SOLID |
+
+Notes for the sessions:
+
+- CL-28 (2026-11-24): brainstorm decisions (all in the spec): no floating add button (dropped from the
+  product; a «+ Додати квартиру» row ends the list on every day instead); the sheet shows only apartments
+  not on the day and never removes; «Нова» opens the shared apartment form as a full-screen cover and
+  comes back selected; adding to a today whose timer stopped by itself leaves the timer finished (an
+  auto-start could run past midnight and lose the day's time). Builder check: 2 questions, one settled
+  by Claude (the form is not pushed), one by the user (the timer).
+
+Next free branch number: **CL-31** (CL-16…30 are used above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
 
@@ -462,8 +482,9 @@ branches as above.
 1. Foundation — done.
 2. Design system — done.
 3. Apartments (template) — done.
-4. Today — ticks, timer, empty state, "as yesterday", past and future days. Built (above); done once CL-20 merges.
-5. Day plan sheet, and the floating add button beside the tab bar. Logic, then UI.
+4. Today — done.
+5. Day plan sheet, opened from the empty day and the list's «+ Додати квартиру» row (no floating add
+   button). Logic, then UI.
 6. Calendar. Logic, then UI.
 7. Statistics. Logic, then UI.
 8. Report and WhatsApp. Logic, then UI.
