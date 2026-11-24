@@ -450,19 +450,16 @@ Notes for the sessions:
   button `Task {}`s as in CL-24, the sheet dismisses before its write so a save error's alert can show
   on `DayView`; SwiftUI clean; SOLID clean. Full tests, Debug and Release builds, lint green.
 
-## Feature 5 — Day plan
+## Feature 5 — Day plan (done)
 
-Plan: `docs/superpowers/plans/2026-11-24-day-plan.md` · Spec: `docs/superpowers/specs/2026-11-24-day-plan-design.md`
-
-**NEXT session:** Feature 5 is built; once the CL-30 PR merges, delete the plan file
-(`docs/superpowers/plans/2026-11-24-day-plan.md`). Then Feature 6 (Calendar): brainstorm, starting with
-`superpowers:brainstorming`.
+The plan file was deleted once the feature merged (CL-31); the notes below stay as the record. Spec:
+`docs/superpowers/specs/2026-11-24-day-plan-design.md`.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 28 | `feature/CL-28-day-plan-spec` | `main` | — (spec, plan; deletes the Today plan) | 952 (docs only: 473 new, 483 the deleted Today plan) | merged (PR #29) | plan review done (in the plan) |
 | 29 | `feature/CL-29-day-plan-logic` | CL-28 | 1–3 | 889 (277 of it string-catalog JSON) | merged (PR #30) | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
-| 30 | `feature/CL-30-day-plan-sheet` | `main` (CL-29 merged in) | 4–5 | 480 with this note | PR #31 open | done — SwiftUI: 1 fix; SOLID: clean, 1 open point (below) |
+| 30 | `feature/CL-30-day-plan-sheet` | `main` (CL-29 merged in) | 4–5 | 480 with this note | merged (PR #31) | done — SwiftUI: 1 fix; SOLID: clean, 1 open point (below) |
 
 Notes for the sessions:
 
@@ -494,9 +491,33 @@ Notes for the sessions:
   point for the user:** a selected tile's text is `Color.card` on `AccentColor` (white in light, dark
   `#1A2124` on `#3FC2B7` in dark, where white would fail contrast); that gives `Card` a second role. The
   alternative inside the token table is an `AccentSoft` fill with accent text, which departs from the
-  artboard's solid fill. Not checked visually: a selected tile, dark mode. Build, full tests, lint green.
+  artboard's solid fill. Not checked visually: a selected tile, dark mode. Build, full tests, lint green. Resolved in CL-31 (the
+user chose a new token): `OnAccent` (`#FFFFFF` / `#1A2124`) for text and glyphs on an accent fill, used by
+the selected tile and the day row's checkmark.
 
-Next free branch number: **CL-31** (CL-16…30 are used above; CL-26 is the iCloud spec, merged as PR #24).
+## Feature 6 — Calendar
+
+Plan: `docs/superpowers/plans/2026-11-24-calendar.md` · Spec: `docs/superpowers/specs/2026-11-24-calendar-design.md`
+
+**NEXT session:** once the CL-31 PR merges, create `feature/CL-32-calendar-logic` from `main` and do the
+plan's Tasks 1–4 (measure after Task 3; past 500, Task 4 moves to its own branch).
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | see PR | PR open | plan review done (in the plan) |
+| 32 | `feature/CL-32-calendar-logic` | `main` (after CL-31) | 1–4 | — | next | `swift-concurrency-pro`, SOLID |
+| 33 | `feature/CL-33-calendar-sheet` | CL-32 | 5–6 | — | — | `swiftui-pro`, SOLID |
+
+Notes for the sessions:
+
+- CL-31 (2026-11-24): brainstorm decisions (all in the spec): the grid shows earnings only on days that
+  earned (the user's option B — planned days are not marked); the card says «4 квартири · 140 zł», «5
+  квартир» for a plan, «вихідний» otherwise; quick buttons select, never open; the calendar button is in
+  the header on every day; our own SwiftUI grid, not `UICalendarView`. The sheet is presented by
+  `TodayView` (`DayView` is rebuilt per day). Builder check done in-session: no questions for the user.
+  Execution: native, one fresh session per branch.
+
+Next free branch number: **CL-34** (CL-16…33 are used above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
 
@@ -507,9 +528,8 @@ branches as above.
 2. Design system — done.
 3. Apartments (template) — done.
 4. Today — done.
-5. Day plan — built, PRs open (above): the sheet, opened from the empty day and the list's «+ Додати квартиру» row (no floating add
-   button). Logic, then UI.
-6. Calendar. Logic, then UI.
+5. Day plan — done.
+6. Calendar — designed and planned (above). Logic, then UI.
 7. Statistics. Logic, then UI.
 8. Report and WhatsApp. Logic, then UI.
 9. Settings and reminders. Logic, then UI.
