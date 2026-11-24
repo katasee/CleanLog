@@ -493,7 +493,7 @@ branches as above.
 2. Design system — done.
 3. Apartments (template) — done.
 4. Today — done.
-5. Day plan sheet, opened from the empty day and the list's «+ Додати квартиру» row (no floating add
+5. Day plan — in progress (above): the sheet, opened from the empty day and the list's «+ Додати квартиру» row (no floating add
    button). Logic, then UI.
 6. Calendar. Logic, then UI.
 7. Statistics. Logic, then UI.
