@@ -51,6 +51,10 @@ struct DayView: View {
                     DaySummaryView(summary: summary)
                         .modifier(CardRow(insets: Layout.cardInsets))
                 }
+                if viewModel.showsEmptyState {
+                    EmptyDayView(viewModel: viewModel)
+                        .modifier(CardRow(insets: Layout.cardInsets))
+                }
             }
             if !viewModel.rows.isEmpty {
                 DayListView(viewModel: viewModel)
@@ -103,6 +107,19 @@ private struct CardRow: ViewModifier {
                     ],
                     isTimerFinished: true
                 )
+            ]),
+            onStep: { _ in },
+            onShowToday: {}
+        )
+        .background(Color.background)
+    }
+
+    #Preview("Empty") {
+        DayView(
+            day: TodayPreviewData.today,
+            today: TodayPreviewData.today,
+            dependencies: TodayPreviewData.dependencies([
+                TodayPreviewData.day(TodayPreviewData.today.adding(days: -1, calendar: .current))
             ]),
             onStep: { _ in },
             onShowToday: {}
