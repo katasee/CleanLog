@@ -48,6 +48,9 @@ struct DayView: View {
                         .modifier(CardRow(insets: Layout.cardInsets))
                 }
             }
+            if !viewModel.rows.isEmpty {
+                DayListView(viewModel: viewModel)
+            }
         }
         .scrollContentBackground(.hidden)
         .alert(viewModel.errorMessage ?? "", isPresented: $viewModel.isShowingError) {}
@@ -97,6 +100,18 @@ private struct CardRow: ViewModifier {
                     isTimerFinished: true
                 )
             ]),
+            onStep: { _ in },
+            onShowToday: {}
+        )
+        .background(Color.background)
+    }
+
+    #Preview("Future") {
+        let tomorrow = TodayPreviewData.today.adding(days: 1, calendar: .current)
+        DayView(
+            day: tomorrow,
+            today: TodayPreviewData.today,
+            dependencies: TodayPreviewData.dependencies([TodayPreviewData.day(tomorrow)]),
             onStep: { _ in },
             onShowToday: {}
         )
