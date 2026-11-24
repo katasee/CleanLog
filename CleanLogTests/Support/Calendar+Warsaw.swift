@@ -10,6 +10,15 @@ extension Calendar {
         calendar.locale = Locale(identifier: "en_US_POSIX")
         return calendar
     }()
+
+    static let mondayFirst = warsaw.startingWeeks(on: 2)
+    static let sundayFirst = warsaw.startingWeeks(on: 1)
+
+    private func startingWeeks(on firstWeekday: Int) -> Calendar {
+        var calendar = self
+        calendar.firstWeekday = firstWeekday
+        return calendar
+    }
 }
 
 extension Date {

@@ -25,6 +25,12 @@ struct MoneyFormatTests {
         #expect(MoneyFormat.string(Money(minorUnits: 1_234_500), locale: polish) == "12\u{00A0}345\u{00A0}zł")
     }
 
+    @Test func formatsAnAmountWithoutTheCurrency() {
+        #expect(MoneyFormat.amount(Money(minorUnits: 22_400), locale: ukrainian) == "224")
+        #expect(MoneyFormat.amount(Money(minorUnits: 2850), locale: ukrainian) == "28,50")
+        #expect(MoneyFormat.amount(Money(minorUnits: 201_600), locale: ukrainian) == "2\u{00A0}016")
+    }
+
     @Test func neverBreaksALine() {
         let text = MoneyFormat.string(Money(minorUnits: 123_456_700), locale: ukrainian)
         #expect(!text.contains(" "))

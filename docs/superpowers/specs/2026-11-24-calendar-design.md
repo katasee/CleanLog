@@ -86,7 +86,7 @@ evening before. On the way it shows the month at a glance — which days earned 
  └──────────────────────────────────────┘
 ```
 
-- **Header**: ✕ dismisses; the month title («Листопад 2026», a `Formatting/` template formatter) between
+- **Header**: ✕ dismisses; the month title («Листопад 2026 р.» — Foundation's Ukrainian month-and-year form, kept rather than cut with a fixed pattern; a `Formatting/` template formatter) between
   ‹ and ›, each a 44 pt target with an accessibility label.
 - **Weekday row**: short standalone weekday symbols from the calendar and locale, rotated to start at
   `calendar.firstWeekday` (through `Formatting/`), hidden from VoiceOver (each cell reads its own date).

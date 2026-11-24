@@ -499,14 +499,15 @@ the selected tile and the day row's checkmark.
 
 Plan: `docs/superpowers/plans/2026-11-24-calendar.md` · Spec: `docs/superpowers/specs/2026-11-24-calendar-design.md`
 
-**NEXT session:** once the CL-31 PR merges, create `feature/CL-32-calendar-logic` from `main` and do the
-plan's Tasks 1–4 (measure after Task 3; past 500, Task 4 moves to its own branch).
+**NEXT session:** create `feature/CL-34-calendar-day-card` from `feature/CL-32-calendar-logic` and do the
+plan's Task 4 (its PR targets CL-32, or `main` once CL-32 is merged).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | 805 (docs, 277 of it the deleted plan; the user kept it one branch) | PR #32 open | plan review done (in the plan) |
-| 32 | `feature/CL-32-calendar-logic` | `main` (after CL-31) | 1–4 | — | next | `swift-concurrency-pro`, SOLID |
-| 33 | `feature/CL-33-calendar-sheet` | CL-32 | 5–6 | — | — | `swiftui-pro`, SOLID |
+| 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | 805 (docs, 277 of it the deleted plan; the user kept it one branch) | merged (PR #32) | plan review done (in the plan) |
+| 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | PR #33 open | done — concurrency clean; SOLID: 1 fix (below) |
+| 34 | `feature/CL-34-calendar-day-card` | CL-32 | 4 | — | next | `swift-concurrency-pro`, SOLID |
+| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5–6 | — | — | `swiftui-pro`, SOLID |
 
 Notes for the sessions:
 
@@ -516,8 +517,16 @@ Notes for the sessions:
   the header on every day; our own SwiftUI grid, not `UICalendarView`. The sheet is presented by
   `TodayView` (`DayView` is rebuilt per day). Builder check done in-session: no questions for the user.
   Execution: native, one fresh session per branch.
+- CL-32 (2026-11-24): Tasks 1–3; 432 lines after Task 3, so Task 4 (seven catalog keys, two of them
+  plurals) moved to CL-34 and CL-33 now stacks on CL-34. Deviations, all in the plan file: the Ukrainian
+  month title is Foundation's «Листопад 2026\u{202F}р.» (pinned, spec updated); `DayFormat.dayNumber` added
+  for the cell number; `String(localized:locale:)` moved to `Formatting/` (`nonisolated`), as Calendar is its
+  third feature. Review: concurrency clean (the `where month == shownMonth` guard and the assignment run
+  with no suspension between them); SOLID: the earnings map moved into a named `earnings(in:)` that keeps
+  the first record for a day instead of trapping on a duplicate (possible once sync exists).
+  `TodaySelection.show(_:)` has no caller until CL-33 (planned). Build, full tests, lint green.
 
-Next free branch number: **CL-34** (CL-16…33 are used above; CL-26 is the iCloud spec, merged as PR #24).
+Next free branch number: **CL-35** (CL-16…34 are used above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
 

@@ -17,6 +17,10 @@ struct TodaySelection: Hashable {
         day = day.adding(days: days, calendar: calendar)
     }
 
+    mutating func show(_ day: DayKey) {
+        self.day = day
+    }
+
     mutating func showToday() {
         day = today
     }
