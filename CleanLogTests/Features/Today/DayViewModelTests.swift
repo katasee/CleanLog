@@ -171,6 +171,19 @@ struct DayViewModelTests {
         }
     }
 
+    @Test func summarizesTodayWithNothingPlanned() async {
+        let viewModel = makeViewModel(day: today)
+
+        await observing(viewModel) {
+            guard case .today(let summary) = viewModel.summary else {
+                Issue.record("Expected today's summary, got \(String(describing: viewModel.summary))")
+                return
+            }
+            #expect(summary.earned == "0\u{00A0}zł")
+            #expect(summary.planned == nil)
+        }
+    }
+
     @Test func summarizesPastAndFutureDays() async {
         let past = makeViewModel(
             day: yesterday,
@@ -451,10 +464,13 @@ struct DayViewModelTests {
         let viewModel = makeViewModel(day: yesterday, days: [workDay])
 
         await observing(viewModel) {
+            #expect(!viewModel.canResetManualDuration)
             await viewModel.setManualDuration(DurationParts(hours: 5, minutes: 10))
             await eventually { viewModel.timer == .past(total: "5:10", span: nil) }
+            #expect(viewModel.canResetManualDuration)
             await viewModel.resetManualDuration()
             await eventually { viewModel.timer == .past(total: "2:15", span: "08:00 – 10:15") }
+            #expect(!viewModel.canResetManualDuration)
         }
     }
 

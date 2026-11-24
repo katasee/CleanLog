@@ -8,6 +8,7 @@ struct TimerCardView: View {
 
     let viewModel: DayViewModel
     let timer: DayTimer
+    let onEditDuration: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -20,7 +21,11 @@ struct TimerCardView: View {
             }
             .accessibilityElement(children: .combine)
             Spacer(minLength: 0)
-            TimerControls(viewModel: viewModel, timer: timer)
+            TimerControls(
+                viewModel: viewModel,
+                timer: timer,
+                onEditDuration: onEditDuration
+            )
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .cardSurface()
@@ -142,6 +147,7 @@ private struct TimerControls: View {
 
     let viewModel: DayViewModel
     let timer: DayTimer
+    let onEditDuration: () -> Void
 
     var body: some View {
         HStack(spacing: Layout.spacing) {
@@ -157,7 +163,7 @@ private struct TimerControls: View {
             case .finished:
                 TextButton(title: .todayTimerContinue) { await viewModel.startTimer() }
             case .past:
-                EmptyView()
+                EditDurationButton(action: onEditDuration)
             }
         }
     }
@@ -177,6 +183,31 @@ private struct TextButton: View {
         .buttonStyle(.borderedProminent)
         .buttonBorderShape(.capsule)
         .controlSize(.large)
+    }
+}
+
+private struct EditDurationButton: View {
+    private enum Layout {
+        static let horizontalPadding: CGFloat = 16
+        static let minimumHeight: CGFloat = 44
+    }
+
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label {
+                Text(.todayTimerEdit)
+            } icon: {
+                Image(systemName: "pencil")
+            }
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(Color.ink)
+            .padding(.horizontal, Layout.horizontalPadding)
+            .frame(minHeight: Layout.minimumHeight)
+            .glassSurface(.capsule)
+        }
+        .buttonStyle(.plain)
     }
 }
 
@@ -243,7 +274,11 @@ private enum TimerButtonLayout {
         var body: some View {
             Group {
                 if let timer = viewModel.timer {
-                    TimerCardView(viewModel: viewModel, timer: timer)
+                    TimerCardView(
+                        viewModel: viewModel,
+                        timer: timer,
+                        onEditDuration: {}
+                    )
                 }
             }
             .task {

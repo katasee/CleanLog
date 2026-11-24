@@ -74,6 +74,10 @@ final class DayViewModel {
         DurationParts(roundingDown: workDay?.workedDuration(now: now()) ?? .zero)
     }
 
+    var canResetManualDuration: Bool {
+        workDay?.manualDuration != nil
+    }
+
     func timerText(at date: Date) -> String {
         DurationFormat.clock(workDay?.workedDuration(now: date) ?? .zero)
     }

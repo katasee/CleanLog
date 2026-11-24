@@ -31,7 +31,11 @@ private struct TodaySummaryCards: View {
             SummaryCard {
                 SummaryCaption(text: Text(.todaySummaryToday))
                 AmountLine(amount: summary.earned, detail: summary.planned)
-                ProgressBar(progress: summary.progress)
+                if summary.planned == nil {
+                    SummaryCaption(text: Text(.todaySummaryNothingPlanned))
+                } else {
+                    ProgressBar(progress: summary.progress)
+                }
             }
             SummaryCard {
                 SummaryCaption(text: Text(verbatim: summary.month))
@@ -171,6 +175,18 @@ private struct ProgressBar: View {
                         month: "Листопад",
                         monthEarned: "1 988 zł",
                         monthCount: "63 квартири"
+                    )
+                )
+            )
+            DaySummaryView(
+                summary: .today(
+                    TodaySummary(
+                        earned: "0 zł",
+                        planned: nil,
+                        progress: 0,
+                        month: "Листопад",
+                        monthEarned: "1 876 zł",
+                        monthCount: "59 квартир"
                     )
                 )
             )

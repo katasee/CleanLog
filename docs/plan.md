@@ -313,8 +313,9 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/specs/2026-11-22-today-design.md`
 
-**NEXT session:** `feature/CL-20-today-states` — create it from `feature/CL-27-day-summaries` (or
-`main` once PR #27 is merged), plan Tasks 13–14.
+**NEXT session:** once CL-20's PR is merged, delete the Today plan file
+(`docs/superpowers/plans/2026-11-22-today.md`) on a docs branch, then start Feature 5 (the Day plan
+sheet) with `superpowers:brainstorming`.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -327,8 +328,8 @@ Plan: `docs/superpowers/plans/2026-11-22-today.md` · Spec: `docs/superpowers/sp
 | 19 | `feature/CL-19-today-screen` | `main` | 10 | 387 | merged (PR #23) | done — concurrency: 1 fix; SwiftUI: 1 fix; SOLID: 2 fixes (below) |
 | 24 | `feature/CL-24-timer-card` | `main` | 11 | 392 | merged (PR #25) | done — concurrency clean; SwiftUI clean; conventions: 2 fixes (below) |
 | 25 | `feature/CL-25-day-list` | `main` | 12 (the list) | 330 | merged (PR #26) | done — concurrency clean; SwiftUI: 1 fix; SOLID clean (below) |
-| 27 | `feature/CL-27-day-summaries` | `main` | 12 (the summary cards) | 256 | PR #27 open | done — SwiftUI: 1 fix; SOLID clean (below) |
-| 20 | `feature/CL-20-today-states` | CL-27 | 13–14 | ~350 est. (end of feature) | not started | — |
+| 27 | `feature/CL-27-day-summaries` | `main` | 12 (the summary cards) | 256 | merged (PR #27) | done — SwiftUI: 1 fix; SOLID clean (below) |
+| 20 | `feature/CL-20-today-states` | `main` | 13–14 | 531 (end of feature) | PR #28 open | done — concurrency, SwiftUI, SOLID clean (below) |
 
 Notes for the sessions:
 
@@ -435,6 +436,22 @@ Notes for the sessions:
   styling twice in its `ViewThatFits`, now `SummaryTitle`; SOLID clean (no logic or formatter in the
   view). Build, full tests, lint green.
 
+- CL-20 (2026-11-24): based on `main` (CL-27 merged as PR #27). Tasks 13–14 plus the spec's «ще немає
+  квартир»: `TodaySummary.planned` is nil when nothing is planned, and the today card then shows that
+  caption instead of «з 0 zł» and the bar (closes CL-25's open point). The empty day is a `Card` with the
+  icon on an `AccentSoft` circle, the title and a bordered «Як учора» button; the canvas' grey
+  description and «Додати квартири» come with Feature 5 (both are about adding apartments). The
+  past day's timer card has a glass «Змінити» capsule → `ManualDurationSheet` (one
+  `.sheet(isPresented:)` on `DayView`, wheels prefilled from `manualDurationParts`, Save / Cancel in
+  the toolbar). Calls: the hours wheel is 0…23, not the plan's 0…16, so a long day's real time always
+  fits the wheel without clamping; «Скинути» shows only when a manual time is set
+  (`canResetManualDuration`, tested) — no button that does nothing. Checked on the iPhone 16 simulator
+  with fixture data swapped in temporarily (empty today with the copy offer, a past day, the sheet).
+  Size 517 + this note, over 500: the user chose to keep it whole as the feature's last branch (a split
+  would leave a 169-line branch under the floor; ~170 lines are catalog JSON). Review: concurrency — the
+  button `Task {}`s as in CL-24, the sheet dismisses before its write so a save error's alert can show
+  on `DayView`; SwiftUI clean; SOLID clean. Full tests, Debug and Release builds, lint green.
+
 Next free branch number: **CL-28** (CL-16…27 are used above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
@@ -445,7 +462,7 @@ branches as above.
 1. Foundation — done.
 2. Design system — done.
 3. Apartments (template) — done.
-4. Today — ticks, timer, empty state, "as yesterday", past and future days. Logic, then UI. Planned (above).
+4. Today — ticks, timer, empty state, "as yesterday", past and future days. Built (above); done once CL-20 merges.
 5. Day plan sheet, and the floating add button beside the tab bar. Logic, then UI.
 6. Calendar. Logic, then UI.
 7. Statistics. Logic, then UI.

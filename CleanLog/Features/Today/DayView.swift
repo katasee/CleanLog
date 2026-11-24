@@ -11,6 +11,7 @@ struct DayView: View {
     }
 
     @State private var viewModel: DayViewModel
+    @State private var isEditingDuration = false
 
     private let onStep: (Int) -> Void
     private let onShowToday: () -> Void
@@ -44,11 +45,19 @@ struct DayView: View {
                 )
                 .modifier(CardRow(insets: Layout.cardInsets))
                 if let timer = viewModel.timer {
-                    TimerCardView(viewModel: viewModel, timer: timer)
-                        .modifier(CardRow(insets: Layout.cardInsets))
+                    TimerCardView(
+                        viewModel: viewModel,
+                        timer: timer,
+                        onEditDuration: editDuration
+                    )
+                    .modifier(CardRow(insets: Layout.cardInsets))
                 }
                 if let summary = viewModel.summary {
                     DaySummaryView(summary: summary)
+                        .modifier(CardRow(insets: Layout.cardInsets))
+                }
+                if viewModel.showsEmptyState {
+                    EmptyDayView(viewModel: viewModel)
                         .modifier(CardRow(insets: Layout.cardInsets))
                 }
             }
@@ -58,9 +67,16 @@ struct DayView: View {
         }
         .scrollContentBackground(.hidden)
         .alert(viewModel.errorMessage ?? "", isPresented: $viewModel.isShowingError) {}
+        .sheet(isPresented: $isEditingDuration) {
+            ManualDurationSheet(viewModel: viewModel)
+        }
         .task {
             await viewModel.observe()
         }
+    }
+
+    private func editDuration() {
+        isEditingDuration = true
     }
 }
 
@@ -103,6 +119,19 @@ private struct CardRow: ViewModifier {
                     ],
                     isTimerFinished: true
                 )
+            ]),
+            onStep: { _ in },
+            onShowToday: {}
+        )
+        .background(Color.background)
+    }
+
+    #Preview("Empty") {
+        DayView(
+            day: TodayPreviewData.today,
+            today: TodayPreviewData.today,
+            dependencies: TodayPreviewData.dependencies([
+                TodayPreviewData.day(TodayPreviewData.today.adding(days: -1, calendar: .current))
             ]),
             onStep: { _ in },
             onShowToday: {}
