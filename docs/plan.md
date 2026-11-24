@@ -504,7 +504,7 @@ plan's Tasks 1–4 (measure after Task 3; past 500, Task 4 moves to its own bran
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | see PR | PR open | plan review done (in the plan) |
+| 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | 805 (docs, 277 of it the deleted plan; the user kept it one branch) | PR #32 open | plan review done (in the plan) |
 | 32 | `feature/CL-32-calendar-logic` | `main` (after CL-31) | 1–4 | — | next | `swift-concurrency-pro`, SOLID |
 | 33 | `feature/CL-33-calendar-sheet` | CL-32 | 5–6 | — | — | `swiftui-pro`, SOLID |
 
