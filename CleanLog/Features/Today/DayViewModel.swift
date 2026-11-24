@@ -70,8 +70,35 @@ final class DayViewModel {
         set { if !newValue { errorMessage = nil } }
     }
 
+    var manualDurationParts: DurationParts {
+        DurationParts(roundingDown: workDay?.workedDuration(now: now()) ?? .zero)
+    }
+
     func timerText(at date: Date) -> String {
         DurationFormat.clock(workDay?.workedDuration(now: date) ?? .zero)
+    }
+
+    func startTimer() async {
+        let now = now()
+        await perform { try $0.startingTimer(at: now, today: today) }
+    }
+
+    func pauseTimer() async {
+        let now = now()
+        await perform { try $0.pausingTimer(at: now, today: today) }
+    }
+
+    func finishTimer() async {
+        let now = now()
+        await perform { try $0.finishingTimer(at: now, today: today) }
+    }
+
+    func setManualDuration(_ parts: DurationParts) async {
+        await perform { $0.settingManualDuration(parts.duration) }
+    }
+
+    func resetManualDuration() async {
+        await perform { $0.settingManualDuration(nil) }
     }
 
     func setCleaned(_ id: DayEntry.ID, to isCleaned: Bool) async {
