@@ -499,15 +499,15 @@ the selected tile and the day row's checkmark.
 
 Plan: `docs/superpowers/plans/2026-11-24-calendar.md` · Spec: `docs/superpowers/specs/2026-11-24-calendar-design.md`
 
-**NEXT session:** create `feature/CL-34-calendar-day-card` from `feature/CL-32-calendar-logic` and do the
-plan's Task 4 (its PR targets CL-32, or `main` once CL-32 is merged).
+**NEXT session:** create `feature/CL-33-calendar-sheet` from `feature/CL-34-calendar-day-card` and do the
+plan's Tasks 5–6 (its PR targets CL-34, or whichever branch below it is still unmerged, or `main`).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | 805 (docs, 277 of it the deleted plan; the user kept it one branch) | merged (PR #32) | plan review done (in the plan) |
 | 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | PR #33 open | done — concurrency clean; SOLID: 1 fix (below) |
-| 34 | `feature/CL-34-calendar-day-card` | CL-32 | 4 | — | next | `swift-concurrency-pro`, SOLID |
-| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5–6 | — | — | `swiftui-pro`, SOLID |
+| 34 | `feature/CL-34-calendar-day-card` | CL-32 | 4 | 384 + this note | PR open | done — concurrency clean; SOLID clean (below) |
+| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5–6 | — | next | `swiftui-pro`, SOLID |
 
 Notes for the sessions:
 
@@ -525,6 +525,13 @@ Notes for the sessions:
   with no suspension between them); SOLID: the earnings map moved into a named `earnings(in:)` that keeps
   the first record for a day instead of trapping on a duplicate (possible once sync exists).
   `TodaySelection.show(_:)` has no caller until CL-33 (planned). Build, full tests, lint green.
+- CL-34 (2026-11-24): Task 4. Deviations, in the plan file: `card` and `quickPicks` are computed, not
+  stored — `card` builds from the last observed `WorkDay` only while its day is still `selected`, so right
+  after a new selection it is `nil` until that day's stream yields (no stale summary under a new date;
+  pinned by `cardWaitsForTheNewlySelectedDay`); an extra test pins the three quick picks' days, titles and
+  selection. Seven catalog keys (`calendar.card.dayOff/earned/planned/today`, `calendar.quick.*`; the plan
+  said six). Review: concurrency clean (`observeSelectedDay()` mirrors `observeMonth()`: the `where` guard and
+  the assignment run with no suspension between them); SOLID clean. Build, full tests, lint green.
 
 Next free branch number: **CL-35** (CL-16…34 are used above; CL-26 is the iCloud spec, merged as PR #24).
 
