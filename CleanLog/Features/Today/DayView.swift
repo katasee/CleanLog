@@ -25,13 +25,15 @@ struct DayView: View {
     private let dependencies: AppDependencies
     private let onStep: (Int) -> Void
     private let onShowToday: () -> Void
+    private let onShowCalendar: () -> Void
 
     init(
         day: DayKey,
         today: DayKey,
         dependencies: AppDependencies,
         onStep: @escaping (Int) -> Void,
-        onShowToday: @escaping () -> Void
+        onShowToday: @escaping () -> Void,
+        onShowCalendar: @escaping () -> Void
     ) {
         _viewModel = State(
             initialValue: DayViewModel(
@@ -46,6 +48,7 @@ struct DayView: View {
         self.dependencies = dependencies
         self.onStep = onStep
         self.onShowToday = onShowToday
+        self.onShowCalendar = onShowCalendar
     }
 
     var body: some View {
@@ -54,7 +57,8 @@ struct DayView: View {
                 DayHeaderView(
                     header: viewModel.header,
                     onStep: onStep,
-                    onShowToday: onShowToday
+                    onShowToday: onShowToday,
+                    onShowCalendar: onShowCalendar
                 )
                 .modifier(CardRow(insets: Layout.cardInsets))
                 if let timer = viewModel.timer {
@@ -122,7 +126,8 @@ private struct CardRow: ViewModifier {
                 TodayPreviewData.day(sessions: [TodayPreviewData.session(startedHoursAgo: 4.2)])
             ]),
             onStep: { _ in },
-            onShowToday: {}
+            onShowToday: {},
+            onShowCalendar: {}
         )
         .background(Color.background)
     }
@@ -143,7 +148,8 @@ private struct CardRow: ViewModifier {
                 )
             ]),
             onStep: { _ in },
-            onShowToday: {}
+            onShowToday: {},
+            onShowCalendar: {}
         )
         .background(Color.background)
     }
@@ -156,7 +162,8 @@ private struct CardRow: ViewModifier {
                 TodayPreviewData.day(TodayPreviewData.today.adding(days: -1, calendar: .current))
             ]),
             onStep: { _ in },
-            onShowToday: {}
+            onShowToday: {},
+            onShowCalendar: {}
         )
         .background(Color.background)
     }
@@ -168,7 +175,8 @@ private struct CardRow: ViewModifier {
             today: TodayPreviewData.today,
             dependencies: TodayPreviewData.dependencies([TodayPreviewData.day(tomorrow)]),
             onStep: { _ in },
-            onShowToday: {}
+            onShowToday: {},
+            onShowCalendar: {}
         )
         .background(Color.background)
     }
