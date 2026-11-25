@@ -52,6 +52,20 @@ struct DayFormatTests {
         #expect(DayFormat.monthInPhrase(october, calendar: .warsaw, locale: en) == "October")
     }
 
+    @Test func formatsTheMonthInATitle() {
+        let november = MonthKey(year: 2026, month: 11)
+        let december2025 = MonthKey(year: 2025, month: 12)
+        #expect(DayFormat.monthInTitle(november, includesYear: false, calendar: .warsaw, locale: uk) == "листопад")
+        #expect(
+            DayFormat.monthInTitle(december2025, includesYear: true, calendar: .warsaw, locale: uk)
+                == "грудень 2025\u{202F}р."
+        )
+        #expect(DayFormat.monthInTitle(november, includesYear: false, calendar: .warsaw, locale: en) == "November")
+        #expect(
+            DayFormat.monthInTitle(december2025, includesYear: true, calendar: .warsaw, locale: en) == "December 2025"
+        )
+    }
+
     @Test func startsTheWeekdaySymbolsOnTheFirstWeekday() {
         let mondayFirst = DayFormat.weekdaySymbols(calendar: .mondayFirst, locale: uk)
         #expect(mondayFirst == ["пн", "вт", "ср", "чт", "пт", "сб", "нд"])

@@ -29,6 +29,11 @@ nonisolated enum DayFormat {
         )
     }
 
+    static func monthInTitle(_ month: MonthKey, includesYear: Bool, calendar: Calendar, locale: Locale) -> String {
+        let style = style(calendar: calendar, locale: locale, capitalization: .middleOfSentence).month(.wide)
+        return firstDate(of: month, calendar: calendar).formatted(includesYear ? style.year() : style)
+    }
+
     static func monthInPhrase(_ month: MonthKey, calendar: Calendar, locale: Locale) -> String {
         firstDate(of: month, calendar: calendar).formatted(
             Date.VerbatimFormatStyle(
@@ -56,12 +61,16 @@ nonisolated enum DayFormat {
         DayKey(year: month.year, month: month.month, day: 1).startDate(in: calendar)
     }
 
-    private static func style(calendar: Calendar, locale: Locale) -> Date.FormatStyle {
+    private static func style(
+        calendar: Calendar,
+        locale: Locale,
+        capitalization: FormatStyleCapitalizationContext = .beginningOfSentence
+    ) -> Date.FormatStyle {
         Date.FormatStyle(
             locale: locale,
             calendar: calendar,
             timeZone: calendar.timeZone,
-            capitalizationContext: .beginningOfSentence
+            capitalizationContext: capitalization
         )
     }
 }
