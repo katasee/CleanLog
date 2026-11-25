@@ -562,12 +562,12 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-25-statistics.md` · Spec: `docs/superpowers/specs/2026-11-25-statistics-design.md`
 
-**NEXT session:** once PR for CL-36 is open, `feature/CL-37-statistics-logic` (Tasks 1–3), stacked on CL-36 —
+**NEXT session:** PR #38 (CL-36) is open; build `feature/CL-37-statistics-logic` (Tasks 1–3), stacked on CL-36 —
 or on `main` if CL-36 has merged (check on GitHub first). Execution: native, one fresh session per branch.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 36 | `feature/CL-36-statistics-spec` | `main` | — (spec, plan, product spec; deletes the Calendar plan) | 847 (docs, 301 of it the deleted plan, as in CL-31) | built | plan review done (in the plan) |
+| 36 | `feature/CL-36-statistics-spec` | `main` | — (spec, plan, product spec; deletes the Calendar plan) | 887 (docs, 301 of it the deleted plan, as in CL-31) | PR #38 open | plan review done (in the plan) |
 | 37 | `feature/CL-37-statistics-logic` | CL-36 | 1–3 | — | next | `SOLID` |
 | 38 | `feature/CL-38-statistics-summary` | CL-37 | 4 | — | planned | `SOLID` |
 | 39 | `feature/CL-39-statistics-view-model` | CL-38 | 5 | — | planned | `swift-concurrency-pro` + SOLID |
