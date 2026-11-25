@@ -128,14 +128,17 @@ day's list (on every day). Design: `docs/superpowers/specs/2026-11-24-day-plan-d
 
 ### Statistics
 
-- Month switcher.
-- The month's earnings as one large number, with the change against the previous month (hidden
-  when the previous month is zero).
+- Month switcher; it opens on the current month and goes no further forward.
+- The month's earnings as one large number, with the change against the previous month («↑ 9% до
+  жовтня») on a finished month only — hidden on the current month, and when either month earned zero.
 - Cards: apartments cleaned (all, including separately reported ones), hours worked, earnings per
   hour (only over days with recorded time; "—" when none), average per working day (a day with at
   least one cleaned apartment).
-- Most frequent apartments with their counts.
-- A **Звіт** button opens the report for the shown month.
+- A day's time counts once its work is over: a manual duration, a past day, or today with the timer
+  finished. Today's running or paused timer adds nothing until it is finished.
+- Most frequent apartments (the top three) with their counts.
+- A **Звіт** button opens the report for the shown month (added with the Report feature).
+- Details: `2026-11-25-statistics-design.md`.
 
 ### Report (sheet)
 
