@@ -562,16 +562,16 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-25-statistics.md` · Spec: `docs/superpowers/specs/2026-11-25-statistics-design.md`
 
-**NEXT session:** PR #40 (CL-38) is open; build `feature/CL-39-statistics-view-model` (Task 5), stacked on
-CL-38 — or on `main` if it has merged (check on GitHub first). Execution: native, one fresh session per branch.
+**NEXT session:** PR #41 (CL-39) is open; build `feature/CL-40-statistics-screen` (Task 6), stacked on
+CL-39 — or on `main` if it has merged (check on GitHub first). Execution: native, one fresh session per branch.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 36 | `feature/CL-36-statistics-spec` | `main` | — (spec, plan, product spec; deletes the Calendar plan) | 887 (docs, 301 of it the deleted plan, as in CL-31) | merged (PR #38) | plan review done (in the plan) |
 | 37 | `feature/CL-37-statistics-logic` | CL-36 | 1–3 | 262 (under the floor, below) | merged (PR #39) | done — SOLID: 2 fixes (below) |
-| 38 | `feature/CL-38-statistics-summary` | `main` | 4 | ~515 (over, below) | PR #40 open | done — SOLID: 2 fixes (below) |
-| 39 | `feature/CL-39-statistics-view-model` | CL-38 | 5 | — | next | `swift-concurrency-pro` + SOLID |
-| 40 | `feature/CL-40-statistics-screen` | CL-39 | 6 | — | planned | `swiftui-pro` + SOLID |
+| 38 | `feature/CL-38-statistics-summary` | `main` | 4 | ~515 (over, below) | merged (PR #40) | done — SOLID: 2 fixes (below) |
+| 39 | `feature/CL-39-statistics-view-model` | `main` | 5 | ~270 (under the floor, below) | PR #41 open | done — concurrency clean; SOLID: 2 fixes (below) |
+| 40 | `feature/CL-40-statistics-screen` | CL-39 | 6 | — | next | `swiftui-pro` + SOLID |
 
 Notes for the sessions:
 
@@ -599,6 +599,16 @@ Notes for the sessions:
   `.formatted(.number)`, now `Formatting/CountFormat` (tested); `init` decided and formatted the change in one
   call and formatted the previous month even with the badge hidden — now `change(from:to:)` decides and
   `text(for:previousMonth:locale:)` formats. Build, full tests, lint green.
+- CL-39 (2026-11-25): Task 5, based on `main` (CL-38 had merged). Size ~270 with this file, under the floor:
+  the view model is one task, and Task 6 (the screen, its subviews, preview data) would push a merged branch
+  well past 500, so the split stays. No deviations from the plan's tests. Review — `swift-concurrency-pro`:
+  clean (both observations capture the shown month and guard on it before assigning, nothing suspends in
+  between; no stored tasks; the tests cancel both observations in a `defer`). Known limit:
+  `hidesTheChangeOnTheCurrentMonth` cannot observe that the previous month has arrived (nothing exposes it),
+  so it could pass before that yield; `advancingIntoANewMonthKeepsTheShownMonth` covers the positive path.
+  SOLID: `init` built the summary by hand with `isFinished: false` and `refresh()` built it again — now one
+  private `summary(of:previousEarned:month:today:calendar:locale:)` owns the "finished month" rule; the summary
+  no longer reads `canShowNextMonth` (a navigation rule) as "the month is finished". Build, full tests, lint green.
 
 Next free branch number: **CL-41** (CL-16…40 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
