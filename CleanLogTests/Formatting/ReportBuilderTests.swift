@@ -32,7 +32,15 @@ struct ReportBuilderTests {
 
     @Test func printsADayWithOnlySeparateApartments() {
         let only155 = WorkDay.fixture(DayKey(year: 2026, month: 11, day: 5), ticked: [.fixture("155", separate: true)])
-        #expect(ReportBuilder.report(for: november, days: [only155]) == "5.11-()=0+155")
+        #expect(ReportBuilder.report(for: november, days: [only155]) == "5.11-155")
+    }
+
+    @Test func joinsTwoSeparateApartmentsWithAPlus() {
+        let two = WorkDay.fixture(
+            DayKey(year: 2026, month: 11, day: 5),
+            ticked: [.fixture("155", separate: true), .fixture("106", separate: true)]
+        )
+        #expect(ReportBuilder.report(for: november, days: [two]) == "5.11-106+155")
     }
 
     @Test func listsApartmentsInNameOrder() {
