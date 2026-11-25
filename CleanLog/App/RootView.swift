@@ -22,7 +22,7 @@ struct RootView: View {
                 }
             }
             Tab(value: .stats) {
-                StatsView()
+                StatsView(workDays: dependencies.workDays)
             } label: {
                 Label {
                     Text(.tabStatsTitle)
