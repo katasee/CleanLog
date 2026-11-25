@@ -562,16 +562,16 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-25-statistics.md` · Spec: `docs/superpowers/specs/2026-11-25-statistics-design.md`
 
-**NEXT session:** PR #41 (CL-39) is open; build `feature/CL-40-statistics-screen` (Task 6), stacked on
-CL-39 — or on `main` if it has merged (check on GitHub first). Execution: native, one fresh session per branch.
+**NEXT session:** PR #42 (CL-40) is open — the last branch of Statistics. Once it merges, start Feature 8
+(Report and WhatsApp) with `superpowers:brainstorming`; its first branch deletes the Statistics plan file.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 36 | `feature/CL-36-statistics-spec` | `main` | — (spec, plan, product spec; deletes the Calendar plan) | 887 (docs, 301 of it the deleted plan, as in CL-31) | merged (PR #38) | plan review done (in the plan) |
 | 37 | `feature/CL-37-statistics-logic` | CL-36 | 1–3 | 262 (under the floor, below) | merged (PR #39) | done — SOLID: 2 fixes (below) |
 | 38 | `feature/CL-38-statistics-summary` | `main` | 4 | ~515 (over, below) | merged (PR #40) | done — SOLID: 2 fixes (below) |
-| 39 | `feature/CL-39-statistics-view-model` | `main` | 5 | ~270 (under the floor, below) | PR #41 open | done — concurrency clean; SOLID: 2 fixes (below) |
-| 40 | `feature/CL-40-statistics-screen` | CL-39 | 6 | — | next | `swiftui-pro` + SOLID |
+| 39 | `feature/CL-39-statistics-view-model` | `main` | 5 | ~270 (under the floor, below) | merged (PR #41) | done — concurrency clean; SOLID: 2 fixes (below) |
+| 40 | `feature/CL-40-statistics-screen` | `main` | 6 | 463 | PR #42 open | done — `swiftui-pro`: 1 fix; SOLID clean (below) |
 
 Notes for the sessions:
 
@@ -609,6 +609,16 @@ Notes for the sessions:
   SOLID: `init` built the summary by hand with `isFinished: false` and `refresh()` built it again — now one
   private `summary(of:previousEarned:month:today:calendar:locale:)` owns the "finished month" rule; the summary
   no longer reads `canShowNextMonth` (a navigation rule) as "the month is finished". Build, full tests, lint green.
+- CL-40 (2026-11-25): Task 6, based on `main` (CL-39 had merged). Deviations: the four value cards are two rows
+  through an `AnyLayout` (`HStackLayout` → `VStackLayout` at accessibility sizes, as `TimerCardView` does), not a
+  `Grid`, so one set of cards serves both layouts; the count column has a scaled minimum width so the bars line
+  up (the artboard fixes it at 60 pt); `Badge` stores a `Text`, built by `init(title:)` or the new `init(text:)`;
+  the empty month shows `stats.empty` in a card under the heading. Preview data is relative to today (this
+  and last month), so paging back shows the badge. On the iPhone 16 simulator (the app launched temporarily on
+  Stats with the preview fake) light and dark match the artboard; at `accessibility5` the cards stack in one
+  column and the screen scrolls; the month switcher is capped at `accessibility1`. Paging and the badge were
+  **not** driven by taps (no tap tool) — check by hand. Review — `swiftui-pro`: the bar's `GeometryReader`
+  became a `visualEffect` offset clipped to the track. SOLID clean. Build, full tests, lint green.
 
 Next free branch number: **CL-41** (CL-16…40 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
@@ -624,7 +634,7 @@ branches as above.
 5. Day plan — done.
 6. Calendar — done.
    Follow-up: the rectangle behind the day header's glass buttons (CL-35 notes).
-7. Statistics — in progress (CL-36…40). Logic, then UI.
+7. Statistics — done once PR #42 merges (CL-36…40).
 8. Report and WhatsApp. Logic, then UI.
 9. Settings and reminders. Logic, then UI.
 10. iCloud sync (spec: "iCloud sync"): private CloudKit database, remote-change refresh, duplicate
