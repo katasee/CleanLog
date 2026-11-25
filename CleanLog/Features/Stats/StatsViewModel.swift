@@ -11,7 +11,7 @@ final class StatsViewModel {
     private var previousEarned: Money?
 
     private(set) var shownMonth: MonthKey
-    private(set) var monthTitle = ""
+    private(set) var monthTitle: String
     private(set) var summary: StatsSummary
 
     init(
@@ -25,15 +25,15 @@ final class StatsViewModel {
         self.calendar = calendar
         self.locale = locale
         shownMonth = today.monthKey
-        summary = StatsSummary(
-            stats: .calculate(days: [], today: today),
+        summary = Self.summary(
+            of: [],
             previousEarned: nil,
             month: today.monthKey,
-            isFinished: false,
+            today: today,
             calendar: calendar,
             locale: locale
         )
-        refresh()
+        monthTitle = DayFormat.monthAndYear(today.monthKey, calendar: calendar, locale: locale)
     }
 
     var canShowNextMonth: Bool {
@@ -79,11 +79,29 @@ final class StatsViewModel {
 
     private func refresh() {
         monthTitle = DayFormat.monthAndYear(shownMonth, calendar: calendar, locale: locale)
-        summary = StatsSummary(
-            stats: .calculate(days: shownDays, today: today),
+        summary = Self.summary(
+            of: shownDays,
             previousEarned: previousEarned,
             month: shownMonth,
-            isFinished: canShowNextMonth,
+            today: today,
+            calendar: calendar,
+            locale: locale
+        )
+    }
+
+    private static func summary(
+        of days: [WorkDay],
+        previousEarned: Money?,
+        month: MonthKey,
+        today: DayKey,
+        calendar: Calendar,
+        locale: Locale
+    ) -> StatsSummary {
+        StatsSummary(
+            stats: .calculate(days: days, today: today),
+            previousEarned: previousEarned,
+            month: month,
+            isFinished: month < today.monthKey,
             calendar: calendar,
             locale: locale
         )
