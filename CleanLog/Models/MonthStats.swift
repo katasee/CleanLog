@@ -18,10 +18,10 @@ nonisolated struct MonthStats: Sendable, Equatable {
     let averagePerWorkingDay: Money?
     let topApartments: [ApartmentCount]
 
-    static func calculate(days: [WorkDay], now: Date) -> MonthStats {
+    static func calculate(days: [WorkDay], today: DayKey) -> MonthStats {
         let earned = days.map(\.earned).sum()
         let workingDays = days.count(where: \.hasCleanedEntries)
-        let workedDurations = days.map { $0.workedDuration(now: now) }
+        let workedDurations = days.map { $0.countedDuration(today: today) ?? .zero }
 
         return MonthStats(
             earned: earned,

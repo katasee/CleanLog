@@ -5,6 +5,7 @@ import Testing
 
 struct WorkDayTimerTests {
     private let today = DayKey(year: 2026, month: 11, day: 13)
+    private let yesterday = DayKey(year: 2026, month: 11, day: 12)
 
     private func at(_ hour: Int, _ minute: Int = 0) -> Date {
         .warsaw(2026, 11, 13, hour, minute)
@@ -96,7 +97,6 @@ struct WorkDayTimerTests {
     }
 
     @Test func dropsAnOverrunTimerFromAnEarlierDay() throws {
-        let yesterday = DayKey(year: 2026, month: 11, day: 12)
         let overrun = try WorkDay.empty(yesterday)
             .planning([.fixture("100")])
             .startingTimer(at: .warsaw(2026, 11, 12, 8), today: yesterday)
@@ -110,7 +110,6 @@ struct WorkDayTimerTests {
     }
 
     @Test func keepsClosedTimersAndTodaysOpenTimer() throws {
-        let yesterday = DayKey(year: 2026, month: 11, day: 12)
         let closed = try WorkDay.empty(yesterday)
             .startingTimer(at: .warsaw(2026, 11, 12, 8), today: yesterday)
             .pausingTimer(at: .warsaw(2026, 11, 12, 9), today: yesterday)
@@ -169,5 +168,54 @@ struct WorkDayTimerTests {
                     pauses: .seconds(10 * 60)
                 )
         )
+    }
+
+    private func timed(
+        _ day: DayKey,
+        _ spans: [(start: Int, end: Int?)],
+        finished: Bool = false
+    ) -> WorkDay {
+        var timed = WorkDay.empty(day)
+        timed.sessions = spans.map { span in
+            WorkSession(
+                id: UUID(),
+                start: .warsaw(day.year, day.month, day.day, span.start),
+                end: span.end.map { .warsaw(day.year, day.month, day.day, $0) }
+            )
+        }
+        timed.isTimerFinished = finished
+        return timed
+    }
+
+    @Test func manualDurationAlwaysCounts() {
+        let day = timed(today, [(8, nil)]).settingManualDuration(.seconds(3600))
+        #expect(day.countedDuration(today: today) == .seconds(3600))
+    }
+
+    @Test func pastDayCountsItsClosedSessions() {
+        let day = timed(yesterday, [(8, 10), (11, 12)])
+        #expect(day.countedDuration(today: today) == .seconds(3 * 3600))
+    }
+
+    @Test func pastDayWithAnOpenSessionCountsNothing() {
+        let day = timed(yesterday, [(8, 10), (11, nil)])
+        #expect(day.countedDuration(today: today) == nil)
+    }
+
+    @Test func todayRunningCountsNothing() {
+        #expect(timed(today, [(8, nil)]).countedDuration(today: today) == nil)
+    }
+
+    @Test func todayPausedCountsNothing() {
+        #expect(timed(today, [(8, 10)]).countedDuration(today: today) == nil)
+    }
+
+    @Test func todayFinishedCountsItsSessions() {
+        let day = timed(today, [(8, 10)], finished: true)
+        #expect(day.countedDuration(today: today) == .seconds(2 * 3600))
+    }
+
+    @Test func dayWithoutTimeCountsNothing() {
+        #expect(WorkDay.empty(yesterday).countedDuration(today: today) == nil)
     }
 }

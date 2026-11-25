@@ -207,7 +207,6 @@ final class DayViewModel {
             workDay,
             kind: kind,
             month: monthDays,
-            now: now(),
             calendar: calendar,
             locale: locale
         )

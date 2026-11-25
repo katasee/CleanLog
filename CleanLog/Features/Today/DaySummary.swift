@@ -20,7 +20,6 @@ extension DaySummary {
         _ workDay: WorkDay,
         kind: DayKind,
         month: [WorkDay],
-        now: Date,
         calendar: Calendar,
         locale: Locale
     ) {
@@ -28,7 +27,7 @@ extension DaySummary {
         let planned = MoneyFormat.string(workDay.planned, locale: locale)
         switch kind {
         case .today:
-            let stats = MonthStats.calculate(days: month, now: now)
+            let stats = MonthStats.calculate(days: month, today: workDay.day)
             self = .today(
                 TodaySummary(
                     earned: earned,
