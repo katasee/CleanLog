@@ -622,13 +622,13 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-25-report.md` · Spec: `docs/superpowers/specs/2026-11-25-report-design.md`
 
-**NEXT session:** PR #43 (CL-41) is open; branch from it (or `main` once merged), `feature/CL-42-report-logic` — plan Tasks 1–3.
+**NEXT session:** branch `feature/CL-43-report-view-model` from CL-42 (PR open, or `main` once merged) — plan Task 4, less `DayFormat.monthInTitle` (done on CL-42).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 41 | `feature/CL-41-report-spec` | `main` | — (spec, plan, product spec; deletes the Statistics plan) | ~852 (docs, 358 of it the deleted plan, as in CL-36) | PR #43 open | plan review done (in the plan) |
-| 42 | `feature/CL-42-report-logic` | CL-41 | 1–3 | ~300 | next | — SOLID |
-| 43 | `feature/CL-43-report-view-model` | CL-42 | 4 | ~450 | — | — `swift-concurrency-pro` + SOLID |
+| 41 | `feature/CL-41-report-spec` | `main` | — (spec, plan, product spec; deletes the Statistics plan) | ~852 (docs, 358 of it the deleted plan, as in CL-36) | merged (PR #43) | plan review done (in the plan) |
+| 42 | `feature/CL-42-report-logic` | `main` | 1–3, `DayFormat.monthInTitle` from 4 | ~225 | PR open | done — SOLID: 2 fixes (below) |
+| 43 | `feature/CL-43-report-view-model` | CL-42 | 4 (rest) | ~410 | next | — `swift-concurrency-pro` + SOLID |
 | 44 | `feature/CL-44-report-screen` | CL-43 | 5 | ~350 | — | — `swiftui-pro` + SOLID |
 
 Notes for the sessions:
@@ -641,6 +641,13 @@ Notes for the sessions:
   as `%2B`; the partial Info.plist in `Config/`. Builder check: nothing open. Plan review: `swift-concurrency-pro`
   — `try?` on the confirmation sleep cleared the checkmark on cancellation, timing-based tests; `swiftui-pro` —
   `ContentUnavailableView`, card on the scroll view, `Label`s, `.titleAndIcon` in the toolbar, default detent.
+- CL-42 (2026-11-25): built from `main` (CL-41 merged first). It came to ~180 lines with Tasks 1–3, so Task 4's
+  pure formatter `DayFormat.monthInTitle` moved here; taking the rest of Task 4 would pass 500. Below 300 on purpose:
+  the remaining split is ~225 / ~410. Foundation's nominative month with `capitalizationContext: .middleOfSentence`
+  needs no verbatim style («листопад», «грудень 2025 р.» with `\u{202F}`). `Config/CleanLog-Info.plist` holds only
+  `LSApplicationQueriesSchemes`; the built Info.plist keeps every generated key and the build has no "Multiple
+  commands produce". Review (SOLID / clean code): a local `style` shadowed the `style(…)` builder in `monthInTitle`
+  (renamed `format`); no test covered a Cyrillic apartment name in the WhatsApp link (`encodesCyrillicNamesAsUTF8`).
 
 Next free branch number: **CL-45** (CL-16…44 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
