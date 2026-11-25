@@ -137,15 +137,18 @@ day's list (on every day). Design: `docs/superpowers/specs/2026-11-24-day-plan-d
 - A day's time counts once its work is over: a manual duration, a past day, or today with the timer
   finished. Today's running or paused timer adds nothing until it is finished.
 - Most frequent apartments (the top three) with their counts.
-- A **Звіт** button opens the report for the shown month (added with the Report feature).
+- A **Звіт** button opens the report for the shown month; it is disabled on a month with nothing cleaned.
 - Details: `2026-11-25-statistics-design.md`.
 
 ### Report (sheet)
 
-- A monospaced preview of the report text.
-- **Надіслати у WhatsApp** → `whatsapp://send?text=<percent-encoded>` (`whatsapp` in
-  `LSApplicationQueriesSchemes`); without WhatsApp, the system share sheet.
-- **Копіювати** → the pasteboard.
+- The title «Звіт за листопад» (with the year for a month of another year), the month's working days and
+  cleaned apartments («12 днів · 63 квартири»), and a monospaced, scrollable preview of the report text.
+- **Надіслати у WhatsApp** → `whatsapp://send?text=<percent-encoded>`, every reserved character encoded so
+  `+155` arrives as `+155` (`whatsapp` in `LSApplicationQueriesSchemes`). When WhatsApp is not installed, the
+  button is **Поділитися** and opens the system share sheet.
+- **Копіювати** → the pasteboard, confirmed by a checkmark for two seconds.
+- Details: `2026-11-25-report-design.md`.
 
 ### Apartments (template)
 
@@ -185,8 +188,8 @@ The real October report this must reproduce:
   - The date has no leading zeros: `1.10`, `13.11`.
   - Inside the brackets: entries in apartment name order: digit-only names numerically, then the rest.
   - `{count}` counts the entries inside the brackets only.
-  - A day with only separate apartments: `{d}.{M}-()=0+155`. *(assumed; confirm with the boss's
-    expectations)*
+  - A day with only separate apartments: `{d}.{M}-` and their names joined by `+`, no brackets and no
+    count: `5.11-155`, `5.11-106+155` (confirmed with the user, 2026-11-25).
 - Weeks are separated by one blank line and always start on Monday, whatever the device locale:
   it is the boss's fixed format (the October example breaks after Sunday the 4th). The calendar
   grid is the one that follows the locale.

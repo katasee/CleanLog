@@ -558,12 +558,10 @@ Notes for the sessions:
   the trailing group sits behind the header's glass buttons, the glass drawn inside a `List` row; it is
   now visible on today too. Follow-up, own branch. Build, full tests, lint green.
 
-## Feature 7 — Statistics
+## Feature 7 — Statistics (done)
 
-Plan: `docs/superpowers/plans/2026-11-25-statistics.md` · Spec: `docs/superpowers/specs/2026-11-25-statistics-design.md`
+The plan file was deleted once the feature merged (CL-41). Spec: `docs/superpowers/specs/2026-11-25-statistics-design.md`
 
-**NEXT session:** PR #42 (CL-40) is open — the last branch of Statistics. Once it merges, start Feature 8
-(Report and WhatsApp) with `superpowers:brainstorming`; its first branch deletes the Statistics plan file.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -571,7 +569,7 @@ Plan: `docs/superpowers/plans/2026-11-25-statistics.md` · Spec: `docs/superpowe
 | 37 | `feature/CL-37-statistics-logic` | CL-36 | 1–3 | 262 (under the floor, below) | merged (PR #39) | done — SOLID: 2 fixes (below) |
 | 38 | `feature/CL-38-statistics-summary` | `main` | 4 | ~515 (over, below) | merged (PR #40) | done — SOLID: 2 fixes (below) |
 | 39 | `feature/CL-39-statistics-view-model` | `main` | 5 | ~270 (under the floor, below) | merged (PR #41) | done — concurrency clean; SOLID: 2 fixes (below) |
-| 40 | `feature/CL-40-statistics-screen` | `main` | 6 | 463 | PR #42 open | done — `swiftui-pro`: 1 fix; SOLID clean (below) |
+| 40 | `feature/CL-40-statistics-screen` | `main` | 6 | 463 | merged (PR #42) | done — `swiftui-pro`: 1 fix; SOLID clean (below) |
 
 Notes for the sessions:
 
@@ -620,7 +618,31 @@ Notes for the sessions:
   **not** driven by taps (no tap tool) — check by hand. Review — `swiftui-pro`: the bar's `GeometryReader`
   became a `visualEffect` offset clipped to the track. SOLID clean. Build, full tests, lint green.
 
-Next free branch number: **CL-41** (CL-16…40 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
+## Feature 8 — Report and WhatsApp
+
+Plan: `docs/superpowers/plans/2026-11-25-report.md` · Spec: `docs/superpowers/specs/2026-11-25-report-design.md`
+
+**NEXT session:** PR #43 (CL-41) is open; branch from it (or `main` once merged), `feature/CL-42-report-logic` — plan Tasks 1–3.
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 41 | `feature/CL-41-report-spec` | `main` | — (spec, plan, product spec; deletes the Statistics plan) | ~852 (docs, 358 of it the deleted plan, as in CL-36) | PR #43 open | plan review done (in the plan) |
+| 42 | `feature/CL-42-report-logic` | CL-41 | 1–3 | ~300 | next | — SOLID |
+| 43 | `feature/CL-43-report-view-model` | CL-42 | 4 | ~450 | — | — `swift-concurrency-pro` + SOLID |
+| 44 | `feature/CL-44-report-screen` | CL-43 | 5 | ~350 | — | — `swiftui-pro` + SOLID |
+
+Notes for the sessions:
+
+- CL-41 (2026-11-25): brainstorm decisions (all in the spec): a day with only separate apartments prints
+  `5.11-155` / `5.11-106+155` (the user's answer, replacing the assumed `()=0+155`); the sheet has its own view
+  model observing `days(in:)` (approach A); WhatsApp is detected up front through `LSApplicationQueriesSchemes`
+  and the button becomes «Поділитися» (`ShareLink`) without it (approach S1). Claude's calls: «Звіт» disabled on
+  an empty month; the year in the title only for another year; a two-second checkmark after copy; `+` encoded
+  as `%2B`; the partial Info.plist in `Config/`. Builder check: nothing open. Plan review: `swift-concurrency-pro`
+  — `try?` on the confirmation sleep cleared the checkmark on cancellation, timing-based tests; `swiftui-pro` —
+  `ContentUnavailableView`, card on the scroll view, `Label`s, `.titleAndIcon` in the toolbar, default detent.
+
+Next free branch number: **CL-45** (CL-16…44 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
 
@@ -634,8 +656,8 @@ branches as above.
 5. Day plan — done.
 6. Calendar — done.
    Follow-up: the rectangle behind the day header's glass buttons (CL-35 notes).
-7. Statistics — done once PR #42 merges (CL-36…40).
-8. Report and WhatsApp. Logic, then UI.
+7. Statistics — done (CL-36…40).
+8. Report and WhatsApp — in progress (CL-41…44).
 9. Settings and reminders. Logic, then UI.
 10. iCloud sync (spec: "iCloud sync"): private CloudKit database, remote-change refresh, duplicate
     merging, the iCloud status line in Settings. Logic, then UI.
