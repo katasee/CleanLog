@@ -36,8 +36,15 @@ nonisolated enum ReportBuilder {
     private static func line(for day: WorkDay) -> String {
         let cleaned = ApartmentNameOrder.sorted(day.entries.filter(\.isCleaned), by: \.name)
         let counted = cleaned.filter { !$0.isReportedSeparately }.map(\.name)
-        let separate = cleaned.filter(\.isReportedSeparately).map { "+\($0.name)" }
-        return "\(date(of: day.day))-(\(counted.joined(separator: ",")))=\(counted.count)" + separate.joined()
+        let separate = cleaned.filter(\.isReportedSeparately).map(\.name)
+        return "\(date(of: day.day))-" + apartments(counted: counted, separate: separate)
+    }
+
+    private static func apartments(counted: [String], separate: [String]) -> String {
+        guard !counted.isEmpty else {
+            return separate.joined(separator: "+")
+        }
+        return "(\(counted.joined(separator: ",")))=\(counted.count)" + separate.map { "+\($0)" }.joined()
     }
 
     private static func date(of day: DayKey) -> String {
