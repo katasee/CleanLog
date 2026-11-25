@@ -499,20 +499,19 @@ the selected tile and the day row's checkmark.
 
 Plan: `docs/superpowers/plans/2026-11-24-calendar.md` · Spec: `docs/superpowers/specs/2026-11-24-calendar-design.md`
 
-**NEXT session:** create `feature/CL-35-calendar-button` from `main` once PR #35 is merged (from
-`feature/CL-34-calendar-day-card` while it is still open, its PR then targeting CL-34) and do the plan's
-Task 6. **Stacked PRs merge bottom first:** PR #36 (CL-33) merged into the CL-34 branch while #35 was open,
-so #35 now carries both branches (1051 lines). Before stacking, check on GitHub
-that the branch below has not merged already: PR #34 merged into the CL-32 branch after CL-32 itself had
-merged, so CL-34 had to be reopened against `main` as PR #35.
+**NEXT session:** once PR #37 (CL-35) is merged, Feature 6 is done: delete the plan file
+`docs/superpowers/plans/2026-11-24-calendar.md` in the first branch of Feature 7 (Statistics), and start
+Feature 7 with `superpowers:brainstorming`. **Stacked PRs merge bottom first:** before stacking, check on
+GitHub that the branch below has not merged already (PR #34 and PR #36 each merged into a branch that had
+already merged, and had to be carried by a later PR).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | 805 (docs, 277 of it the deleted plan; the user kept it one branch) | merged (PR #32) | plan review done (in the plan) |
 | 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | merged (PR #33) | done — concurrency clean; SOLID: 1 fix (below) |
-| 34 | `feature/CL-34-calendar-day-card` | `main` (`main` merged in) | 4 | 401 | PR #35 open (PR #34 merged into CL-32 after CL-32 merged) | done — concurrency clean; SOLID clean (below) |
-| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5 | 690 (over the cap, below) | merged into CL-34 (PR #36); reaches `main` with PR #35 | done — `swiftui-pro`: 3 fixes; SOLID: 1 fix (below) |
-| 35 | `feature/CL-35-calendar-button` | `main` (after PR #35) | 6 | — | next | `swiftui-pro`, SOLID |
+| 34 | `feature/CL-34-calendar-day-card` | `main` (`main` merged in) | 4 | 401 | merged (PR #35; PR #34 merged into CL-32 after CL-32 merged) | done — concurrency clean; SOLID clean (below) |
+| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5 | 690 (over the cap, below) | merged into CL-34 (PR #36); reached `main` with PR #35 | done — `swiftui-pro`: 3 fixes; SOLID: 1 fix (below) |
+| 35 | `feature/CL-35-calendar-button` | `main` | 6 | 111 (the natural end of the feature) | PR #37 open | done — `swiftui-pro`: 1 fix; SOLID clean (below) |
 
 Notes for the sessions:
 
@@ -551,6 +550,18 @@ Notes for the sessions:
   colour ternary instead of an `if` in the overlay. SOLID: «Відкрити день» copied DayPlan's confirm button
   style → `UICommons/prominentActionStyle()`, used by both. Build, 227 tests, lint green.
 
+- CL-35 (2026-11-25): Task 6. The header's trailing side is an `HStack` of «Сьогодні» (past and future
+  days) and `GlassIconButton` with `calendar`; `TodayView` presents the sheet on the `NavigationStack`,
+  outside the per-day `.id(selection)` view, and «Відкрити день» calls `selection.show(_:)`. One key,
+  `today.header.calendar`. Review — `swiftui-pro`: `DayHeaderView.body` reached 44 lines, so «Сьогодні»
+  became a private `ShowTodayButton` struct in the same file; the sheet first sat after `.id(selection)` and
+  moved to the stack, as the plan says. SOLID clean. On the iPhone 16 simulator the header shows the button
+  on today and beside «Сьогодні» on a past day (the app launched temporarily on yesterday); the
+  tap-through flow (open, pick a day, open it, back with «Сьогодні») was **not** driven, as there is no tap
+  tool in the session — check it by hand. Found, not fixed (also on `main`): a lighter rectangle the size of
+  the trailing group sits behind the header's glass buttons, the glass drawn inside a `List` row; it is
+  now visible on today too. Follow-up, own branch. Build, full tests, lint green.
+
 Next free branch number: **CL-36** (CL-16…35 are used above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
@@ -563,7 +574,8 @@ branches as above.
 3. Apartments (template) — done.
 4. Today — done.
 5. Day plan — done.
-6. Calendar — in progress (above): grid logic merged, day card awaiting `main`, sheet next. Logic, then UI.
+6. Calendar — done once PR #37 (CL-35) merges.
+   Follow-up: the rectangle behind the day header's glass buttons (CL-35 notes).
 7. Statistics. Logic, then UI.
 8. Report and WhatsApp. Logic, then UI.
 9. Settings and reminders. Logic, then UI.
