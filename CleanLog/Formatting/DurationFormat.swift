@@ -15,17 +15,16 @@ nonisolated enum DurationFormat {
     }
 
     static func pause(_ duration: Duration, locale: Locale) -> String {
-        duration.formatted(units([.hours, .minutes], locale: locale))
+        duration.formatted(unitsStyle([.hours, .minutes], locale: locale))
     }
 
     static func hoursAndMinutes(_ duration: Duration, locale: Locale) -> String {
-        let wholeMinutes = Duration.seconds(max(duration.components.seconds, 0) / secondsPerMinute * secondsPerMinute)
-        let allowedUnits: Set<Duration.UnitsFormatStyle.Unit> =
-            wholeMinutes < .seconds(secondsPerMinute) ? [.hours] : [.hours, .minutes]
-        return wholeMinutes.formatted(units(allowedUnits, locale: locale))
+        let wholeMinutes = max(duration.components.seconds, 0) / secondsPerMinute
+        let allowedUnits: Set<Duration.UnitsFormatStyle.Unit> = wholeMinutes == 0 ? [.hours] : [.hours, .minutes]
+        return Duration.seconds(wholeMinutes * secondsPerMinute).formatted(unitsStyle(allowedUnits, locale: locale))
     }
 
-    private static func units(
+    private static func unitsStyle(
         _ allowedUnits: Set<Duration.UnitsFormatStyle.Unit>,
         locale: Locale
     ) -> Duration.UnitsFormatStyle {
