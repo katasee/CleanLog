@@ -6,10 +6,18 @@ struct Badge: View {
         static let verticalPadding: CGFloat = 3
     }
 
-    let title: LocalizedStringResource
+    private let text: Text
+
+    init(title: LocalizedStringResource) {
+        text = Text(title)
+    }
+
+    init(text: String) {
+        self.text = Text(verbatim: text)
+    }
 
     var body: some View {
-        Text(title)
+        text
             .font(.caption.weight(.semibold))
             .foregroundStyle(Color.accent)
             .padding(.horizontal, Layout.horizontalPadding)
@@ -19,7 +27,10 @@ struct Badge: View {
 }
 
 #Preview {
-    Badge(title: .todayBadgeSeparate)
-        .padding()
-        .background(Color.card)
+    VStack {
+        Badge(title: .todayBadgeSeparate)
+        Badge(text: "↑ 9% до жовтня")
+    }
+    .padding()
+    .background(Color.card)
 }
