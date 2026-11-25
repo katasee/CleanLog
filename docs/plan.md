@@ -562,16 +562,15 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-25-statistics.md` · Spec: `docs/superpowers/specs/2026-11-25-statistics-design.md`
 
-**NEXT session:** PRs #38 (CL-36) and #39 (CL-37) are open; build `feature/CL-38-statistics-summary` (Task 4),
-stacked on CL-37 — or on whatever lower branch has merged into `main` (check on GitHub first). Execution:
-native, one fresh session per branch.
+**NEXT session:** PR #40 (CL-38) is open; build `feature/CL-39-statistics-view-model` (Task 5), stacked on
+CL-38 — or on `main` if it has merged (check on GitHub first). Execution: native, one fresh session per branch.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 36 | `feature/CL-36-statistics-spec` | `main` | — (spec, plan, product spec; deletes the Calendar plan) | 887 (docs, 301 of it the deleted plan, as in CL-31) | PR #38 open | plan review done (in the plan) |
-| 37 | `feature/CL-37-statistics-logic` | CL-36 | 1–3 | 262 (under the floor, below) | PR #39 open | done — SOLID: 2 fixes (below) |
-| 38 | `feature/CL-38-statistics-summary` | CL-37 | 4 | — | next | `SOLID` |
-| 39 | `feature/CL-39-statistics-view-model` | CL-38 | 5 | — | planned | `swift-concurrency-pro` + SOLID |
+| 36 | `feature/CL-36-statistics-spec` | `main` | — (spec, plan, product spec; deletes the Calendar plan) | 887 (docs, 301 of it the deleted plan, as in CL-31) | merged (PR #38) | plan review done (in the plan) |
+| 37 | `feature/CL-37-statistics-logic` | CL-36 | 1–3 | 262 (under the floor, below) | merged (PR #39) | done — SOLID: 2 fixes (below) |
+| 38 | `feature/CL-38-statistics-summary` | `main` | 4 | ~515 (over, below) | PR #40 open | done — SOLID: 2 fixes (below) |
+| 39 | `feature/CL-39-statistics-view-model` | CL-38 | 5 | — | next | `swift-concurrency-pro` + SOLID |
 | 40 | `feature/CL-40-statistics-screen` | CL-39 | 6 | — | planned | `swiftui-pro` + SOLID |
 
 Notes for the sessions:
@@ -592,6 +591,14 @@ Notes for the sessions:
   plan said. Review — SOLID: `countedDuration(today:)` switches over `timerState` instead of re-deriving it
   from flags (closed sessions summed in a private `closedSessionsDuration`); `hoursAndMinutes` works in whole
   minutes and the style builder is `unitsStyle`, shared with `pause`. Build, full tests (307 cases), lint green.
+- CL-38 (2026-11-25): Task 4, based on `main` (CL-36 and CL-37 had merged). Size ~515 with this file, 293 of it
+  the String Catalog's JSON for the thirteen keys; one task with no split point, so it stays one branch.
+  Deviations: the no-change strings are `0%% до %@` (a bare `%` before a space is a format flag); the two-argument
+  change strings use positional `%1$lld` / `%2$@` like `calendar.card.earned`; Ukrainian plural `other` repeats
+  the `few` form, as `apartments.count` does. Review — SOLID: the cleaned count went through an inline
+  `.formatted(.number)`, now `Formatting/CountFormat` (tested); `init` decided and formatted the change in one
+  call and formatted the previous month even with the badge hidden — now `change(from:to:)` decides and
+  `text(for:previousMonth:locale:)` formats. Build, full tests, lint green.
 
 Next free branch number: **CL-41** (CL-16…40 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
