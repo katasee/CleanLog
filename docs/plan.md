@@ -499,15 +499,20 @@ the selected tile and the day row's checkmark.
 
 Plan: `docs/superpowers/plans/2026-11-24-calendar.md` · Spec: `docs/superpowers/specs/2026-11-24-calendar-design.md`
 
-**NEXT session:** create `feature/CL-34-calendar-day-card` from `feature/CL-32-calendar-logic` and do the
-plan's Task 4 (its PR targets CL-32, or `main` once CL-32 is merged).
+**NEXT session:** create `feature/CL-35-calendar-button` from `main` once PR #35 is merged (from
+`feature/CL-34-calendar-day-card` while it is still open, its PR then targeting CL-34) and do the plan's
+Task 6. **Stacked PRs merge bottom first:** PR #36 (CL-33) merged into the CL-34 branch while #35 was open,
+so #35 now carries both branches (1051 lines). Before stacking, check on GitHub
+that the branch below has not merged already: PR #34 merged into the CL-32 branch after CL-32 itself had
+merged, so CL-34 had to be reopened against `main` as PR #35.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | 805 (docs, 277 of it the deleted plan; the user kept it one branch) | merged (PR #32) | plan review done (in the plan) |
-| 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | PR #33 open | done — concurrency clean; SOLID: 1 fix (below) |
-| 34 | `feature/CL-34-calendar-day-card` | CL-32 | 4 | — | next | `swift-concurrency-pro`, SOLID |
-| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5–6 | — | — | `swiftui-pro`, SOLID |
+| 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | merged (PR #33) | done — concurrency clean; SOLID: 1 fix (below) |
+| 34 | `feature/CL-34-calendar-day-card` | `main` (`main` merged in) | 4 | 401 | PR #35 open (PR #34 merged into CL-32 after CL-32 merged) | done — concurrency clean; SOLID clean (below) |
+| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5 | 690 (over the cap, below) | merged into CL-34 (PR #36); reaches `main` with PR #35 | done — `swiftui-pro`: 3 fixes; SOLID: 1 fix (below) |
+| 35 | `feature/CL-35-calendar-button` | `main` (after PR #35) | 6 | — | next | `swiftui-pro`, SOLID |
 
 Notes for the sessions:
 
@@ -525,8 +530,28 @@ Notes for the sessions:
   with no suspension between them); SOLID: the earnings map moved into a named `earnings(in:)` that keeps
   the first record for a day instead of trapping on a duplicate (possible once sync exists).
   `TodaySelection.show(_:)` has no caller until CL-33 (planned). Build, full tests, lint green.
+- CL-34 (2026-11-24): Task 4. Deviations, in the plan file: `card` and `quickPicks` are computed, not
+  stored — `card` builds from the last observed `WorkDay` only while its day is still `selected`, so right
+  after a new selection it is `nil` until that day's stream yields (no stale summary under a new date;
+  pinned by `cardWaitsForTheNewlySelectedDay`); an extra test pins the three quick picks' days, titles and
+  selection. Seven catalog keys (`calendar.card.dayOff/earned/planned/today`, `calendar.quick.*`; the plan
+  said six). Review: concurrency clean (`observeSelectedDay()` mirrors `observeMonth()`: the `where` guard and
+  the assignment run with no suspension between them); SOLID clean. Build, full tests, lint green.
+- CL-33 (2026-11-24): Task 5. Size 690 with the docs (647 code): the sheet alone is 420 lines, the branch 605 after Task 5,
+  so Task 6 moved to CL-35. Deviations: `StepButton` left `DayHeaderView` for `UICommons/`, and the ✕ is a
+  new `UICommons/GlassIconButton` (Task 6's calendar button uses both); the card is pinned in a bottom
+  `safeAreaInset` (the artboard's card sits at the bottom) and keeps its height while `card` is `nil` by
+  laying out an invisible placeholder; the grid is a SwiftUI `Grid`. On the iPhone 16 simulator (the app
+  temporarily launched into the sheet with the preview fake), light and dark match the artboard. At
+  `accessibility5` the month title broke per syllable and the quick picks filled the screen: the header,
+  quick picks, grid and card are capped at `accessibility1`, and the cells hide their amount at
+  accessibility sizes (still in the label). The pinned card then covers the lower weeks, which scroll
+  under it. Review — `swiftui-pro`: three computed `some View` properties became structs
+  (`CalendarQuickPickButtons`, `CalendarDayCardDate`, `CalendarDayCardSummary`) and the today ring is a
+  colour ternary instead of an `if` in the overlay. SOLID: «Відкрити день» copied DayPlan's confirm button
+  style → `UICommons/prominentActionStyle()`, used by both. Build, 227 tests, lint green.
 
-Next free branch number: **CL-35** (CL-16…34 are used above; CL-26 is the iCloud spec, merged as PR #24).
+Next free branch number: **CL-36** (CL-16…35 are used above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
 
@@ -538,7 +563,7 @@ branches as above.
 3. Apartments (template) — done.
 4. Today — done.
 5. Day plan — done.
-6. Calendar — designed and planned (above). Logic, then UI.
+6. Calendar — in progress (above): grid logic merged, day card awaiting `main`, sheet next. Logic, then UI.
 7. Statistics. Logic, then UI.
 8. Report and WhatsApp. Logic, then UI.
 9. Settings and reminders. Logic, then UI.
