@@ -499,8 +499,10 @@ the selected tile and the day row's checkmark.
 
 Plan: `docs/superpowers/plans/2026-11-24-calendar.md` · Spec: `docs/superpowers/specs/2026-11-24-calendar-design.md`
 
-**NEXT session:** create `feature/CL-35-calendar-button` from `feature/CL-33-calendar-sheet` and do the
-plan's Task 6 (its PR targets CL-33 while that is unmerged, or `main`). Before stacking, check on GitHub
+**NEXT session:** create `feature/CL-35-calendar-button` from `main` once PR #35 is merged (from
+`feature/CL-34-calendar-day-card` while it is still open, its PR then targeting CL-34) and do the plan's
+Task 6. **Stacked PRs merge bottom first:** PR #36 (CL-33) merged into the CL-34 branch while #35 was open,
+so #35 now carries both branches (1051 lines). Before stacking, check on GitHub
 that the branch below has not merged already: PR #34 merged into the CL-32 branch after CL-32 itself had
 merged, so CL-34 had to be reopened against `main` as PR #35.
 
@@ -509,8 +511,8 @@ merged, so CL-34 had to be reopened against `main` as PR #35.
 | 31 | `feature/CL-31-calendar-spec` | `main` | — (spec, plan, the `OnAccent` token; deletes the Day plan plan) | 805 (docs, 277 of it the deleted plan; the user kept it one branch) | merged (PR #32) | plan review done (in the plan) |
 | 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | merged (PR #33) | done — concurrency clean; SOLID: 1 fix (below) |
 | 34 | `feature/CL-34-calendar-day-card` | `main` (`main` merged in) | 4 | 401 | PR #35 open (PR #34 merged into CL-32 after CL-32 merged) | done — concurrency clean; SOLID clean (below) |
-| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5 | 690 (over the cap, below) | PR #36 open | done — `swiftui-pro`: 3 fixes; SOLID: 1 fix (below) |
-| 35 | `feature/CL-35-calendar-button` | CL-33 | 6 | — | next | `swiftui-pro`, SOLID |
+| 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5 | 690 (over the cap, below) | merged into CL-34 (PR #36); reaches `main` with PR #35 | done — `swiftui-pro`: 3 fixes; SOLID: 1 fix (below) |
+| 35 | `feature/CL-35-calendar-button` | `main` (after PR #35) | 6 | — | next | `swiftui-pro`, SOLID |
 
 Notes for the sessions:
 
