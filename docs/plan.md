@@ -622,11 +622,11 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-25-report.md` · Spec: `docs/superpowers/specs/2026-11-25-report-design.md`
 
-**NEXT session:** once PR for CL-41 merges (or stacked on it), `feature/CL-42-report-logic` — plan Tasks 1–3.
+**NEXT session:** PR #43 (CL-41) is open; branch from it (or `main` once merged), `feature/CL-42-report-logic` — plan Tasks 1–3.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 41 | `feature/CL-41-report-spec` | `main` | — (spec, plan, product spec; deletes the Statistics plan) | ~852 (docs, 358 of it the deleted plan, as in CL-36) | PR open | plan review done (in the plan) |
+| 41 | `feature/CL-41-report-spec` | `main` | — (spec, plan, product spec; deletes the Statistics plan) | ~852 (docs, 358 of it the deleted plan, as in CL-36) | PR #43 open | plan review done (in the plan) |
 | 42 | `feature/CL-42-report-logic` | CL-41 | 1–3 | ~300 | next | — SOLID |
 | 43 | `feature/CL-43-report-view-model` | CL-42 | 4 | ~450 | — | — `swift-concurrency-pro` + SOLID |
 | 44 | `feature/CL-44-report-screen` | CL-43 | 5 | ~350 | — | — `swiftui-pro` + SOLID |
