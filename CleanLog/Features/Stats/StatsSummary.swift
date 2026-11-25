@@ -31,12 +31,16 @@ extension StatsSummary {
         calendar: Calendar,
         locale: Locale
     ) {
-        let previousMonth = DayFormat.monthInPhrase(month.previous, calendar: calendar, locale: locale)
+        let change = isFinished ? Self.change(from: previousEarned, to: stats.earned) : nil
         self.init(
             earnedText: MoneyFormat.string(stats.earned, locale: locale),
-            changeText: isFinished
-                ? Self.change(from: previousEarned, to: stats.earned, previousMonth: previousMonth, locale: locale)
-                : nil,
+            changeText: change.map { change in
+                Self.text(
+                    for: change,
+                    previousMonth: DayFormat.monthInPhrase(month.previous, calendar: calendar, locale: locale),
+                    locale: locale
+                )
+            },
             cleanedText: CountFormat.string(stats.cleanedCount, locale: locale),
             workedText: DurationFormat.hoursAndMinutes(stats.workedDuration, locale: locale),
             perHourText: Self.amount(stats.earningsPerHour, locale: locale),
@@ -46,15 +50,11 @@ extension StatsSummary {
         )
     }
 
-    private static func change(
-        from previousEarned: Money?,
-        to earned: Money,
-        previousMonth: String,
-        locale: Locale
-    ) -> String? {
-        guard let previousEarned, let change = EarningsChange.between(current: earned, previous: previousEarned) else {
-            return nil
-        }
+    private static func change(from previousEarned: Money?, to earned: Money) -> EarningsChange? {
+        previousEarned.flatMap { EarningsChange.between(current: earned, previous: $0) }
+    }
+
+    private static func text(for change: EarningsChange, previousMonth: String, locale: Locale) -> String {
         switch change.direction {
         case .up:
             return String(localized: .statsChangeUp(change.percent, previousMonth), locale: locale)
