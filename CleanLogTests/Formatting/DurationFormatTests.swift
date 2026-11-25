@@ -24,4 +24,16 @@ struct DurationFormatTests {
         #expect(DurationFormat.pause(.seconds(25 * 60), locale: Locale(identifier: "uk_UA")) == "25 хв")
         #expect(DurationFormat.pause(.seconds(85 * 60), locale: Locale(identifier: "en_US")) == "1 hr, 25 min")
     }
+
+    @Test func formatsWorkedHours() {
+        let uk = Locale(identifier: "uk_UA")
+        let en = Locale(identifier: "en_US")
+        #expect(DurationFormat.hoursAndMinutes(.seconds(62 * 3600 + 15 * 60), locale: uk) == "62 год, 15 хв")
+        #expect(DurationFormat.hoursAndMinutes(.seconds(62 * 3600), locale: uk) == "62 год")
+        #expect(DurationFormat.hoursAndMinutes(.zero, locale: uk) == "0 год")
+        #expect(DurationFormat.hoursAndMinutes(.seconds(59), locale: uk) == "0 год")
+        #expect(DurationFormat.hoursAndMinutes(.seconds(61 * 60 + 59), locale: uk) == "1 год, 1 хв")
+        #expect(DurationFormat.hoursAndMinutes(.seconds(62 * 3600 + 15 * 60), locale: en) == "62 hr, 15 min")
+        #expect(DurationFormat.hoursAndMinutes(.zero, locale: en) == "0 hr")
+    }
 }
