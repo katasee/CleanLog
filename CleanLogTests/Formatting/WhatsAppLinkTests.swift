@@ -25,6 +25,10 @@ struct WhatsAppLinkTests {
         )
     }
 
+    @Test func encodesCyrillicNamesAsUTF8() {
+        #expect(WhatsAppLink.url(for: "5.11-кв1").absoluteString == "whatsapp://send?text=5.11-%D0%BA%D0%B21")
+    }
+
     @Test func probeIsTheSendLink() {
         #expect(WhatsAppLink.probe.absoluteString == "whatsapp://send")
     }
