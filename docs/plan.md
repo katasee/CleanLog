@@ -499,11 +499,7 @@ the selected tile and the day row's checkmark.
 
 Plan: `docs/superpowers/plans/2026-11-24-calendar.md` · Spec: `docs/superpowers/specs/2026-11-24-calendar-design.md`
 
-**NEXT session:** once PR #37 (CL-35) is merged, Feature 6 is done: delete the plan file
-`docs/superpowers/plans/2026-11-24-calendar.md` in the first branch of Feature 7 (Statistics), and start
-Feature 7 with `superpowers:brainstorming`. **Stacked PRs merge bottom first:** before stacking, check on
-GitHub that the branch below has not merged already (PR #34 and PR #36 each merged into a branch that had
-already merged, and had to be carried by a later PR).
+Done: PR #37 merged 2026-11-25. The plan file was deleted in CL-36.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -511,7 +507,7 @@ already merged, and had to be carried by a later PR).
 | 32 | `feature/CL-32-calendar-logic` | `main` | 1–3 | 473 | merged (PR #33) | done — concurrency clean; SOLID: 1 fix (below) |
 | 34 | `feature/CL-34-calendar-day-card` | `main` (`main` merged in) | 4 | 401 | merged (PR #35; PR #34 merged into CL-32 after CL-32 merged) | done — concurrency clean; SOLID clean (below) |
 | 33 | `feature/CL-33-calendar-sheet` | CL-34 | 5 | 690 (over the cap, below) | merged into CL-34 (PR #36); reached `main` with PR #35 | done — `swiftui-pro`: 3 fixes; SOLID: 1 fix (below) |
-| 35 | `feature/CL-35-calendar-button` | `main` | 6 | 111 (the natural end of the feature) | PR #37 open | done — `swiftui-pro`: 1 fix; SOLID clean (below) |
+| 35 | `feature/CL-35-calendar-button` | `main` | 6 | 111 (the natural end of the feature) | merged (PR #37) | done — `swiftui-pro`: 1 fix; SOLID clean (below) |
 
 Notes for the sessions:
 
@@ -562,7 +558,33 @@ Notes for the sessions:
   the trailing group sits behind the header's glass buttons, the glass drawn inside a `List` row; it is
   now visible on today too. Follow-up, own branch. Build, full tests, lint green.
 
-Next free branch number: **CL-36** (CL-16…35 are used above; CL-26 is the iCloud spec, merged as PR #24).
+## Feature 7 — Statistics
+
+Plan: `docs/superpowers/plans/2026-11-25-statistics.md` · Spec: `docs/superpowers/specs/2026-11-25-statistics-design.md`
+
+**NEXT session:** once PR for CL-36 is open, `feature/CL-37-statistics-logic` (Tasks 1–3), stacked on CL-36 —
+or on `main` if CL-36 has merged (check on GitHub first). Execution: native, one fresh session per branch.
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 36 | `feature/CL-36-statistics-spec` | `main` | — (spec, plan, product spec; deletes the Calendar plan) | 847 (docs, 301 of it the deleted plan, as in CL-31) | built | plan review done (in the plan) |
+| 37 | `feature/CL-37-statistics-logic` | CL-36 | 1–3 | — | next | `SOLID` |
+| 38 | `feature/CL-38-statistics-summary` | CL-37 | 4 | — | planned | `SOLID` |
+| 39 | `feature/CL-39-statistics-view-model` | CL-38 | 5 | — | planned | `swift-concurrency-pro` + SOLID |
+| 40 | `feature/CL-40-statistics-screen` | CL-39 | 6 | — | planned | `swiftui-pro` + SOLID |
+
+Notes for the sessions:
+
+- CL-36 (2026-11-25): brainstorm decisions (all in the spec): the change badge shows only on a finished month
+  (option C) and hides when either month earned zero; a day's time counts only once its work is over (manual,
+  past day, or today finished) — no per-minute refresh, so «За годину» does not move while she works; a past
+  day with an undropped open session counts nothing; › stops at the current month; «Звіт» moves to Feature 8.
+  Approach: two `days(in:)` observations (shown and previous month) in the view model, no repository change.
+  Builder check: one question for the user (the zero-earnings badge → hidden), two Claude's calls. Checked
+  against Foundation in-session: «62 год, 15 хв» (with a comma), «0 год», the genitive «жовтня» from
+  `\(month: .wide)` in a verbatim style, «2 016 zł» grouped with a no-break space.
+
+Next free branch number: **CL-41** (CL-16…40 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
 
@@ -574,9 +596,9 @@ branches as above.
 3. Apartments (template) — done.
 4. Today — done.
 5. Day plan — done.
-6. Calendar — done once PR #37 (CL-35) merges.
+6. Calendar — done.
    Follow-up: the rectangle behind the day header's glass buttons (CL-35 notes).
-7. Statistics. Logic, then UI.
+7. Statistics — in progress (CL-36…40). Logic, then UI.
 8. Report and WhatsApp. Logic, then UI.
 9. Settings and reminders. Logic, then UI.
 10. iCloud sync (spec: "iCloud sync"): private CloudKit database, remote-change refresh, duplicate
