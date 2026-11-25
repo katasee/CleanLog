@@ -1278,6 +1278,23 @@
         }
       }
     },
+    "today.header.calendar" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Календар"
+          }
+        }
+      }
+    },
     "today.header.future" : {
       "extractionState" : "manual",
       "localizations" : {

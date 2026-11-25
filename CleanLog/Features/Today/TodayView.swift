@@ -21,6 +21,7 @@ struct TodayView: View {
     @Environment(AppDependencies.self) private var dependencies
     @Environment(\.scenePhase) private var scenePhase
     @State private var selection = TodaySelection(today: DayKey(.now, calendar: .current))
+    @State private var isShowingCalendar = false
 
     var body: some View {
         NavigationStack {
@@ -29,11 +30,20 @@ struct TodayView: View {
                 today: selection.today,
                 dependencies: dependencies,
                 onStep: step,
-                onShowToday: showToday
+                onShowToday: showToday,
+                onShowCalendar: showCalendar
             )
             .id(selection)
             .screenBackground(Layout.backdrop)
             .toolbarVisibility(.hidden, for: .navigationBar)
+        }
+        .sheet(isPresented: $isShowingCalendar) {
+            CalendarView(
+                selected: selection.day,
+                today: selection.today,
+                workDays: dependencies.workDays,
+                onOpenDay: openDay
+            )
         }
         .task {
             await advanceAtEachMidnight()
@@ -51,6 +61,14 @@ struct TodayView: View {
 
     private func showToday() {
         selection.showToday()
+    }
+
+    private func showCalendar() {
+        isShowingCalendar = true
+    }
+
+    private func openDay(_ day: DayKey) {
+        selection.show(day)
     }
 
     private func advanceAtEachMidnight() async {
