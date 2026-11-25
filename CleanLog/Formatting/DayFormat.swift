@@ -29,6 +29,17 @@ nonisolated enum DayFormat {
         )
     }
 
+    static func monthInPhrase(_ month: MonthKey, calendar: Calendar, locale: Locale) -> String {
+        firstDate(of: month, calendar: calendar).formatted(
+            Date.VerbatimFormatStyle(
+                format: "\(month: .wide)",
+                locale: locale,
+                timeZone: calendar.timeZone,
+                calendar: calendar
+            )
+        )
+    }
+
     static func weekdaySymbols(calendar: Calendar, locale: Locale) -> [String] {
         var localized = calendar
         localized.locale = locale

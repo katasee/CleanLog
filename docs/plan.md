@@ -562,14 +562,15 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-25-statistics.md` · Spec: `docs/superpowers/specs/2026-11-25-statistics-design.md`
 
-**NEXT session:** PR #38 (CL-36) is open; build `feature/CL-37-statistics-logic` (Tasks 1–3), stacked on CL-36 —
-or on `main` if CL-36 has merged (check on GitHub first). Execution: native, one fresh session per branch.
+**NEXT session:** PRs #38 (CL-36) and #39 (CL-37) are open; build `feature/CL-38-statistics-summary` (Task 4),
+stacked on CL-37 — or on whatever lower branch has merged into `main` (check on GitHub first). Execution:
+native, one fresh session per branch.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 36 | `feature/CL-36-statistics-spec` | `main` | — (spec, plan, product spec; deletes the Calendar plan) | 887 (docs, 301 of it the deleted plan, as in CL-31) | PR #38 open | plan review done (in the plan) |
-| 37 | `feature/CL-37-statistics-logic` | CL-36 | 1–3 | — | next | `SOLID` |
-| 38 | `feature/CL-38-statistics-summary` | CL-37 | 4 | — | planned | `SOLID` |
+| 37 | `feature/CL-37-statistics-logic` | CL-36 | 1–3 | 262 (under the floor, below) | PR #39 open | done — SOLID: 2 fixes (below) |
+| 38 | `feature/CL-38-statistics-summary` | CL-37 | 4 | — | next | `SOLID` |
 | 39 | `feature/CL-39-statistics-view-model` | CL-38 | 5 | — | planned | `swift-concurrency-pro` + SOLID |
 | 40 | `feature/CL-40-statistics-screen` | CL-39 | 6 | — | planned | `swiftui-pro` + SOLID |
 
@@ -583,6 +584,14 @@ Notes for the sessions:
   Builder check: one question for the user (the zero-earnings badge → hidden), two Claude's calls. Checked
   against Foundation in-session: «62 год, 15 хв» (with a comma), «0 год», the genitive «жовтня» from
   `\(month: .wide)` in a verbatim style, «2 016 zł» grouped with a no-break space.
+- CL-37 (2026-11-25): Tasks 1–3. Size 262 with this file: Task 4 (thirteen catalog keys, two of them
+  plurals, plus the summary and its tests) would take the branch well past 500, so the split stays as planned.
+  Deviations: the half-up division `MonthStats` kept private is now `Models/HalfUpDivision` (tested), shared with
+  `EarningsChange`; the `countedDuration` tests use the suite's existing today (Nov 13, past day Nov 12), not
+  Nov 25. Foundation gives «62 год» for whole hours with `[.hours, .minutes]` and «0 год» with `[.hours]`, as the
+  plan said. Review — SOLID: `countedDuration(today:)` switches over `timerState` instead of re-deriving it
+  from flags (closed sessions summed in a private `closedSessionsDuration`); `hoursAndMinutes` works in whole
+  minutes and the style builder is `unitsStyle`, shared with `pause`. Build, full tests (307 cases), lint green.
 
 Next free branch number: **CL-41** (CL-16…40 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 

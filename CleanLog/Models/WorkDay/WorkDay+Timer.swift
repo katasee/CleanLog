@@ -26,6 +26,18 @@ extension WorkDay {
         manualDuration ?? sessions.reduce(.zero) { $0 + $1.duration(now: now) }
     }
 
+    nonisolated func countedDuration(today: DayKey) -> Duration? {
+        if let manualDuration { return manualDuration }
+        switch timerState {
+        case .idle, .running:
+            return nil
+        case .paused:
+            return day < today ? closedSessionsDuration : nil
+        case .finished:
+            return closedSessionsDuration
+        }
+    }
+
     nonisolated func startingTimer(at now: Date, today: DayKey) throws(WorkDayError) -> WorkDay {
         try requireToday(today)
         if case .running = timerState { throw .timerState }
@@ -93,6 +105,10 @@ extension WorkDay {
             end: last.end,
             pauses: pauses
         )
+    }
+
+    private nonisolated var closedSessionsDuration: Duration {
+        sessions.compactMap { session in session.end.map(session.duration(now:)) }.reduce(.zero, +)
     }
 
     private nonisolated func requireToday(_ today: DayKey) throws(WorkDayError) {

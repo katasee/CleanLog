@@ -4,7 +4,7 @@ import Testing
 @testable import CleanLog
 
 struct MonthStatsTests {
-    private let now = Date.warsaw(2026, 11, 30, 20)
+    private let today = DayKey(year: 2026, month: 11, day: 30)
     private let a100 = Apartment.fixture("100")
     private let a101 = Apartment.fixture("101")
     private let a102 = Apartment.fixture("102")
@@ -38,7 +38,7 @@ struct MonthStatsTests {
     }
 
     @Test func isEmptyForNoDays() {
-        let stats = MonthStats.calculate(days: [], now: now)
+        let stats = MonthStats.calculate(days: [], today: today)
         #expect(stats.earned == .zero)
         #expect(stats.cleanedCount == 0)
         #expect(stats.workingDays == 0)
@@ -55,7 +55,7 @@ struct MonthStatsTests {
                 day(2, [a100], ticked: ["100"]),
                 day(3, [a102], ticked: [], manualHours: 1),
             ],
-            now: now
+            today: today
         )
         #expect(stats.earned == Money(minorUnits: 11200))
         #expect(stats.cleanedCount == 3)
@@ -68,14 +68,14 @@ struct MonthStatsTests {
     @Test(arguments: [(1000, 3, 333), (1001, 2, 501)])
     func roundsPerHourHalfUp(earnedMinorUnits: Int, hours: Int, expectedMinorUnits: Int) {
         let timed = day(1, [.fixture("x", minorUnits: earnedMinorUnits)], ticked: ["x"], hours: hours)
-        let stats = MonthStats.calculate(days: [timed], now: now)
+        let stats = MonthStats.calculate(days: [timed], today: today)
         #expect(stats.earningsPerHour == Money(minorUnits: expectedMinorUnits))
     }
 
     @Test func ignoresADayWithZeroRecordedTime() {
         let stats = MonthStats.calculate(
             days: [day(1, [a100], ticked: ["100"], manualHours: 0)],
-            now: now
+            today: today
         )
         #expect(stats.earningsPerHour == nil)
     }
@@ -87,7 +87,7 @@ struct MonthStatsTests {
                 day(2, [a100, a102, a103], ticked: ["100", "102", "103"]),
                 day(3, [a100, a101], ticked: ["100", "101"]),
             ],
-            now: now
+            today: today
         )
         #expect(stats.topApartments.map(\.name) == ["100", "101", "102"])
         #expect(stats.topApartments.map(\.count) == [3, 2, 2])
@@ -101,8 +101,27 @@ struct MonthStatsTests {
                 day(5, [renamed], ticked: ["100A"]),
                 day(1, [a100], ticked: ["100"]),
             ],
-            now: now
+            today: today
         )
         #expect(stats.topApartments.map(\.name) == ["100A"])
+    }
+
+    @Test func todayUnfinishedTimeStaysOutOfThePerHourRate() {
+        var running = day(30, [.fixture("x", minorUnits: 5600)], ticked: ["x"])
+        running.sessions = [
+            WorkSession(
+                id: UUID(),
+                start: .warsaw(2026, 11, 30, 8),
+                end: nil
+            )
+        ]
+        let stats = MonthStats.calculate(
+            days: [day(1, [a100], ticked: ["100"], hours: 1), running],
+            today: today
+        )
+        #expect(stats.workedDuration == .seconds(3600))
+        #expect(stats.earningsPerHour == Money(minorUnits: 2800))
+        #expect(stats.earned == Money(minorUnits: 8400))
+        #expect(stats.averagePerWorkingDay == Money(minorUnits: 4200))
     }
 }
