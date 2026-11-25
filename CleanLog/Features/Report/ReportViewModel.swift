@@ -34,7 +34,12 @@ final class ReportViewModel {
         self.confirmationDuration = confirmationDuration
         self.locale = locale
         isWhatsAppAvailable = urlAvailability.canOpen(WhatsAppLink.probe)
-        title = Self.title(of: month, today: today, calendar: calendar, locale: locale)
+        title = Self.title(
+            of: month,
+            today: today,
+            calendar: calendar,
+            locale: locale
+        )
         refresh(from: [])
     }
 
@@ -73,7 +78,12 @@ final class ReportViewModel {
         subtitle = Self.subtitle(of: .calculate(days: days, today: today), locale: locale)
     }
 
-    private static func title(of month: MonthKey, today: DayKey, calendar: Calendar, locale: Locale) -> String {
+    private static func title(
+        of month: MonthKey,
+        today: DayKey,
+        calendar: Calendar,
+        locale: Locale
+    ) -> String {
         let monthText = DayFormat.monthInTitle(
             month,
             includesYear: month.year != today.year,
