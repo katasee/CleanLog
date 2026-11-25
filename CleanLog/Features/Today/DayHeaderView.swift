@@ -1,17 +1,36 @@
 import SwiftUI
 
-struct DayHeaderView: View {
+private struct ShowTodayButton: View {
     private enum Layout {
-        static let titleSpacing: CGFloat = 2
-        static let stepSpacing: CGFloat = 0
-        static let stepTarget: CGFloat = 44
-        static let actionSpacing: CGFloat = 8
-        static let showTodayPadding = EdgeInsets(
+        static let target: CGFloat = 44
+        static let padding = EdgeInsets(
             top: 10,
             leading: 16,
             bottom: 10,
             trailing: 16
         )
+    }
+
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(.todayHeaderShowToday)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Color.ink)
+                .padding(Layout.padding)
+                .frame(minHeight: Layout.target)
+                .glassSurface(.capsule)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct DayHeaderView: View {
+    private enum Layout {
+        static let titleSpacing: CGFloat = 2
+        static let stepSpacing: CGFloat = 0
+        static let actionSpacing: CGFloat = 8
     }
 
     let header: DayHeader
@@ -45,15 +64,7 @@ struct DayHeaderView: View {
             Spacer(minLength: 0)
             HStack(spacing: Layout.actionSpacing) {
                 if !header.isToday {
-                    Button(action: onShowToday) {
-                        Text(.todayHeaderShowToday)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(Color.ink)
-                            .padding(Layout.showTodayPadding)
-                            .frame(minHeight: Layout.stepTarget)
-                            .glassSurface(.capsule)
-                    }
-                    .buttonStyle(.plain)
+                    ShowTodayButton(action: onShowToday)
                 }
                 GlassIconButton(
                     systemImage: "calendar",

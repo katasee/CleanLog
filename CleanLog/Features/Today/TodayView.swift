@@ -36,14 +36,14 @@ struct TodayView: View {
             .id(selection)
             .screenBackground(Layout.backdrop)
             .toolbarVisibility(.hidden, for: .navigationBar)
-            .sheet(isPresented: $isShowingCalendar) {
-                CalendarView(
-                    selected: selection.day,
-                    today: selection.today,
-                    workDays: dependencies.workDays,
-                    onOpenDay: openDay
-                )
-            }
+        }
+        .sheet(isPresented: $isShowingCalendar) {
+            CalendarView(
+                selected: selection.day,
+                today: selection.today,
+                workDays: dependencies.workDays,
+                onOpenDay: openDay
+            )
         }
         .task {
             await advanceAtEachMidnight()
