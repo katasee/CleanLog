@@ -105,13 +105,19 @@ private struct ReportTextCard: View {
     let text: String
 
     var body: some View {
-        ScrollView([.vertical, .horizontal]) {
-            Text(verbatim: text)
-                .font(.body.monospaced())
-                .foregroundStyle(Color.ink)
-                .textSelection(.enabled)
+        GeometryReader { proxy in
+            ScrollView([.vertical, .horizontal]) {
+                Text(verbatim: text)
+                    .font(.body.monospaced())
+                    .foregroundStyle(Color.ink)
+                    .textSelection(.enabled)
+                    .frame(
+                        minWidth: proxy.size.width,
+                        minHeight: proxy.size.height,
+                        alignment: .topLeading
+                    )
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .cardSurface()
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(.reportTextLabel))
@@ -167,7 +173,7 @@ private struct ReportSendButton: View {
         switch action {
         case .whatsApp(let url):
             Button {
-                openURL(url)
+                send(to: url)
             } label: {
                 ReportActionLabel(title: .reportActionSend, systemImage: "paperplane")
             }
@@ -178,6 +184,10 @@ private struct ReportSendButton: View {
             }
             .prominentActionStyle()
         }
+    }
+
+    private func send(to url: URL) {
+        openURL(url)
     }
 }
 
