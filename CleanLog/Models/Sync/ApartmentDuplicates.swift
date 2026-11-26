@@ -13,7 +13,10 @@ nonisolated enum ApartmentDuplicates {
     }
 
     private static func merge(of copies: [Revision<Apartment>]) -> ApartmentMerge? {
-        guard copies.count > 1, let newest = copies.max(by: isOlder), let survivorID = smallestID(in: copies) else {
+        guard copies.count > 1,
+            let newest = Revision.newestFirst(copies).first,
+            let survivorID = Revision.survivorID(among: copies)
+        else {
             return nil
         }
         let survivor = Apartment(
@@ -28,16 +31,5 @@ nonisolated enum ApartmentDuplicates {
             survivor: Revision(value: survivor, changedAt: newest.changedAt),
             removedIDs: Set(copies.map(\.value.id)).subtracting([survivorID])
         )
-    }
-
-    private static func isOlder(_ lhs: Revision<Apartment>, _ rhs: Revision<Apartment>) -> Bool {
-        if lhs.changedAt != rhs.changedAt {
-            return lhs.changedAt < rhs.changedAt
-        }
-        return lhs.value.id.uuidString > rhs.value.id.uuidString
-    }
-
-    private static func smallestID(in copies: [Revision<Apartment>]) -> UUID? {
-        copies.map(\.value.id).min { $0.uuidString < $1.uuidString }
     }
 }

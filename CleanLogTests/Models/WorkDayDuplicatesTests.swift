@@ -86,14 +86,8 @@ struct WorkDayDuplicatesTests {
     }
 
     @Test func theNewerSnapshotWins() throws {
-        let raised = Apartment(
-            id: a100.id,
-            name: a100.name,
-            price: Money(minorUnits: 3000),
-            accessCode: nil,
-            isReportedSeparately: false,
-            createdAt: a100.createdAt
-        )
+        var raised = a100
+        raised.price = Money(minorUnits: 3000)
         let older = copy(id: 1, changedAt: 9) { $0.entries = [entry(for: a100)] }
         let newer = copy(id: 2, changedAt: 12) { $0.entries = [entry(for: raised)] }
 
@@ -123,22 +117,15 @@ struct WorkDayDuplicatesTests {
         #expect(merged.value.workedDuration(now: at(14)) == .seconds(3 * 3600))
     }
 
-    @Test func touchingSessionsFold() {
-        let first = copy(id: 1, changedAt: 12) { $0.sessions = [session(1, from: at(9), to: at(10))] }
-        let second = copy(id: 2, changedAt: 13) { $0.sessions = [session(2, from: at(10), to: at(11))] }
-
-        let merged = WorkDayDuplicates.merged([first, second])
-
-        #expect(merged.value.sessions == [session(1, from: at(9), to: at(11))])
-    }
-
-    @Test func aContainedSessionDisappears() {
+    @Test func containedAndTouchingSessionsFold() {
         let first = copy(id: 1, changedAt: 12) { $0.sessions = [session(1, from: at(9), to: at(12))] }
-        let second = copy(id: 2, changedAt: 13) { $0.sessions = [session(2, from: at(10), to: at(11))] }
+        let second = copy(id: 2, changedAt: 13) { day in
+            day.sessions = [session(2, from: at(10), to: at(11)), session(3, from: at(12), to: at(13))]
+        }
 
         let merged = WorkDayDuplicates.merged([first, second])
 
-        #expect(merged.value.sessions == [session(1, from: at(9), to: at(12))])
+        #expect(merged.value.sessions == [session(1, from: at(9), to: at(13))])
     }
 
     @Test func separateSessionsStay() {
@@ -172,15 +159,10 @@ struct WorkDayDuplicatesTests {
     @Test func theNewerManualDurationWins() {
         let older = copy(id: 1, changedAt: 9) { $0.manualDuration = .seconds(2 * 3600) }
         let newer = copy(id: 2, changedAt: 12) { $0.manualDuration = .seconds(3 * 3600) }
+        let blank = copy(id: 3, changedAt: 14)
 
         #expect(WorkDayDuplicates.merged([older, newer]).value.manualDuration == .seconds(3 * 3600))
-    }
-
-    @Test func aSingleManualDurationIsKept() {
-        let older = copy(id: 1, changedAt: 9) { $0.manualDuration = .seconds(2 * 3600) }
-        let newer = copy(id: 2, changedAt: 12)
-
-        #expect(WorkDayDuplicates.merged([newer, older]).value.manualDuration == .seconds(2 * 3600))
+        #expect(WorkDayDuplicates.merged([older, blank]).value.manualDuration == .seconds(2 * 3600))
     }
 
     @Test func theNewerTimerFlagsWin() {

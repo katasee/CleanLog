@@ -2,26 +2,21 @@ import Foundation
 
 nonisolated enum WorkDayDuplicates {
     static func merged(_ copies: [Revision<WorkDay>]) -> Revision<WorkDay> {
-        precondition(!copies.isEmpty, "A merge needs at least one copy of the day")
-        let ordered = copies.sorted(by: isNewer).map(\.value)
-        let newest = ordered[0]
-        let day = WorkDay(
-            id: ordered.map(\.id).min { $0.uuidString < $1.uuidString } ?? newest.id,
-            day: newest.day,
-            entries: mergedEntries(ordered.flatMap(\.entries)),
-            sessions: foldedSessions(ordered.flatMap(\.sessions)),
-            manualDuration: ordered.lazy.compactMap(\.manualDuration).first,
-            isTimerFinished: newest.isTimerFinished,
-            isTimeDropped: newest.isTimeDropped
-        )
-        return Revision(value: day, changedAt: copies.map(\.changedAt).max() ?? .distantPast)
-    }
-
-    private static func isNewer(_ lhs: Revision<WorkDay>, _ rhs: Revision<WorkDay>) -> Bool {
-        if lhs.changedAt != rhs.changedAt {
-            return lhs.changedAt > rhs.changedAt
+        let ordered = Revision.newestFirst(copies)
+        guard let newest = ordered.first, let survivorID = Revision.survivorID(among: copies) else {
+            preconditionFailure("A merge needs at least one copy of the day")
         }
-        return lhs.value.id.uuidString < rhs.value.id.uuidString
+        let values = ordered.map(\.value)
+        let day = WorkDay(
+            id: survivorID,
+            day: newest.value.day,
+            entries: mergedEntries(values.flatMap(\.entries)),
+            sessions: foldedSessions(values.flatMap(\.sessions)),
+            manualDuration: values.lazy.compactMap(\.manualDuration).first,
+            isTimerFinished: newest.value.isTimerFinished,
+            isTimeDropped: newest.value.isTimeDropped
+        )
+        return Revision(value: day, changedAt: newest.changedAt)
     }
 
     private static func mergedEntries(_ entries: [DayEntry]) -> [DayEntry] {
