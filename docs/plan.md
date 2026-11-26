@@ -693,12 +693,10 @@ Notes for the sessions:
   `swiftui-pro`: the icon-only toolbar label (above). SOLID clean. Build, Release build, full tests (345), lint
   green.
 
-## Feature 9 — Settings and reminders
+## Feature 9 — Settings and reminders (done)
 
-Spec: `docs/superpowers/specs/2026-11-26-settings-design.md` (product spec → Settings). Plan:
-`docs/superpowers/plans/2026-11-26-settings.md`.
-
-CL-51 (Plan Task 7) is the last branch of the feature.
+The plan file was deleted once the feature merged (CL-52). Spec:
+`docs/superpowers/specs/2026-11-26-settings-design.md` (product spec → Settings).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -707,7 +705,7 @@ CL-51 (Plan Task 7) is the last branch of the feature.
 | 48 | `feature/CL-48-reminder-scheduler` | `main` | 3–4 | ~465 | merged (PR #50) | done — concurrency clean; SOLID: 1 fix (below) |
 | 49 | `feature/CL-49-settings-view-model` | `main` | 5 | ~470 | merged (PR #51) | done — concurrency: 1 fix; SOLID clean (below) |
 | 50 | `feature/CL-50-settings-screen` | `main` | 6 | ~420 | merged (PR #52) | done — `swiftui-pro`: 1 fix; SOLID: 1 fix (below) |
-| 51 | `feature/CL-51-reminder-tap` | `main` | 7 | ~155 (the natural end of the feature) | in review | done — concurrency clean; `swiftui-pro`: 1 fix; SOLID: 1 fix; simulator: 1 fix (below) |
+| 51 | `feature/CL-51-reminder-tap` | `main` | 7 | ~155 (the natural end of the feature) | merged (PR #53) | done — concurrency clean; `swiftui-pro`: 1 fix; SOLID: 1 fix; simulator: 1 fix (below) |
 
 Brainstorm decisions (the user, 2026-11-26; all in the spec):
 
@@ -795,7 +793,33 @@ Notes for the sessions:
   `StatsView` each declared the same route struct — now one `ReportRoute` in `Features/Report/`. Build, full tests
   (388 cases), lint and a Release build green.
 
-Next free branch number: **CL-52** (CL-16…51 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
+## Feature 10 — iCloud sync
+
+Product spec → "iCloud sync" (decided 2026-11-24, CL-26). No feature spec or plan yet.
+
+**NEXT session:** branch `feature/CL-52-icloud-spec` from `main` (created; holds only the commit that marks it
+NEXT and deletes the Settings plan). It needs the brainstorm **with the user** before anything is written —
+questions to settle there:
+
+- The Bundle ID and the CloudKit container (`iCloud.<bundle id>`): the product spec leaves the Bundle ID to
+  Feature 11, but the container is created from it now and cannot be renamed later. The project's current
+  identifier is a placeholder (`-.CleanLog`). Is the paid Apple Developer Program account and team in place
+  (CloudKit needs it)?
+- Merging duplicates made offline on two devices: two apartments with the same name but different prices or
+  report flags — which wins? The same name with different case or spaces — the same apartment? Two copies of one
+  day — union of the entries, and which timer sessions and manual durations win?
+- The Settings line: only when iCloud is unavailable («kept on this phone only»), or always (also «synced with
+  iCloud»)? Its copy in both languages.
+- The store already on the developer's phone (and the mother's, if she uses a build): move it into the synced
+  store, or start fresh?
+- How it gets checked by hand: two devices on one Apple ID, or a device plus a simulator signed in to iCloud.
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 52 | `feature/CL-52-icloud-spec` | `main` | — (spec, plan, product spec; deletes the Settings plan) | — | **NEXT** | plan review |
+
+Next free branch number: **CL-53** (CL-16…52 are used or reserved above; CL-26 is the iCloud product-spec
+decision, merged as PR #24).
 
 ## Roadmap (v1)
 
