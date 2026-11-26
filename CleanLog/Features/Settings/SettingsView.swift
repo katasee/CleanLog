@@ -102,12 +102,16 @@ private struct SettingsReminderSection: View {
             Text(.settingsReminderFooter)
                 .foregroundStyle(Color.inkSecondary)
         }
-        .onChange(of: viewModel.isReminderOn) {
-            Task { await viewModel.reminderSwitchChanged() }
-        }
-        .onChange(of: viewModel.reminderTime) {
-            Task { await viewModel.reminderTimeChanged() }
-        }
+        .onChange(of: viewModel.isReminderOn, saveSwitch)
+        .onChange(of: viewModel.reminderTime, saveTime)
+    }
+
+    private func saveSwitch() {
+        Task { await viewModel.reminderSwitchChanged() }
+    }
+
+    private func saveTime() {
+        Task { await viewModel.reminderTimeChanged() }
     }
 }
 
@@ -153,7 +157,7 @@ private struct SettingsVersionFooter: View {
     #Preview("On") {
         Color.background
             .sheet(isPresented: .constant(true)) {
-                SettingsView(viewModel: SettingsPreviewData.viewModel(SettingsPreviewData.onAtSix))
+                SettingsView(viewModel: SettingsPreviewData.viewModel(SettingsPreviewData.onAtDefaultTime))
             }
             .preferredColorScheme(.dark)
     }
@@ -163,7 +167,7 @@ private struct SettingsVersionFooter: View {
             .sheet(isPresented: .constant(true)) {
                 SettingsView(
                     viewModel: SettingsPreviewData.viewModel(
-                        SettingsPreviewData.onAtSix,
+                        SettingsPreviewData.onAtDefaultTime,
                         authorization: .denied
                     )
                 )

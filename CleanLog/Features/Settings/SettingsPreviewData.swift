@@ -3,7 +3,7 @@
 
     enum SettingsPreviewData {
         static let off = MonthEndReminderSettings.initial
-        static let onAtSix = MonthEndReminderSettings(isOn: true, time: ReminderTime(hour: 18, minute: 0))
+        static let onAtDefaultTime = MonthEndReminderSettings(isOn: true, time: MonthEndReminderSettings.initial.time)
 
         static func viewModel(
             _ reminder: MonthEndReminderSettings,
