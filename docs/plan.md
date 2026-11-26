@@ -698,12 +698,13 @@ Notes for the sessions:
 Spec: `docs/superpowers/specs/2026-11-26-settings-design.md` (product spec → Settings). Plan:
 `docs/superpowers/plans/2026-11-26-settings.md`.
 
-**NEXT session:** branch `feature/CL-47-reminder-settings` from `main` once CL-46 is merged. Plan Tasks 1–2.
+**NEXT session:** branch `feature/CL-47-reminder-settings` from `main` (created; holds only the commit that marks
+it NEXT). Plan Tasks 1–2.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 46 | `feature/CL-46-settings-spec` | `main` | — (spec, plan, product spec) | ~615 (docs) | PR open | plan review done (in the plan) |
-| 47 | `feature/CL-47-reminder-settings` | `main` | 1–2 | ~420 | next, after CL-46 merges | SOLID |
+| 46 | `feature/CL-46-settings-spec` | `main` | — (spec, plan, product spec) | ~615 (docs) | merged (PR #48) | plan review done (in the plan) |
+| 47 | `feature/CL-47-reminder-settings` | `main` | 1–2 | ~420 | **NEXT** | SOLID |
 | 48 | `feature/CL-48-reminder-scheduler` | CL-47 (or `main`) | 3–4 | ~440 | — | `swift-concurrency-pro` + SOLID |
 | 49 | `feature/CL-49-settings-view-model` | CL-48 (or `main`) | 5 | ~420 | — | `swift-concurrency-pro` + SOLID |
 | 50 | `feature/CL-50-settings-screen` | CL-49 (or `main`) | 6 | ~420 | — | `swiftui-pro` + SOLID |
