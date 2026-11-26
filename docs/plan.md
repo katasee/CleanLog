@@ -698,15 +698,15 @@ Notes for the sessions:
 Spec: `docs/superpowers/specs/2026-11-26-settings-design.md` (product spec → Settings). Plan:
 `docs/superpowers/plans/2026-11-26-settings.md`.
 
-**NEXT session:** branch `feature/CL-48-reminder-scheduler` from `main` (created; holds only the commit that
-marks it NEXT). Plan Tasks 3–4.
+**NEXT session:** branch `feature/CL-49-settings-view-model` from `main` (created; holds only the commit that
+marks it NEXT). Plan Task 5.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 46 | `feature/CL-46-settings-spec` | `main` | — (spec, plan, product spec) | ~615 (docs) | merged (PR #48) | plan review done (in the plan) |
 | 47 | `feature/CL-47-reminder-settings` | `main` | 1–2 | ~320 | merged (PR #49) | done — SOLID: 1 fix (below) |
-| 48 | `feature/CL-48-reminder-scheduler` | `main` | 3–4 | ~465 | in review | done — concurrency clean; SOLID: 1 fix (below) |
-| 49 | `feature/CL-49-settings-view-model` | CL-48 (or `main`) | 5 | ~420 | — | `swift-concurrency-pro` + SOLID |
+| 48 | `feature/CL-48-reminder-scheduler` | `main` | 3–4 | ~465 | merged (PR #50) | done — concurrency clean; SOLID: 1 fix (below) |
+| 49 | `feature/CL-49-settings-view-model` | `main` | 5 | ~470 | in review | done — concurrency: 1 fix; SOLID clean (below) |
 | 50 | `feature/CL-50-settings-screen` | CL-49 (or `main`) | 6 | ~420 | — | `swiftui-pro` + SOLID |
 | 51 | `feature/CL-51-reminder-tap` | CL-50 (or `main`) | 7 | ~200 (the natural end of the feature) | — | `swiftui-pro` + `swift-concurrency-pro` + SOLID |
 
@@ -751,6 +751,17 @@ Notes for the sessions:
   stored state after the `await`, streams buffer the newest value, the notification request is built inside
   `add`, no `@unchecked Sendable`); SOLID / clean code — the long `MonthActivity` line in `observeDays` now names
   its check. Build, full tests (371 cases), lint green.
+- CL-49 (2026-11-26): built from `main` (CL-48 merged). Task 5 as planned, plus `AppVersionTests` (the bundle's
+  values, `"0"` for a bundle without them). `SettingsViewModel` keeps the last stored settings and updates them
+  before the `await` of a save (a second change builds on the first; a failed save shows the error and returns
+  both bound values to the settings it started from). After the permission prompt it saves only if the switch is
+  still on. `SystemNotifications` is both the `ReminderCenter` and the `NotificationPermission` (one
+  `UNUserNotificationCenter` adapter); `@unknown default` counts as denied. `AppDependencies.preview` takes
+  `notificationPermission` (authorized) and `appVersion` (1.0, build 1). For CL-50: start `observe()` in the
+  sheet's `.task` before any tap can reach the switch. Review — `swift-concurrency-pro`: the turn-on tests ran
+  inside `observe()`; when the loop consumed the buffered first value while the switch waited for permission, it
+  reset the switch and the save never happened (a random failure) — those tests now run without `observe()`.
+  SOLID / clean code: clean. Build, full tests (385 cases), lint green.
 
 Next free branch number: **CL-52** (CL-16…51 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
