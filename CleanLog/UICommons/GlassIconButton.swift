@@ -5,11 +5,23 @@ struct GlassIconButton: View {
         static let target: CGFloat = 44
     }
 
-    let systemImage: String
-    let label: LocalizedStringResource
-    let action: () -> Void
+    private let systemImage: String
+    private let label: LocalizedStringResource
+    private let action: () -> Void
 
-    @ScaledMetric(relativeTo: .title3) private var diameter = Layout.target
+    @ScaledMetric private var diameter: CGFloat
+
+    init(
+        systemImage: String,
+        label: LocalizedStringResource,
+        diameter: CGFloat = Layout.target,
+        action: @escaping () -> Void
+    ) {
+        self.systemImage = systemImage
+        self.label = label
+        self.action = action
+        _diameter = ScaledMetric(wrappedValue: max(diameter, Layout.target), relativeTo: .title3)
+    }
 
     var body: some View {
         Button(action: action) {
