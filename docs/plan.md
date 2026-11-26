@@ -698,16 +698,16 @@ Notes for the sessions:
 Spec: `docs/superpowers/specs/2026-11-26-settings-design.md` (product spec → Settings). Plan:
 `docs/superpowers/plans/2026-11-26-settings.md`.
 
-**NEXT session:** branch `feature/CL-49-settings-view-model` from `main` (created; holds only the commit that
-marks it NEXT). Plan Task 5.
+**NEXT session:** branch `feature/CL-50-settings-screen` from `main` (created; holds only the commit that
+marks it NEXT). Plan Task 6.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 46 | `feature/CL-46-settings-spec` | `main` | — (spec, plan, product spec) | ~615 (docs) | merged (PR #48) | plan review done (in the plan) |
 | 47 | `feature/CL-47-reminder-settings` | `main` | 1–2 | ~320 | merged (PR #49) | done — SOLID: 1 fix (below) |
 | 48 | `feature/CL-48-reminder-scheduler` | `main` | 3–4 | ~465 | merged (PR #50) | done — concurrency clean; SOLID: 1 fix (below) |
-| 49 | `feature/CL-49-settings-view-model` | `main` | 5 | ~470 | in review | done — concurrency: 1 fix; SOLID clean (below) |
-| 50 | `feature/CL-50-settings-screen` | CL-49 (or `main`) | 6 | ~420 | — | `swiftui-pro` + SOLID |
+| 49 | `feature/CL-49-settings-view-model` | `main` | 5 | ~470 | merged (PR #51) | done — concurrency: 1 fix; SOLID clean (below) |
+| 50 | `feature/CL-50-settings-screen` | `main` | 6 | ~420 | in review | done — `swiftui-pro`: 1 fix; SOLID: 1 fix (below) |
 | 51 | `feature/CL-51-reminder-tap` | CL-50 (or `main`) | 7 | ~200 (the natural end of the feature) | — | `swiftui-pro` + `swift-concurrency-pro` + SOLID |
 
 Brainstorm decisions (the user, 2026-11-26; all in the spec):
@@ -724,7 +724,7 @@ Notes for the sessions:
 
 - CL-46 (2026-11-26): the canvas has **no Settings artboard**; the `Apartments` artboard draws only the button
   (a sliders glyph, «Налаштування»). The sheet follows the existing screens (Card rows, system bar, close button).
-  Claude's calls (spec decisions 10–13): a `gearshape` glyph; a revoked permission keeps a stored «on» and shows
+  Claude's calls (spec decisions 10–13): a `gearshape` glyph (changed in CL-50 to the artboard's sliders); a revoked permission keeps a stored «on» and shows
   the denied row; a banner while the app is open; the version as «Версія 1.0 (7)». Scheduling: one pending request
   for the current month only, rescheduled on every settings or month change and when the app becomes active (a
   cleaned apartment can only appear while the app is open). Plan review: `swift-concurrency-pro` — serialized
@@ -762,6 +762,22 @@ Notes for the sessions:
   inside `observe()`; when the loop consumed the buffered first value while the switch waited for permission, it
   reset the switch and the save never happened (a random failure) — those tests now run without `observe()`.
   SOLID / clean code: clean. Build, full tests (385 cases), lint green.
+- CL-50 (2026-11-26): built from `main` (CL-49 merged). Task 6, ~420 with these notes (the catalog ~155 of it).
+  **Settings glyph: `slider.horizontal.3`**, not `gearshape` — it follows the canvas `Apartments` artboard (two
+  slider lines with knobs; the closest SF Symbol, as there is no plain `slider.horizontal.2`); **the user has not
+  confirmed it yet** (spec decision 10 updated). The button is a plain toolbar `Button` with a `Label`, so the system
+  draws the glass and VoiceOver reads «Налаштування». The version footer is an empty last `Section` with a footer,
+  so it stays last whether or not the denied section shows. The permission refresh is one `.task(id: scenePhase)`
+  (runs on appear and on every return to `.active`) instead of a `.task` plus an `onChange`. Simulator (iPhone 16,
+  iOS 26): Apartments with the sliders button; the sheet off (uk, light), on at 18:00 (en, dark, «6:00 PM»), and on
+  at `accessibility5` (the rows wrap, the picker drops below its label) — opened through a temporary launch flag and
+  a stored «on» written with `defaults`, both reverted. Not driven by taps: the switch, the permission prompt, the
+  time picker and the denied row (covered by `SettingsViewModelTests` and the «Permission denied» preview).
+  Review — `swiftui-pro`: the two `onChange` closures started `Task`s inline in the body; they are now named
+  methods (`saveSwitch`, `saveTime`). SOLID / clean code: the preview fixture `onAtSix` (18:00) read as 6 o'clock;
+  renamed `onAtDefaultTime` and built from `MonthEndReminderSettings.initial.time`. The backdrop repeats
+  `ApartmentsView`'s circles on purpose (each screen passes its own, per `code-style.md`). Build, full tests
+  (385 cases), lint and a Release build green.
 
 Next free branch number: **CL-52** (CL-16…51 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 

@@ -60,8 +60,9 @@ Proposed in the brainstorm and taken as decisions here (the user may still corre
 
 Claude's calls (the user may correct them):
 
-10. **The settings button uses the `gearshape` glyph**, as the brainstorm called it, not the artboard's sliders
-    glyph: a gear is what iOS users look for.
+10. **The settings button uses the `slider.horizontal.3` glyph**, the SF Symbol closest to the sliders the
+    `Apartments` artboard draws (the canvas is the reference for every screen); it follows the artboard and the
+    user has not confirmed it yet.
 11. **Denied permission keeps a stored «on».** If she revokes the permission in iOS after turning the reminder
     on, the switch stays on, the denied row appears, and the reminder works again once she allows notifications.
     Turning the switch on while permission is denied does not change the setting; it shows the row.

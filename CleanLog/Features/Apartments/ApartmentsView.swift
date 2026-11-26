@@ -20,9 +20,13 @@ struct ApartmentsView: View {
     }
 
     @State private var viewModel: ApartmentsViewModel
+    @State private var isShowingSettings = false
 
-    init(repository: any ApartmentRepository) {
-        _viewModel = State(initialValue: ApartmentsViewModel(repository: repository))
+    private let dependencies: AppDependencies
+
+    init(dependencies: AppDependencies) {
+        _viewModel = State(initialValue: ApartmentsViewModel(repository: dependencies.apartments))
+        self.dependencies = dependencies
     }
 
     var body: some View {
@@ -41,15 +45,33 @@ struct ApartmentsView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .screenBackground(Layout.backdrop)
             .navigationTitle(Text(.tabApartmentsTitle))
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: openSettings) {
+                        Label {
+                            Text(.apartmentsActionSettings)
+                        } icon: {
+                            Image(systemName: "slider.horizontal.3")
+                        }
+                    }
+                }
+            }
             .modifier(DeletionConfirmation(viewModel: viewModel))
             .alert(viewModel.errorMessage ?? "", isPresented: $viewModel.isShowingError) {}
             .fullScreenCover(item: $viewModel.sheet) { sheet in
                 ApartmentFormView(viewModel: viewModel.makeFormViewModel(for: sheet))
             }
+            .sheet(isPresented: $isShowingSettings) {
+                SettingsView(dependencies: dependencies)
+            }
         }
         .task {
             await viewModel.observe()
         }
+    }
+
+    private func openSettings() {
+        isShowingSettings = true
     }
 
     private func add() {
@@ -184,10 +206,12 @@ private struct DeletionConfirmation: ViewModifier {
 
 #if DEBUG
     #Preview("Template") {
-        ApartmentsView(repository: FakeApartmentRepository(ApartmentsPreviewData.template))
+        ApartmentsView(
+            dependencies: AppDependencies.preview(apartments: FakeApartmentRepository(ApartmentsPreviewData.template))
+        )
     }
 
     #Preview("Empty") {
-        ApartmentsView(repository: FakeApartmentRepository())
+        ApartmentsView(dependencies: AppDependencies.preview())
     }
 #endif
