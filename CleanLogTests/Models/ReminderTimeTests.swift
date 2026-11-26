@@ -14,4 +14,15 @@ struct ReminderTimeTests {
         let date = ReminderTime(hour: 18, minute: 0).date(on: day, calendar: .warsaw)
         #expect(date == .warsaw(2026, 11, 30, 18))
     }
+
+    @Test func refusesToDecodeATimeOutsideTheDay() {
+        let stored = Data(#"{"hour":25,"minute":0}"#.utf8)
+        #expect(throws: DecodingError.self) { try JSONDecoder().decode(ReminderTime.self, from: stored) }
+    }
+
+    @Test func decodesWhatItEncodes() throws {
+        let time = ReminderTime(hour: 23, minute: 59)
+        let decoded = try JSONDecoder().decode(ReminderTime.self, from: JSONEncoder().encode(time))
+        #expect(decoded == time)
+    }
 }
