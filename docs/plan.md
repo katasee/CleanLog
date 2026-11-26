@@ -625,15 +625,15 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-25-report.md` · Spec: `docs/superpowers/specs/2026-11-25-report-design.md`
 
-**NEXT session:** branch `feature/CL-45-report-button` from `main` (CL-44 merged) — plan Task 5 Step 2, the Statistics «Звіт» button and its `stats.action.report` key, moved off CL-44 (see its note).
+**NEXT session:** branch `feature/CL-45-report-button` from `main` (created; CL-44 merged) — plan Task 5 Step 2, the Statistics «Звіт» button and its `stats.action.report` key, moved off CL-44 (see its note).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 41 | `feature/CL-41-report-spec` | `main` | — (spec, plan, product spec; deletes the Statistics plan) | ~852 (docs, 358 of it the deleted plan, as in CL-36) | merged (PR #43) | plan review done (in the plan) |
 | 42 | `feature/CL-42-report-logic` | `main` | 1–3, `DayFormat.monthInTitle` from 4 | ~225 | merged (PR #44) | done — SOLID: 2 fixes (below) |
 | 43 | `feature/CL-43-report-view-model` | `main` | 4 (rest), view-model keys only | ~440 | merged (PR #45) | done — concurrency clean; SOLID: 1 fix (below) |
-| 44 | `feature/CL-44-report-screen` | `main` | 5 (Steps 1, 3, 4), the sheet's catalog keys | ~470 | PR open | done — `swiftui-pro`: 2 fixes; SOLID clean (below) |
-| 45 | `feature/CL-45-report-button` | `main` | 5 Step 2, `stats.action.report` | ~100 (the natural end of the feature) | next | — `swiftui-pro` + SOLID |
+| 44 | `feature/CL-44-report-screen` | `main` | 5 (Steps 1, 3, 4), the sheet's catalog keys | 494 | merged (PR #46) | done — `swiftui-pro`: 2 fixes; SOLID clean (below) |
+| 45 | `feature/CL-45-report-button` | `main` | 5 Step 2, `stats.action.report` | ~100 (the natural end of the feature) | **NEXT** | — `swiftui-pro` + SOLID |
 
 Notes for the sessions:
 
@@ -665,7 +665,7 @@ Notes for the sessions:
   stored tasks; the tests wait on the first value instead of sleeping). SOLID: `title(of:today:calendar:locale:)`
   had four arguments on one line (split). Build, full tests, lint green.
 
-- CL-44 (2026-11-26): built from `main` (CL-43 merged). With the Statistics button the branch measured ~540 (the
+- CL-44 (2026-11-26): built from `main` (CL-43 merged). With the Statistics button the branch would have measured ~540 (the
   catalog's JSON is ~120 of it), so Step 2 and the `stats.action.report` key move to CL-45; the sheet stays here
   and is reachable only from previews until CL-45 lands. CL-45 notes: pass `AppDependencies` into
   `StatsView(dependencies:)` (as `DayView` does) instead of reading the environment, so previews need no
