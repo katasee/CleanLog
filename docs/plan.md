@@ -698,8 +698,7 @@ Notes for the sessions:
 Spec: `docs/superpowers/specs/2026-11-26-settings-design.md` (product spec → Settings). Plan:
 `docs/superpowers/plans/2026-11-26-settings.md`.
 
-**NEXT session:** branch `feature/CL-51-reminder-tap` from `main` (created; holds only the commit that
-marks it NEXT). Plan Task 7.
+CL-51 (Plan Task 7) is the last branch of the feature.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -708,7 +707,7 @@ marks it NEXT). Plan Task 7.
 | 48 | `feature/CL-48-reminder-scheduler` | `main` | 3–4 | ~465 | merged (PR #50) | done — concurrency clean; SOLID: 1 fix (below) |
 | 49 | `feature/CL-49-settings-view-model` | `main` | 5 | ~470 | merged (PR #51) | done — concurrency: 1 fix; SOLID clean (below) |
 | 50 | `feature/CL-50-settings-screen` | `main` | 6 | ~420 | merged (PR #52) | done — `swiftui-pro`: 1 fix; SOLID: 1 fix (below) |
-| 51 | `feature/CL-51-reminder-tap` | `main` | 7 | ~200 (the natural end of the feature) | **NEXT** | `swiftui-pro` + `swift-concurrency-pro` + SOLID |
+| 51 | `feature/CL-51-reminder-tap` | `main` | 7 | ~155 (the natural end of the feature) | in review | done — concurrency clean; `swiftui-pro`: 1 fix; SOLID: 1 fix; simulator: 1 fix (below) |
 
 Brainstorm decisions (the user, 2026-11-26; all in the spec):
 
@@ -778,6 +777,23 @@ Notes for the sessions:
   renamed `onAtDefaultTime` and built from `MonthEndReminderSettings.initial.time`. The backdrop repeats
   `ApartmentsView`'s circles on purpose (each screen passes its own, per `code-style.md`). Build, full tests
   (385 cases), lint and a Release build green.
+- CL-51 (2026-11-26): built from `main` (CL-50 merged). Task 7, ~155 with these notes. `SystemNotifications`
+  sets the delegate (`deliverResponses(to:)`), so `AppDependencies` does not import `UserNotifications`; the
+  responder is a stored `AppDependencies` property (the center holds its delegate weakly). Simulator (iPhone 16,
+  iOS 26), driven by a temporary launch flag calling `reminderResponder.open(_:)` (reverted): with the request set
+  on a cold launch, switching to Statistics and presenting the sheet in the same update **dropped the sheet**
+  (the tab switched, no report). Fixed: `RootView` keeps a `pendingReport` and presents it from
+  `onChange(of: selectedTab)` (or at once when Statistics is already selected). Rechecked: cold launch, a request
+  4 s after launch, and a request while the Settings sheet is open on Apartments — all show the November report
+  on Statistics. **The plan's known limit does not occur**: switching the tab hides the Apartments sheet, so
+  `RootView` can present. Not checked: a real notification banner tap (needs a last-day fire date and a manual
+  tap) and a tap while Statistics' own report sheet is open (`RootView`'s sheet would likely not present over it;
+  she is already looking at a report). Review — `swift-concurrency-pro`: no findings (the delegate methods are
+  `nonisolated async`, parse the payload into a `MonthKey` and only then hop to the main actor; no warnings in
+  Swift 6). `swiftui-pro`: `RootView`'s body grew past ~40 lines — running the scheduler (two `.task`s and the
+  `scenePhase` re-read) moved into a private `MonthEndReminderRunner` modifier. SOLID / clean code: `RootView` and
+  `StatsView` each declared the same route struct — now one `ReportRoute` in `Features/Report/`. Build, full tests
+  (388 cases), lint and a Release build green.
 
 Next free branch number: **CL-52** (CL-16…51 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
