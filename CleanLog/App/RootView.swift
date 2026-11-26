@@ -6,20 +6,36 @@ private enum AppTab: Hashable {
     case apartments
 }
 
-private struct RootReportRoute: Identifiable {
-    let month: MonthKey
-    let today: DayKey
+private struct MonthEndReminderRunner: ViewModifier {
+    let scheduler: MonthEndReminderScheduler
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var month = DayKey(.now, calendar: .current).monthKey
 
-    var id: MonthKey { month }
+    func body(content: Content) -> some View {
+        content
+            .task {
+                await scheduler.observeSettings()
+            }
+            .task(id: month) {
+                await scheduler.observeDays(in: month)
+            }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active {
+                    rereadMonth()
+                }
+            }
+    }
+
+    private func rereadMonth() {
+        month = DayKey(.now, calendar: .current).monthKey
+    }
 }
 
 struct RootView: View {
     @Environment(AppDependencies.self) private var dependencies
-    @Environment(\.scenePhase) private var scenePhase
     @State private var selectedTab: AppTab = .today
-    @State private var reminderMonth = DayKey(.now, calendar: .current).monthKey
-    @State private var report: RootReportRoute?
-    @State private var pendingReport: RootReportRoute?
+    @State private var report: ReportRoute?
+    @State private var pendingReport: ReportRoute?
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -58,17 +74,7 @@ struct RootView: View {
                 dependencies: dependencies
             )
         }
-        .task {
-            await dependencies.reminderScheduler.observeSettings()
-        }
-        .task(id: reminderMonth) {
-            await dependencies.reminderScheduler.observeDays(in: reminderMonth)
-        }
-        .onChange(of: scenePhase) { _, phase in
-            if phase == .active {
-                rereadReminderMonth()
-            }
-        }
+        .modifier(MonthEndReminderRunner(scheduler: dependencies.reminderScheduler))
         .onChange(of: dependencies.reminderResponder.requestedReport, initial: true) {
             openRequestedReport()
         }
@@ -77,13 +83,9 @@ struct RootView: View {
         }
     }
 
-    private func rereadReminderMonth() {
-        reminderMonth = DayKey(.now, calendar: .current).monthKey
-    }
-
     private func openRequestedReport() {
         guard let month = dependencies.reminderResponder.takeRequestedReport() else { return }
-        pendingReport = RootReportRoute(
+        pendingReport = ReportRoute(
             month: month,
             today: DayKey(.now, calendar: .current)
         )
