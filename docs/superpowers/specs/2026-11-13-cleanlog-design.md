@@ -161,11 +161,17 @@ day's list (on every day). Design: `docs/superpowers/specs/2026-11-24-day-plan-d
 
 ### Settings
 
-- Reminder on the last day of the month at 18:00 to send the report (permission asked only when
-  switched on).
-- Optional morning reminder to plan the day, with a time (off by default).
-- iCloud status: when iCloud is off, a line saying the data is kept on this phone only.
-- Privacy policy link, version.
+A sheet opened from a settings button in the Apartments toolbar. Details:
+`2026-11-26-settings-design.md`.
+
+- A reminder to send the report on the last day of the month, **off by default**; when switched on, a time
+  picker appears, starting at 18:00. Notification permission is asked only when it is switched on.
+- No reminder for a month with nothing cleaned. Tapping the notification opens that month's report.
+- When notifications are denied for the app, a row says so and opens the system settings.
+- The app's version and build.
+- The reminder settings stay on the phone (not synced).
+- No morning reminder in v1 (dropped 2026-11-26). The iCloud status line arrives with iCloud sync (Feature 10),
+  the privacy policy link with the App Store preparation (Feature 11).
 
 ## Report format
 
@@ -229,7 +235,8 @@ data with it); a manual export would be forgotten.
   again on a remote change.
 - Duplicates are merged by the repositories: two devices that created the same `DayKey` or an
   apartment with the same name while offline end up as one day / one apartment.
-- No iCloud account or iCloud off for the app: the app works locally as before and Settings says so.
+- No iCloud account or iCloud off for the app: the app works locally as before and Settings says so in a
+  line that the data is kept on this phone only (added to Settings by this feature).
 - Not synced: the reminder settings — on a new phone they are switched on again (the notification
   permission has to be granted again anyway).
 - The CloudKit schema is deployed to production before the first TestFlight build.
@@ -249,6 +256,6 @@ data with it); a manual export would be forgotten.
 
 ## Later (not v1)
 
-- App Store submission: screenshots, description, privacy policy page.
+- App Store submission: screenshots, description, privacy policy page (its link goes into Settings then).
 - Home-screen widget, Live Activity.
 - PDF/CSV export.

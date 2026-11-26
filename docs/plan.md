@@ -621,11 +621,9 @@ Notes for the sessions:
   **not** driven by taps (no tap tool) — check by hand. Review — `swiftui-pro`: the bar's `GeometryReader`
   became a `visualEffect` offset clipped to the track. SOLID clean. Build, full tests, lint green.
 
-## Feature 8 — Report and WhatsApp
+## Feature 8 — Report and WhatsApp (done)
 
-Plan: `docs/superpowers/plans/2026-11-25-report.md` · Spec: `docs/superpowers/specs/2026-11-25-report-design.md`
-
-**NEXT session:** branch `feature/CL-45-report-button` from `main` (created; CL-44 merged) — plan Task 5 Step 2, the Statistics «Звіт» button and its `stats.action.report` key, moved off CL-44 (see its note).
+The plan file was deleted once the feature merged (CL-46). Spec: `docs/superpowers/specs/2026-11-25-report-design.md`
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -633,7 +631,7 @@ Plan: `docs/superpowers/plans/2026-11-25-report.md` · Spec: `docs/superpowers/s
 | 42 | `feature/CL-42-report-logic` | `main` | 1–3, `DayFormat.monthInTitle` from 4 | ~225 | merged (PR #44) | done — SOLID: 2 fixes (below) |
 | 43 | `feature/CL-43-report-view-model` | `main` | 4 (rest), view-model keys only | ~440 | merged (PR #45) | done — concurrency clean; SOLID: 1 fix (below) |
 | 44 | `feature/CL-44-report-screen` | `main` | 5 (Steps 1, 3, 4), the sheet's catalog keys | 494 | merged (PR #46) | done — `swiftui-pro`: 2 fixes; SOLID clean (below) |
-| 45 | `feature/CL-45-report-button` | `main` | 5 Step 2, `stats.action.report` | ~110 (the natural end of the feature) | PR open | done — `swiftui-pro`: 1 fix; SOLID clean (below) |
+| 45 | `feature/CL-45-report-button` | `main` | 5 Step 2, `stats.action.report` | ~110 (the natural end of the feature) | merged (PR #47) | done — `swiftui-pro`: 1 fix; SOLID clean (below) |
 
 Notes for the sessions:
 
@@ -695,7 +693,48 @@ Notes for the sessions:
   `swiftui-pro`: the icon-only toolbar label (above). SOLID clean. Build, Release build, full tests (345), lint
   green.
 
-Next free branch number: **CL-46** (CL-16…45 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
+## Feature 9 — Settings and reminders
+
+Spec: `docs/superpowers/specs/2026-11-26-settings-design.md` (product spec → Settings). Plan:
+`docs/superpowers/plans/2026-11-26-settings.md`.
+
+**NEXT session:** branch `feature/CL-47-reminder-settings` from `main` once CL-46 is merged. Plan Tasks 1–2.
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 46 | `feature/CL-46-settings-spec` | `main` | — (spec, plan, product spec) | ~615 (docs) | PR open | plan review done (in the plan) |
+| 47 | `feature/CL-47-reminder-settings` | `main` | 1–2 | ~420 | next, after CL-46 merges | SOLID |
+| 48 | `feature/CL-48-reminder-scheduler` | CL-47 (or `main`) | 3–4 | ~440 | — | `swift-concurrency-pro` + SOLID |
+| 49 | `feature/CL-49-settings-view-model` | CL-48 (or `main`) | 5 | ~420 | — | `swift-concurrency-pro` + SOLID |
+| 50 | `feature/CL-50-settings-screen` | CL-49 (or `main`) | 6 | ~420 | — | `swiftui-pro` + SOLID |
+| 51 | `feature/CL-51-reminder-tap` | CL-50 (or `main`) | 7 | ~200 (the natural end of the feature) | — | `swiftui-pro` + `swift-concurrency-pro` + SOLID |
+
+Brainstorm decisions (the user, 2026-11-26; all in the spec):
+
+- Settings opens from a toolbar button on Apartments; no new tab.
+- The month-end reminder is **off by default**; turned on, it fires on the last day of the month at a time she
+  picks, starting at 18:00.
+- **No morning reminder in v1**; the iCloud status line and the privacy policy row come with Features 10 and 11.
+- Proposed in the brainstorm, taken as decisions in CL-46: no reminder for a month with nothing cleaned; tapping it
+  opens that month's report; the settings in `UserDefaults` behind a `SettingsRepository`, not synced; a denied
+  permission shows a row that opens the system settings.
+
+Notes for the sessions:
+
+- CL-46 (2026-11-26): the canvas has **no Settings artboard**; the `Apartments` artboard draws only the button
+  (a sliders glyph, «Налаштування»). The sheet follows the existing screens (Card rows, system bar, close button).
+  Claude's calls (spec decisions 10–13): a `gearshape` glyph; a revoked permission keeps a stored «on» and shows
+  the denied row; a banner while the app is open; the version as «Версія 1.0 (7)». Scheduling: one pending request
+  for the current month only, rescheduled on every settings or month change and when the app becomes active (a
+  cleaned apartment can only appear while the app is open). Plan review: `swift-concurrency-pro` — serialized
+  rescheduling instead of a `Task` per change, `nonisolated` delegate callbacks that parse the payload before
+  hopping to the main actor, `do/catch` + `Logger` for a failed `add`, a gated fake instead of sleeps;
+  `swiftui-pro` — `@Bindable` + `onChange` instead of `Binding(get:set:)` (the view model ignores a value equal to
+  the stored one), a `Link` to the system settings, the version as a footer, `onChange(initial: true)` for a tap
+  that cold-launches the app. Known limit: a tap while the Settings sheet is open on Apartments cannot present the
+  report from `RootView`; CL-51 checks it on the simulator and records the outcome.
+
+Next free branch number: **CL-52** (CL-16…51 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
 
@@ -710,8 +749,8 @@ branches as above.
 6. Calendar — done.
    Follow-up: the rectangle behind the day header's glass buttons (CL-35 notes).
 7. Statistics — done (CL-36…40).
-8. Report and WhatsApp — in progress (CL-41…45).
-9. Settings and reminders. Logic, then UI.
+8. Report and WhatsApp — done (CL-41…45).
+9. Settings and reminders (CL-46…51). Logic, then UI.
 10. iCloud sync (spec: "iCloud sync"): private CloudKit database, remote-change refresh, duplicate
     merging, the iCloud status line in Settings. Logic, then UI.
 11. First launch, app icon, Bundle ID, privacy policy, TestFlight.
