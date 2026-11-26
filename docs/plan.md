@@ -798,21 +798,23 @@ Notes for the sessions:
 Product spec → "iCloud sync" (decided 2026-11-24, CL-26). No feature spec or plan yet.
 
 **NEXT session:** branch `feature/CL-52-icloud-spec` from `main` (created; holds only the commit that marks it
-NEXT and deletes the Settings plan). It needs the brainstorm **with the user** before anything is written —
-questions to settle there:
+NEXT and deletes the Settings plan). The brainstorm with the user is done; write the feature spec and plan.
 
-- The Bundle ID and the CloudKit container (`iCloud.<bundle id>`): the product spec leaves the Bundle ID to
-  Feature 11, but the container is created from it now and cannot be renamed later. The project's current
-  identifier is a placeholder (`-.CleanLog`). Is the paid Apple Developer Program account and team in place
-  (CloudKit needs it)?
-- Merging duplicates made offline on two devices: two apartments with the same name but different prices or
-  report flags — which wins? The same name with different case or spaces — the same apartment? Two copies of one
-  day — union of the entries, and which timer sessions and manual durations win?
-- The Settings line: only when iCloud is unavailable («kept on this phone only»), or always (also «synced with
-  iCloud»)? Its copy in both languages.
-- The store already on the developer's phone (and the mother's, if she uses a build): move it into the synced
-  store, or start fresh?
-- How it gets checked by hand: two devices on one Apple ID, or a device plus a simulator signed in to iCloud.
+Brainstorm decisions (the user, 2026-11-26):
+
+- **Bundle ID `com.cleanlog`**, registered on the developer portal as an explicit App ID with iCloud
+  (CloudKit) enabled; Team ID `78HWZYA4DR` (Individual, paid Apple Developer Program). The CloudKit
+  container is `iCloud.com.cleanlog`; it is not created yet — the branch that turns sync on creates it.
+  This replaces the placeholder `-.CleanLog` and settles the Bundle ID for Feature 11 too.
+- **Duplicates made offline merge, the newer change wins.** Apartments with the same name, compared without
+  case and surrounding spaces, are one apartment; the one changed last keeps its price and report flag. Two
+  copies of one day become one: the entries are united, and the timer sessions are combined.
+  (Details the spec settles: what "changed last" is stored as; how overlapping sessions and two manual
+  durations combine.)
+- **The iCloud line in Settings is always shown**: "synced with iCloud" or "kept on this phone only"
+  (both languages in the spec).
+- **No migration of existing data: start fresh.** Nobody uses a build for real yet.
+- **Checked by hand on a phone plus a simulator** signed in to the same Apple ID.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
