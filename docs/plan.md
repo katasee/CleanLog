@@ -835,7 +835,7 @@ branches as above.
    Follow-up: the rectangle behind the day header's glass buttons (CL-35 notes).
 7. Statistics — done (CL-36…40).
 8. Report and WhatsApp — done (CL-41…45).
-9. Settings and reminders (CL-46…51). Logic, then UI.
+9. Settings and reminders — done (CL-46…51).
 10. iCloud sync (spec: "iCloud sync"): private CloudKit database, remote-change refresh, duplicate
     merging, the iCloud status line in Settings. Logic, then UI.
 11. First launch, app icon, Bundle ID, privacy policy, TestFlight.
