@@ -46,9 +46,9 @@ nonisolated struct ApartmentDraft: Sendable, Hashable {
     }
 
     private static func isName(_ name: String, takenIn existing: [Apartment], excluding id: UUID?) -> Bool {
-        existing.contains { apartment in
-            apartment.id != id
-                && apartment.name.caseInsensitiveCompare(name) == .orderedSame
+        let key = ApartmentName.matchKey(name)
+        return existing.contains { apartment in
+            apartment.id != id && ApartmentName.matchKey(apartment.name) == key
         }
     }
 }

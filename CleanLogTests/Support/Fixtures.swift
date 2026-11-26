@@ -29,3 +29,13 @@ extension WorkDay {
         return workDay
     }
 }
+
+extension UUID {
+    static func fixture(_ number: Int) -> UUID {
+        let suffix = String(format: "%012d", number)
+        guard let id = UUID(uuidString: "00000000-0000-0000-0000-\(suffix)") else {
+            preconditionFailure("Invalid fixture id \(number)")
+        }
+        return id
+    }
+}

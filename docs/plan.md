@@ -798,6 +798,9 @@ Notes for the sessions:
 Plan: `docs/superpowers/plans/2026-11-26-icloud-sync.md` · Spec: `docs/superpowers/specs/2026-11-26-icloud-sync-design.md`
 (product spec → iCloud sync, decided 2026-11-24 in CL-26).
 
+**NEXT session:** branch `feature/CL-54-store-merge` from `main` (CL-53 merged). Plan Tasks 3–4; then delete the
+app from the simulator and the phone (the schema changes in place).
+
 Brainstorm decisions (the user, 2026-11-26):
 
 - **Bundle ID `com.cleanlog`**, registered on the developer portal as an explicit App ID with iCloud
@@ -816,8 +819,8 @@ Brainstorm decisions (the user, 2026-11-26):
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 52 | `feature/CL-52-icloud-spec` | `main` | — (spec, plan, product spec; deletes the Settings plan) | ~620 (docs) | PR open | plan review done (in the plan) |
-| 53 | `feature/CL-53-merge-rules` | `main` | 1–2 | ~450 | **NEXT** | SOLID |
+| 52 | `feature/CL-52-icloud-spec` | `main` | — (spec, plan, product spec; deletes the Settings plan) | ~620 (docs) | merged (PR #54) | plan review done (in the plan) |
+| 53 | `feature/CL-53-merge-rules` | `main` | 1–2 | ~495 | merged | done — SOLID: 1 fix (below) |
 | 54 | `feature/CL-54-store-merge` | CL-53 (or `main`) | 3–4 | ~420 | — | SOLID · **after it: delete the app from the simulator and the phone** (schema changed in place) |
 | 55 | `feature/CL-55-icloud-on` | CL-54 (or `main`) | 5–6 | ~380 | — **blocked on the user**: Xcode capabilities first (spec → Manual steps 1); the two-device pass needs the user too | `swift-concurrency-pro` + SOLID |
 | 56 | `feature/CL-56-icloud-line` | CL-55 (or `main`) | 7–8 | ~330 (the natural end of the feature) | — | `swift-concurrency-pro` + `swiftui-pro` + SOLID |
@@ -840,6 +843,10 @@ Notes for the sessions:
   the check joins the existing `.task(id: scenePhase)`. Known risk for CL-55: whether SwiftData's main context sees
   imported changes and whether the remote-change notification arrives — the two-device pass checks it; the
   fallback is in Task 6.
+- CL-53 (2026-11-26): Tasks 1–2 as planned, plus `UUID.fixture(_:)` in the test fixtures for ordered ids. Extra
+  tests: the earlier tick time, contained and touching sessions, a later open session, groups in name order.
+  SOLID: the newest-first order and the smallest-id survivor were written twice — now `Revision.newestFirst(_:)` and
+  `Revision.survivorID(among:)` beside `Revision`, used by both merges. Tests 413 passed, lint clean.
 - Manual steps (the user): **before CL-55** — Xcode Signing & Capabilities: Team, Bundle ID `com.cleanlog`, iCloud
   with CloudKit and the new container `iCloud.com.cleanlog`, Background Modes → Remote notifications, Push
   Notifications present (spec → Manual steps 1). **During CL-55** — the phone + simulator pass. **Before the first
