@@ -31,7 +31,7 @@ struct RootView: View {
                 }
             }
             Tab(value: .apartments) {
-                ApartmentsView(repository: dependencies.apartments)
+                ApartmentsView(dependencies: dependencies)
             } label: {
                 Label {
                     Text(.tabApartmentsTitle)
