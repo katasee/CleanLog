@@ -704,7 +704,7 @@ it NEXT). Plan Tasks 1–2.
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 46 | `feature/CL-46-settings-spec` | `main` | — (spec, plan, product spec) | ~615 (docs) | merged (PR #48) | plan review done (in the plan) |
-| 47 | `feature/CL-47-reminder-settings` | `main` | 1–2 | ~420 | **NEXT** | SOLID |
+| 47 | `feature/CL-47-reminder-settings` | `main` | 1–2 | ~320 | **NEXT** — PR open | done — SOLID: 1 fix (below) |
 | 48 | `feature/CL-48-reminder-scheduler` | CL-47 (or `main`) | 3–4 | ~440 | — | `swift-concurrency-pro` + SOLID |
 | 49 | `feature/CL-49-settings-view-model` | CL-48 (or `main`) | 5 | ~420 | — | `swift-concurrency-pro` + SOLID |
 | 50 | `feature/CL-50-settings-screen` | CL-49 (or `main`) | 6 | ~420 | — | `swiftui-pro` + SOLID |
@@ -734,6 +734,13 @@ Notes for the sessions:
   the stored one), a `Link` to the system settings, the version as a footer, `onChange(initial: true)` for a tap
   that cold-launches the app. Known limit: a tap while the Settings sheet is open on Apartments cannot present the
   report from `RootView`; CL-51 checks it on the simulator and records the outcome.
+- CL-47 (2026-11-26): built from `main` (CL-46 merged). Tasks 1–2 came to ~320 with these notes, not ~420; the
+  boundary stays (taking Task 3 would leave CL-48 under 300 with only the scheduler). `UserDefaultsSettingsRepository`
+  lives in `Persistence/` as the plan says (the only layer that stores anything). Review (SOLID / clean code): the
+  synthesized `Decodable` of `ReminderTime` skipped the 0…23 / 0…59 preconditions, so a stored hour of 25 would
+  decode and crash later in `date(on:)` — it now validates in `init(from:)` and throws `dataCorrupted`, which the
+  repository reads as the default (`refusesToDecodeATimeOutsideTheDay`, `decodesWhatItEncodes`). Build, full tests
+  (359 cases), lint green.
 
 Next free branch number: **CL-52** (CL-16…51 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
