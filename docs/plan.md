@@ -706,18 +706,17 @@ questions are below — then write the feature spec and plan on this branch, as 
 |---|---|---|---|---|---|---|
 | 46 | `feature/CL-46-settings-spec` | `main` | — (spec, plan, product spec; deletes the Report plan) | — | **NEXT** | plan review |
 
-Open questions for the brainstorm (2026-11-26, from the product spec; not decided):
+Brainstorm decisions (the user, 2026-11-26):
 
-- Where Settings opens: the product spec says a toolbar button on Apartments — still so, or a tab?
-- The month-end reminder: on by default or off; fixed at 18:00 or with a time picker; what if the month had
-  no cleaned apartment (skip it?); does tapping it open the report sheet for that month?
-- The morning reminder: every day, or only working days / days with nothing planned; its default time.
-- Where the reminder settings live: `UserDefaults` behind a `SettingsRepository` (not synced, per the iCloud
-  section) — confirm; what Settings shows when notification permission was denied (a link to the system
-  settings?).
-- The iCloud line: sync is Feature 10, so does Settings ship now without it, with it hidden until then?
-- The privacy policy URL does not exist yet (Feature 11): a placeholder, or the row added later?
-- Design: is there a Settings artboard on the design canvas, or does this feature need one first?
+- Settings opens from a gear button in the Apartments toolbar, as the product spec says; no new tab.
+- The month-end reminder is **off by default**; the user turns it on in Settings and picks its time
+  (proposed default when turned on: the last day of the month at 18:00). Proposed, not yet confirmed:
+  skipped when the month has no cleaned apartment; tapping it opens that month's report sheet.
+- **No morning reminder in v1** — remove it from the product spec's Settings section.
+- The iCloud status line and the privacy policy row are **not in Settings yet**; Features 10 and 11 add them.
+- Still to settle in the spec session (proposals): reminder settings in `UserDefaults` behind a
+  `SettingsRepository`, not synced; when notification permission is denied, Settings shows a row that
+  opens the system settings; check the design canvas for a Settings artboard and say if one is missing.
 
 Next free branch number: **CL-47** (CL-16…46 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
