@@ -103,17 +103,19 @@ private struct StatsReportRoute: Identifiable {
 }
 
 private struct StatsReportButton: View {
+    private enum Layout {
+        static let spacing: CGFloat = 6
+    }
+
     let isEnabled: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            Label {
-                Text(.statsActionReport)
-            } icon: {
+            HStack(spacing: Layout.spacing) {
                 Image(systemName: "square.and.arrow.up")
+                Text(.statsActionReport)
             }
-            .labelStyle(.titleAndIcon)
         }
         .disabled(!isEnabled)
     }
