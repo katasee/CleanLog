@@ -22,7 +22,7 @@ struct StatsView: View {
 
     @Environment(\.scenePhase) private var scenePhase
     @State private var viewModel: StatsViewModel
-    @State private var report: StatsReportRoute?
+    @State private var report: ReportRoute?
 
     private let dependencies: AppDependencies
 
@@ -88,18 +88,11 @@ struct StatsView: View {
     }
 
     private func openReport() {
-        report = StatsReportRoute(
+        report = ReportRoute(
             month: viewModel.shownMonth,
             today: DayKey(.now, calendar: .current)
         )
     }
-}
-
-private struct StatsReportRoute: Identifiable {
-    let month: MonthKey
-    let today: DayKey
-
-    var id: MonthKey { month }
 }
 
 private struct StatsReportButton: View {
