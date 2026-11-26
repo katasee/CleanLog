@@ -45,7 +45,8 @@ final class MonthEndReminderScheduler {
 
     func observeDays(in month: MonthKey) async {
         for await days in workDays.days(in: month) {
-            latestActivity = MonthActivity(month: month, hasCleanedApartment: days.contains(where: \.hasCleanedEntries))
+            let hasCleanedApartment = days.contains(where: \.hasCleanedEntries)
+            latestActivity = MonthActivity(month: month, hasCleanedApartment: hasCleanedApartment)
             await reschedule()
         }
     }
