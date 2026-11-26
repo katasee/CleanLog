@@ -170,8 +170,10 @@ A sheet opened from a settings button in the Apartments toolbar. Details:
 - When notifications are denied for the app, a row says so and opens the system settings.
 - The app's version and build.
 - The reminder settings stay on the phone (not synced).
-- No morning reminder in v1 (dropped 2026-11-26). The iCloud status line arrives with iCloud sync (Feature 10),
-  the privacy policy link with the App Store preparation (Feature 11).
+- An iCloud line, always shown: «Синхронізовано з iCloud» ("Synced with iCloud") when the iCloud account is
+  available, «Зберігається лише на цьому телефоні» ("Kept on this phone only") otherwise (Feature 10).
+- No morning reminder in v1 (dropped 2026-11-26). The privacy policy link comes with the App Store preparation
+  (Feature 11).
 
 ## Report format
 
@@ -206,7 +208,8 @@ The real October report this must reproduce:
 
 Domain value types (`Models/`), mirrored by SwiftData records (`Persistence/`) that are
 CloudKit-compatible: every attribute optional or defaulted, relationships optional, no unique
-constraints (uniqueness is enforced in code).
+constraints (uniqueness is enforced in code). `ApartmentRecord` and `WorkDayRecord` also store `changedAt`, the
+time of their last write, which only the iCloud duplicate merge reads.
 
 - **Apartment**: `id`, `name`, `price: Money`, `accessCode?`, `isReportedSeparately`, `createdAt`.
 - **WorkDay**: `id`, `day: DayKey`, `entries`, `sessions`, `manualDuration: Duration?`.
@@ -228,17 +231,24 @@ user changes or resets her phone, she installs CleanLog, signs in with the same 
 on. An iPhone backup does not cover that (it restores only a whole phone, and a deleted app takes its
 data with it); a manual export would be forgotten.
 
+Details: `2026-11-26-icloud-sync-design.md`.
+
 - SwiftData syncs the store with the user's **private** CloudKit database (`cloudKitDatabase:
-  .private(…)`): no server, no account, no sign-in screen. Capabilities: iCloud + CloudKit, background
+  .private("iCloud.com.cleanlog")`): no server, no account, no sign-in screen. Bundle ID `com.cleanlog`,
+  Team `78HWZYA4DR`. Capabilities: iCloud + CloudKit, background
   remote notifications.
 - Changes that arrive from iCloud refresh the screens like local saves: the repository streams yield
   again on a remote change.
-- Duplicates are merged by the repositories: two devices that created the same `DayKey` or an
-  apartment with the same name while offline end up as one day / one apartment.
+- Duplicates are merged in the store: two devices that created the same `DayKey` or an apartment with the same
+  name (without case and surrounding spaces) while offline end up as one day / one apartment. The newer change
+  wins: the apartment changed last keeps its price and report flag; a day's entries are united (a tick in either
+  copy is kept) and its timer sessions combined (overlaps counted once).
 - No iCloud account or iCloud off for the app: the app works locally as before and Settings says so in a
   line that the data is kept on this phone only (added to Settings by this feature).
 - Not synced: the reminder settings — on a new phone they are switched on again (the notification
   permission has to be granted again anyway).
+- No migration of data from earlier builds: the store starts fresh (nobody used a build for real).
+- Checked by hand on a phone and a simulator signed in to the same Apple ID.
 - The CloudKit schema is deployed to production before the first TestFlight build.
 
 ## Testing
@@ -251,7 +261,7 @@ data with it); a manual export would be forgotten.
 
 ## Left to the builder
 
-- Bundle ID (decided later), project and target structure, the widget extension for the Live Activity.
+- Project and target structure (the Bundle ID is `com.cleanlog`, decided 2026-11-26), the widget extension for the Live Activity.
 - Onboarding: the first launch should lead to "add your apartments".
 
 ## Later (not v1)
