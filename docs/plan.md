@@ -625,14 +625,15 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-25-report.md` · Spec: `docs/superpowers/specs/2026-11-25-report-design.md`
 
-**NEXT session:** branch `feature/CL-44-report-screen` from `main` (created; CL-43 merged) — plan Task 5, plus the eight screen catalog keys moved off CL-43 (see its note).
+**NEXT session:** branch `feature/CL-45-report-button` from `main` (CL-44 merged) — plan Task 5 Step 2, the Statistics «Звіт» button and its `stats.action.report` key, moved off CL-44 (see its note).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 41 | `feature/CL-41-report-spec` | `main` | — (spec, plan, product spec; deletes the Statistics plan) | ~852 (docs, 358 of it the deleted plan, as in CL-36) | merged (PR #43) | plan review done (in the plan) |
 | 42 | `feature/CL-42-report-logic` | `main` | 1–3, `DayFormat.monthInTitle` from 4 | ~225 | merged (PR #44) | done — SOLID: 2 fixes (below) |
 | 43 | `feature/CL-43-report-view-model` | `main` | 4 (rest), view-model keys only | ~440 | merged (PR #45) | done — concurrency clean; SOLID: 1 fix (below) |
-| 44 | `feature/CL-44-report-screen` | `main` | 5, the screen's catalog keys | ~500 | next | — `swiftui-pro` + SOLID |
+| 44 | `feature/CL-44-report-screen` | `main` | 5 (Steps 1, 3, 4), the sheet's catalog keys | ~470 | PR open | done — `swiftui-pro`: 2 fixes; SOLID clean (below) |
+| 45 | `feature/CL-45-report-button` | `main` | 5 Step 2, `stats.action.report` | ~100 (the natural end of the feature) | next | — `swiftui-pro` + SOLID |
 
 Notes for the sessions:
 
@@ -664,7 +665,26 @@ Notes for the sessions:
   stored tasks; the tests wait on the first value instead of sleeping). SOLID: `title(of:today:calendar:locale:)`
   had four arguments on one line (split). Build, full tests, lint green.
 
-Next free branch number: **CL-45** (CL-16…44 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
+- CL-44 (2026-11-26): built from `main` (CL-43 merged). With the Statistics button the branch measured ~540 (the
+  catalog's JSON is ~120 of it), so Step 2 and the `stats.action.report` key move to CL-45; the sheet stays here
+  and is reachable only from previews until CL-45 lands. CL-45 notes: pass `AppDependencies` into
+  `StatsView(dependencies:)` (as `DayView` does) instead of reading the environment, so previews need no
+  `.environment`; RootView calls `StatsView(dependencies: dependencies)`; a private `StatsReportRoute`
+  (`month`, `today`, `id` = month) drives `.sheet(item:)`; `today` is read when the button is tapped; the button is a
+  `StatsReportButton` struct (`Label`, `.labelStyle(.titleAndIcon)`, `.topBarTrailing`, disabled without cleaned
+  apartments). Deviations: `GlassIconButton` takes an optional `diameter` (default 44, never below it) so the copy
+  button is the artboard's 58 pt; the action row is capped at `accessibility1` and the button label may scale to
+  50% (at `accessibility5` «Надіслати у WhatsApp» was truncated and the copy button grew past the screen); the
+  previews are WhatsApp (light), no WhatsApp (dark) and Empty. Checked on the iPhone 16 simulator (iOS 26.1, the
+  app launched temporarily on the sheet with the preview fake): light, dark, uk and en, `accessibility5`, the empty
+  month and a one-line month match the artboard. Not driven by taps (no tap tool): send, share, copy and its
+  checkmark, close — check by hand. Review — `swiftui-pro`: a short report sat in the middle of the card (a
+  two-axis scroll view centres smaller content; `defaultScrollAnchor(.topLeading, for: .alignment)` did not move it)
+  — the text now takes at least the card's size from a `GeometryReader`, aligned top leading; the `openURL` call
+  moved out of the button's closure into `send(to:)`. SOLID clean. Build, Release build, full tests (345), lint
+  green.
+
+Next free branch number: **CL-46** (CL-16…45 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
 
@@ -679,7 +699,7 @@ branches as above.
 6. Calendar — done.
    Follow-up: the rectangle behind the day header's glass buttons (CL-35 notes).
 7. Statistics — done (CL-36…40).
-8. Report and WhatsApp — in progress (CL-41…44).
+8. Report and WhatsApp — in progress (CL-41…45).
 9. Settings and reminders. Logic, then UI.
 10. iCloud sync (spec: "iCloud sync"): private CloudKit database, remote-change refresh, duplicate
     merging, the iCloud status line in Settings. Logic, then UI.
