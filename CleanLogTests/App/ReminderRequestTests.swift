@@ -26,7 +26,14 @@ struct ReminderRequestTests {
 
     @Test func fireDateHasNoTimeZone() {
         let fireDate = request().fireDate
-        #expect(fireDate == DateComponents(year: 2026, month: 11, day: 30, hour: 18, minute: 0))
+        let lastDayAtSix = DateComponents(
+            year: 2026,
+            month: 11,
+            day: 30,
+            hour: 18,
+            minute: 0
+        )
+        #expect(fireDate == lastDayAtSix)
         #expect(fireDate.timeZone == nil)
         #expect(fireDate.calendar == nil)
     }

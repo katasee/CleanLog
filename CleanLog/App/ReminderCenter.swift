@@ -7,6 +7,7 @@ protocol ReminderCenter: AnyObject {
     final class FakeReminderCenter: ReminderCenter {
         private(set) var pending: ReminderRequest?
         private(set) var scheduleCount = 0
+        private(set) var cancelCount = 0
 
         func schedule(_ request: ReminderRequest) async throws {
             scheduleCount += 1
@@ -14,6 +15,7 @@ protocol ReminderCenter: AnyObject {
         }
 
         func cancelReminder() {
+            cancelCount += 1
             pending = nil
         }
     }
