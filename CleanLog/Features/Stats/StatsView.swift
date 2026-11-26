@@ -22,14 +22,18 @@ struct StatsView: View {
 
     @Environment(\.scenePhase) private var scenePhase
     @State private var viewModel: StatsViewModel
+    @State private var report: StatsReportRoute?
 
-    init(workDays: any WorkDayRepository) {
+    private let dependencies: AppDependencies
+
+    init(dependencies: AppDependencies) {
         _viewModel = State(
             initialValue: StatsViewModel(
                 today: DayKey(.now, calendar: .current),
-                workDays: workDays
+                workDays: dependencies.workDays
             )
         )
+        self.dependencies = dependencies
     }
 
     var body: some View {
@@ -50,6 +54,21 @@ struct StatsView: View {
             }
             .screenBackground(Layout.backdrop)
             .navigationTitle(Text(.tabStatsTitle))
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    StatsReportButton(
+                        isEnabled: viewModel.summary.hasCleanedApartments,
+                        action: openReport
+                    )
+                }
+            }
+        }
+        .sheet(item: $report) { report in
+            ReportView(
+                month: report.month,
+                today: report.today,
+                dependencies: dependencies
+            )
         }
         .task(id: viewModel.shownMonth) {
             await viewModel.observeMonth()
@@ -66,6 +85,37 @@ struct StatsView: View {
 
     private func advanceToCurrentDay() {
         viewModel.advance(to: DayKey(.now, calendar: .current))
+    }
+
+    private func openReport() {
+        report = StatsReportRoute(
+            month: viewModel.shownMonth,
+            today: DayKey(.now, calendar: .current)
+        )
+    }
+}
+
+private struct StatsReportRoute: Identifiable {
+    let month: MonthKey
+    let today: DayKey
+
+    var id: MonthKey { month }
+}
+
+private struct StatsReportButton: View {
+    let isEnabled: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label {
+                Text(.statsActionReport)
+            } icon: {
+                Image(systemName: "square.and.arrow.up")
+            }
+            .labelStyle(.titleAndIcon)
+        }
+        .disabled(!isEnabled)
     }
 }
 
@@ -356,15 +406,15 @@ private struct StatsBar: View {
 
 #if DEBUG
     #Preview("Light") {
-        StatsView(workDays: StatsPreviewData.workDays())
+        StatsView(dependencies: .preview(workDays: StatsPreviewData.workDays()))
     }
 
     #Preview("Dark") {
-        StatsView(workDays: StatsPreviewData.workDays())
+        StatsView(dependencies: .preview(workDays: StatsPreviewData.workDays()))
             .preferredColorScheme(.dark)
     }
 
     #Preview("Empty") {
-        StatsView(workDays: FakeWorkDayRepository())
+        StatsView(dependencies: .preview())
     }
 #endif
