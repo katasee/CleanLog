@@ -57,12 +57,10 @@ struct SettingsViewModelTests {
         let permission = FakeNotificationPermission(.notDetermined)
         let viewModel = makeViewModel(settings: settings, permission: permission)
 
-        await observing(viewModel) {
-            await turnOn(viewModel)
-            #expect(await stored(in: settings)?.isOn == true)
-            #expect(permission.requestCount == 1)
-            #expect(!viewModel.isPermissionDenied)
-        }
+        await turnOn(viewModel)
+        #expect(await stored(in: settings)?.isOn == true)
+        #expect(permission.requestCount == 1)
+        #expect(!viewModel.isPermissionDenied)
     }
 
     @Test func turningOnWhenAuthorizedDoesNotAsk() async {
@@ -70,11 +68,9 @@ struct SettingsViewModelTests {
         let permission = FakeNotificationPermission(.authorized)
         let viewModel = makeViewModel(settings: settings, permission: permission)
 
-        await observing(viewModel) {
-            await turnOn(viewModel)
-            #expect(await stored(in: settings)?.isOn == true)
-            #expect(permission.requestCount == 0)
-        }
+        await turnOn(viewModel)
+        #expect(await stored(in: settings)?.isOn == true)
+        #expect(permission.requestCount == 0)
     }
 
     @Test func refusedPermissionKeepsItOff() async {
@@ -82,12 +78,10 @@ struct SettingsViewModelTests {
         let permission = FakeNotificationPermission(.notDetermined, grants: false)
         let viewModel = makeViewModel(settings: settings, permission: permission)
 
-        await observing(viewModel) {
-            await turnOn(viewModel)
-            #expect(await stored(in: settings)?.isOn == false)
-            #expect(!viewModel.isReminderOn)
-            #expect(viewModel.isPermissionDenied)
-        }
+        await turnOn(viewModel)
+        #expect(await stored(in: settings)?.isOn == false)
+        #expect(!viewModel.isReminderOn)
+        #expect(viewModel.isPermissionDenied)
     }
 
     @Test func deniedPermissionShowsTheRowWithoutAsking() async {
@@ -95,13 +89,11 @@ struct SettingsViewModelTests {
         let permission = FakeNotificationPermission(.denied)
         let viewModel = makeViewModel(settings: settings, permission: permission)
 
-        await observing(viewModel) {
-            await turnOn(viewModel)
-            #expect(permission.requestCount == 0)
-            #expect(await stored(in: settings)?.isOn == false)
-            #expect(!viewModel.isReminderOn)
-            #expect(viewModel.isPermissionDenied)
-        }
+        await turnOn(viewModel)
+        #expect(permission.requestCount == 0)
+        #expect(await stored(in: settings)?.isOn == false)
+        #expect(!viewModel.isReminderOn)
+        #expect(viewModel.isPermissionDenied)
     }
 
     @Test func openingWithRevokedPermissionKeepsTheReminderOn() async {
@@ -160,12 +152,10 @@ struct SettingsViewModelTests {
     @Test func failedSaveShowsTheError() async {
         let viewModel = makeViewModel(settings: FailingSettingsRepository())
 
-        await observing(viewModel) {
-            await turnOn(viewModel)
-            #expect(viewModel.errorMessage == "Не вдалося зберегти налаштування")
-            #expect(viewModel.isShowingError)
-            #expect(!viewModel.isReminderOn)
-        }
+        await turnOn(viewModel)
+        #expect(viewModel.errorMessage == "Не вдалося зберегти налаштування")
+        #expect(viewModel.isShowingError)
+        #expect(!viewModel.isReminderOn)
     }
 
     @Test func showsTheVersion() {
