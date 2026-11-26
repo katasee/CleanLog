@@ -724,7 +724,7 @@ Notes for the sessions:
 
 - CL-46 (2026-11-26): the canvas has **no Settings artboard**; the `Apartments` artboard draws only the button
   (a sliders glyph, «Налаштування»). The sheet follows the existing screens (Card rows, system bar, close button).
-  Claude's calls (spec decisions 10–13): a `gearshape` glyph; a revoked permission keeps a stored «on» and shows
+  Claude's calls (spec decisions 10–13): a `gearshape` glyph (changed in CL-50 to the artboard's sliders); a revoked permission keeps a stored «on» and shows
   the denied row; a banner while the app is open; the version as «Версія 1.0 (7)». Scheduling: one pending request
   for the current month only, rescheduled on every settings or month change and when the app becomes active (a
   cleaned apartment can only appear while the app is open). Plan review: `swift-concurrency-pro` — serialized
