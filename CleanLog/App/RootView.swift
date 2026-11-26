@@ -19,6 +19,7 @@ struct RootView: View {
     @State private var selectedTab: AppTab = .today
     @State private var reminderMonth = DayKey(.now, calendar: .current).monthKey
     @State private var report: RootReportRoute?
+    @State private var pendingReport: RootReportRoute?
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -71,6 +72,9 @@ struct RootView: View {
         .onChange(of: dependencies.reminderResponder.requestedReport, initial: true) {
             openRequestedReport()
         }
+        .onChange(of: selectedTab) {
+            presentPendingReport()
+        }
     }
 
     private func rereadReminderMonth() {
@@ -79,11 +83,21 @@ struct RootView: View {
 
     private func openRequestedReport() {
         guard let month = dependencies.reminderResponder.takeRequestedReport() else { return }
-        selectedTab = .stats
-        report = RootReportRoute(
+        pendingReport = RootReportRoute(
             month: month,
             today: DayKey(.now, calendar: .current)
         )
+        if selectedTab == .stats {
+            presentPendingReport()
+        } else {
+            selectedTab = .stats
+        }
+    }
+
+    private func presentPendingReport() {
+        guard let pendingReport else { return }
+        report = pendingReport
+        self.pendingReport = nil
     }
 }
 
