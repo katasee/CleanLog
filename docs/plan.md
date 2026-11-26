@@ -798,7 +798,8 @@ Notes for the sessions:
 Plan: `docs/superpowers/plans/2026-11-26-icloud-sync.md` · Spec: `docs/superpowers/specs/2026-11-26-icloud-sync-design.md`
 (product spec → iCloud sync, decided 2026-11-24 in CL-26).
 
-**NEXT session:** branch `feature/CL-54-store-merge` from `main` (CL-53 merged). Plan Tasks 3–4; then delete the
+**NEXT session:** branch `feature/CL-54-store-merge` from `main` (CL-53 merged; created, holds only the commit
+that marks it NEXT). Plan Tasks 3–4; then delete the
 app from the simulator and the phone (the schema changes in place).
 
 Brainstorm decisions (the user, 2026-11-26):
@@ -820,8 +821,8 @@ Brainstorm decisions (the user, 2026-11-26):
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 52 | `feature/CL-52-icloud-spec` | `main` | — (spec, plan, product spec; deletes the Settings plan) | ~620 (docs) | merged (PR #54) | plan review done (in the plan) |
-| 53 | `feature/CL-53-merge-rules` | `main` | 1–2 | ~495 | merged | done — SOLID: 1 fix (below) |
-| 54 | `feature/CL-54-store-merge` | CL-53 (or `main`) | 3–4 | ~420 | — | SOLID · **after it: delete the app from the simulator and the phone** (schema changed in place) |
+| 53 | `feature/CL-53-merge-rules` | `main` | 1–2 | ~495 | merged (PR #55) | done — SOLID: 1 fix (below) |
+| 54 | `feature/CL-54-store-merge` | CL-53 (or `main`) | 3–4 | ~420 | **NEXT** | SOLID · **after it: delete the app from the simulator and the phone** (schema changed in place) |
 | 55 | `feature/CL-55-icloud-on` | CL-54 (or `main`) | 5–6 | ~380 | — **blocked on the user**: Xcode capabilities first (spec → Manual steps 1); the two-device pass needs the user too | `swift-concurrency-pro` + SOLID |
 | 56 | `feature/CL-56-icloud-line` | CL-55 (or `main`) | 7–8 | ~330 (the natural end of the feature) | — | `swift-concurrency-pro` + `swiftui-pro` + SOLID |
 
