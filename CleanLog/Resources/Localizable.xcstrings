@@ -1212,6 +1212,23 @@
         }
       }
     },
+    "stats.action.report" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Report"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звіт"
+          }
+        }
+      }
+    },
     "stats.card.cleaned" : {
       "extractionState" : "manual",
       "localizations" : {
