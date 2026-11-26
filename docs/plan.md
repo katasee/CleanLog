@@ -798,6 +798,9 @@ Notes for the sessions:
 Plan: `docs/superpowers/plans/2026-11-26-icloud-sync.md` · Spec: `docs/superpowers/specs/2026-11-26-icloud-sync-design.md`
 (product spec → iCloud sync, decided 2026-11-24 in CL-26).
 
+**NEXT session:** branch `feature/CL-53-merge-rules` from `main` (created; holds only the commit that marks it
+NEXT). Plan Tasks 1–2: the apartment and day merge rules in `Models/Sync/`, test-first, no SwiftData.
+
 Brainstorm decisions (the user, 2026-11-26):
 
 - **Bundle ID `com.cleanlog`**, registered on the developer portal as an explicit App ID with iCloud
@@ -816,7 +819,7 @@ Brainstorm decisions (the user, 2026-11-26):
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 52 | `feature/CL-52-icloud-spec` | `main` | — (spec, plan, product spec; deletes the Settings plan) | ~620 (docs) | PR open | plan review done (in the plan) |
+| 52 | `feature/CL-52-icloud-spec` | `main` | — (spec, plan, product spec; deletes the Settings plan) | ~620 (docs) | merged (PR #54) | plan review done (in the plan) |
 | 53 | `feature/CL-53-merge-rules` | `main` | 1–2 | ~450 | **NEXT** | SOLID |
 | 54 | `feature/CL-54-store-merge` | CL-53 (or `main`) | 3–4 | ~420 | — | SOLID · **after it: delete the app from the simulator and the phone** (schema changed in place) |
 | 55 | `feature/CL-55-icloud-on` | CL-54 (or `main`) | 5–6 | ~380 | — **blocked on the user**: Xcode capabilities first (spec → Manual steps 1); the two-device pass needs the user too | `swift-concurrency-pro` + SOLID |
