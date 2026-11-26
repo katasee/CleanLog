@@ -695,30 +695,46 @@ Notes for the sessions:
 
 ## Feature 9 — Settings and reminders
 
-Spec: product spec → Settings (reminder on the last day of the month at 18:00, optional morning reminder,
-iCloud status line, privacy policy link and version). No feature spec or plan yet.
+Spec: `docs/superpowers/specs/2026-11-26-settings-design.md` (product spec → Settings). Plan:
+`docs/superpowers/plans/2026-11-26-settings.md`.
 
-**NEXT session:** branch `feature/CL-46-settings-spec` from `main` (created; holds only the commit that closes
-Feature 8 and deletes its plan). Brainstorm with the user first (`superpowers:brainstorming`) — the open
-questions are below — then write the feature spec and plan on this branch, as CL-41 did.
+**NEXT session:** branch `feature/CL-47-reminder-settings` from `main` once CL-46 is merged. Plan Tasks 1–2.
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
-| 46 | `feature/CL-46-settings-spec` | `main` | — (spec, plan, product spec; deletes the Report plan) | — | **NEXT** | plan review |
+| 46 | `feature/CL-46-settings-spec` | `main` | — (spec, plan, product spec) | ~615 (docs) | PR open | plan review done (in the plan) |
+| 47 | `feature/CL-47-reminder-settings` | `main` | 1–2 | ~420 | next, after CL-46 merges | SOLID |
+| 48 | `feature/CL-48-reminder-scheduler` | CL-47 (or `main`) | 3–4 | ~440 | — | `swift-concurrency-pro` + SOLID |
+| 49 | `feature/CL-49-settings-view-model` | CL-48 (or `main`) | 5 | ~420 | — | `swift-concurrency-pro` + SOLID |
+| 50 | `feature/CL-50-settings-screen` | CL-49 (or `main`) | 6 | ~420 | — | `swiftui-pro` + SOLID |
+| 51 | `feature/CL-51-reminder-tap` | CL-50 (or `main`) | 7 | ~200 (the natural end of the feature) | — | `swiftui-pro` + `swift-concurrency-pro` + SOLID |
 
-Brainstorm decisions (the user, 2026-11-26):
+Brainstorm decisions (the user, 2026-11-26; all in the spec):
 
-- Settings opens from a gear button in the Apartments toolbar, as the product spec says; no new tab.
-- The month-end reminder is **off by default**; the user turns it on in Settings and picks its time
-  (proposed default when turned on: the last day of the month at 18:00). Proposed, not yet confirmed:
-  skipped when the month has no cleaned apartment; tapping it opens that month's report sheet.
-- **No morning reminder in v1** — remove it from the product spec's Settings section.
-- The iCloud status line and the privacy policy row are **not in Settings yet**; Features 10 and 11 add them.
-- Still to settle in the spec session (proposals): reminder settings in `UserDefaults` behind a
-  `SettingsRepository`, not synced; when notification permission is denied, Settings shows a row that
-  opens the system settings; check the design canvas for a Settings artboard and say if one is missing.
+- Settings opens from a toolbar button on Apartments; no new tab.
+- The month-end reminder is **off by default**; turned on, it fires on the last day of the month at a time she
+  picks, starting at 18:00.
+- **No morning reminder in v1**; the iCloud status line and the privacy policy row come with Features 10 and 11.
+- Proposed in the brainstorm, taken as decisions in CL-46: no reminder for a month with nothing cleaned; tapping it
+  opens that month's report; the settings in `UserDefaults` behind a `SettingsRepository`, not synced; a denied
+  permission shows a row that opens the system settings.
 
-Next free branch number: **CL-47** (CL-16…46 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
+Notes for the sessions:
+
+- CL-46 (2026-11-26): the canvas has **no Settings artboard**; the `Apartments` artboard draws only the button
+  (a sliders glyph, «Налаштування»). The sheet follows the existing screens (Card rows, system bar, close button).
+  Claude's calls (spec decisions 10–13): a `gearshape` glyph; a revoked permission keeps a stored «on» and shows
+  the denied row; a banner while the app is open; the version as «Версія 1.0 (7)». Scheduling: one pending request
+  for the current month only, rescheduled on every settings or month change and when the app becomes active (a
+  cleaned apartment can only appear while the app is open). Plan review: `swift-concurrency-pro` — serialized
+  rescheduling instead of a `Task` per change, `nonisolated` delegate callbacks that parse the payload before
+  hopping to the main actor, `do/catch` + `Logger` for a failed `add`, a gated fake instead of sleeps;
+  `swiftui-pro` — `@Bindable` + `onChange` instead of `Binding(get:set:)` (the view model ignores a value equal to
+  the stored one), a `Link` to the system settings, the version as a footer, `onChange(initial: true)` for a tap
+  that cold-launches the app. Known limit: a tap while the Settings sheet is open on Apartments cannot present the
+  report from `RootView`; CL-51 checks it on the simulator and records the outcome.
+
+Next free branch number: **CL-52** (CL-16…51 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
 
@@ -734,7 +750,7 @@ branches as above.
    Follow-up: the rectangle behind the day header's glass buttons (CL-35 notes).
 7. Statistics — done (CL-36…40).
 8. Report and WhatsApp — done (CL-41…45).
-9. Settings and reminders. Logic, then UI.
+9. Settings and reminders (CL-46…51). Logic, then UI.
 10. iCloud sync (spec: "iCloud sync"): private CloudKit database, remote-change refresh, duplicate
     merging, the iCloud status line in Settings. Logic, then UI.
 11. First launch, app icon, Bundle ID, privacy policy, TestFlight.
