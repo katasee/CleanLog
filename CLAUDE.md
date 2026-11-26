@@ -110,8 +110,11 @@ spec and `docs/plan.md` stay.
 
 ## Git
 
-**Claude creates branches and commits, pushes `feature/*` branches and opens their PRs** with
-`gh pr create` (base = the branch below in the stack, or `main`). Branch names
+**Claude creates branches and commits, pushes `feature/*` branches, opens their PRs** with
+`gh pr create` (base = the branch below in the stack, or `main`) **and merges them** with
+`gh pr merge <n> --squash` once build, tests and lint are green and the review is recorded (the
+user's standing decision of 2026-11-26). Merging on GitHub is the only way `main` changes; after it,
+`git switch main && git pull --ff-only` and the next branch starts from the new `main`. Branch names
 `feature/CL-<n>-<short-name>`, where `CL-<n>` is a project-wide sequence number (the next free one
 is in `docs/plan.md`) and the short name says what the branch adds (`feature/CL-6-swiftdata`).
 Small commits with an imperative English subject.

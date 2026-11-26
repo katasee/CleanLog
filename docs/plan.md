@@ -16,7 +16,10 @@ that branch only, updates this file, and stops. Rules: `CLAUDE.md` (Branches and
    exists (`git switch <later> && git merge <this>`) and build it; its tests run in its own session.
    Never rebase.
 7. Update the table below (status, review result), push the branch, open its PR with `gh pr create`
-   (base = the branch's base; description as in `CLAUDE.md` → Git), stop.
+   (base = the branch's base; description as in `CLAUDE.md` → Git).
+8. Merge it: `gh pr merge <n> --squash` (never `--delete-branch`), retarget any PR stacked on it to
+   `main` with `gh pr edit <later> --base main`, `git switch main && git pull --ff-only`, create the
+   next branch from `main`, mark this row merged and the next one **NEXT** in a commit on it, stop.
 
 ## Feature 1 — Foundation (done)
 
@@ -622,14 +625,14 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-25-report.md` · Spec: `docs/superpowers/specs/2026-11-25-report-design.md`
 
-**NEXT session:** branch `feature/CL-44-report-screen` from CL-43 (PR open, or `main` once merged) — plan Task 5, plus the eight screen catalog keys moved off CL-43 (see its note).
+**NEXT session:** branch `feature/CL-44-report-screen` from `main` (created; CL-43 merged) — plan Task 5, plus the eight screen catalog keys moved off CL-43 (see its note).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 41 | `feature/CL-41-report-spec` | `main` | — (spec, plan, product spec; deletes the Statistics plan) | ~852 (docs, 358 of it the deleted plan, as in CL-36) | merged (PR #43) | plan review done (in the plan) |
 | 42 | `feature/CL-42-report-logic` | `main` | 1–3, `DayFormat.monthInTitle` from 4 | ~225 | merged (PR #44) | done — SOLID: 2 fixes (below) |
-| 43 | `feature/CL-43-report-view-model` | `main` | 4 (rest), view-model keys only | ~440 | PR open | done — concurrency clean; SOLID: 1 fix (below) |
-| 44 | `feature/CL-44-report-screen` | CL-43 | 5, the screen's catalog keys | ~500 | next | — `swiftui-pro` + SOLID |
+| 43 | `feature/CL-43-report-view-model` | `main` | 4 (rest), view-model keys only | ~440 | merged (PR #45) | done — concurrency clean; SOLID: 1 fix (below) |
+| 44 | `feature/CL-44-report-screen` | `main` | 5, the screen's catalog keys | ~500 | next | — `swiftui-pro` + SOLID |
 
 Notes for the sessions:
 
