@@ -705,7 +705,7 @@ marks it NEXT). Plan Tasks 3–4.
 |---|---|---|---|---|---|---|
 | 46 | `feature/CL-46-settings-spec` | `main` | — (spec, plan, product spec) | ~615 (docs) | merged (PR #48) | plan review done (in the plan) |
 | 47 | `feature/CL-47-reminder-settings` | `main` | 1–2 | ~320 | merged (PR #49) | done — SOLID: 1 fix (below) |
-| 48 | `feature/CL-48-reminder-scheduler` | `main` | 3–4 | ~440 | **NEXT** | `swift-concurrency-pro` + SOLID |
+| 48 | `feature/CL-48-reminder-scheduler` | `main` | 3–4 | ~465 | in review | done — concurrency clean; SOLID: 1 fix (below) |
 | 49 | `feature/CL-49-settings-view-model` | CL-48 (or `main`) | 5 | ~420 | — | `swift-concurrency-pro` + SOLID |
 | 50 | `feature/CL-50-settings-screen` | CL-49 (or `main`) | 6 | ~420 | — | `swiftui-pro` + SOLID |
 | 51 | `feature/CL-51-reminder-tap` | CL-50 (or `main`) | 7 | ~200 (the natural end of the feature) | — | `swiftui-pro` + `swift-concurrency-pro` + SOLID |
@@ -741,6 +741,16 @@ Notes for the sessions:
   decode and crash later in `date(on:)` — it now validates in `init(from:)` and throws `dataCorrupted`, which the
   repository reads as the default (`refusesToDecodeATimeOutsideTheDay`, `decodesWhatItEncodes`). Build, full tests
   (359 cases), lint green.
+- CL-48 (2026-11-26): built from `main` (CL-47 merged). Tasks 3–4, ~465 with this file. `FakeReminderCenter`
+  also counts `cancelReminder()` calls (`cancelCount`): without it the "nothing cleaned" and "moment passed"
+  tests would pass before the scheduler had run. `ReminderRequest`'s payload keys are `nonisolated` along with
+  `month(from:)` (the parser reads them off the main actor). The `latestStateWinsOverARequestBeingAdded` test goes
+  through the flag loop: the days loop is the one suspended in the gated `schedule`, and the settings change sets
+  the flag from the other loop. `AppDependencies.settings` is wired but first read in CL-49; nothing runs the
+  scheduler until CL-51 (`RootView`). Review: `swift-concurrency-pro` — no findings (every apply re-reads the
+  stored state after the `await`, streams buffer the newest value, the notification request is built inside
+  `add`, no `@unchecked Sendable`); SOLID / clean code — the long `MonthActivity` line in `observeDays` now names
+  its check. Build, full tests (371 cases), lint green.
 
 Next free branch number: **CL-52** (CL-16…51 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
