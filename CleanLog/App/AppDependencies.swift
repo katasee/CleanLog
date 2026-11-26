@@ -10,6 +10,7 @@ final class AppDependencies {
     let urlAvailability: any URLAvailability
     let pasteboard: any Pasteboard
     let reminderScheduler: MonthEndReminderScheduler
+    let reminderResponder = ReminderResponder()
     let notificationPermission: any NotificationPermission
     let appVersion: AppVersion
 
@@ -40,7 +41,7 @@ final class AppDependencies {
     static func live() throws -> AppDependencies {
         let container = try ModelContainerFactory.make(inMemory: false)
         let notifications = SystemNotifications()
-        return AppDependencies(
+        let dependencies = AppDependencies(
             apartments: SwiftDataApartmentRepository(container: container),
             workDays: SwiftDataWorkDayRepository(container: container),
             settings: UserDefaultsSettingsRepository(defaults: .standard),
@@ -50,6 +51,8 @@ final class AppDependencies {
             notificationPermission: notifications,
             appVersion: AppVersion(bundle: .main)
         )
+        notifications.deliverResponses(to: dependencies.reminderResponder)
+        return dependencies
     }
 }
 

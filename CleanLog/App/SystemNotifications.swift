@@ -28,6 +28,10 @@ final class SystemNotifications: ReminderCenter, NotificationPermission {
         try await center.add(notificationRequest(for: request))
     }
 
+    func deliverResponses(to responder: ReminderResponder) {
+        center.delegate = responder
+    }
+
     func cancelReminder() {
         center.removePendingNotificationRequests(withIdentifiers: [ReminderRequest.identifier])
     }
