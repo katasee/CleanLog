@@ -633,7 +633,7 @@ Plan: `docs/superpowers/plans/2026-11-25-report.md` · Spec: `docs/superpowers/s
 | 42 | `feature/CL-42-report-logic` | `main` | 1–3, `DayFormat.monthInTitle` from 4 | ~225 | merged (PR #44) | done — SOLID: 2 fixes (below) |
 | 43 | `feature/CL-43-report-view-model` | `main` | 4 (rest), view-model keys only | ~440 | merged (PR #45) | done — concurrency clean; SOLID: 1 fix (below) |
 | 44 | `feature/CL-44-report-screen` | `main` | 5 (Steps 1, 3, 4), the sheet's catalog keys | 494 | merged (PR #46) | done — `swiftui-pro`: 2 fixes; SOLID clean (below) |
-| 45 | `feature/CL-45-report-button` | `main` | 5 Step 2, `stats.action.report` | ~100 (the natural end of the feature) | **NEXT** | — `swiftui-pro` + SOLID |
+| 45 | `feature/CL-45-report-button` | `main` | 5 Step 2, `stats.action.report` | ~110 (the natural end of the feature) | PR open | done — `swiftui-pro`: 1 fix; SOLID clean (below) |
 
 Notes for the sessions:
 
@@ -682,6 +682,17 @@ Notes for the sessions:
   two-axis scroll view centres smaller content; `defaultScrollAnchor(.topLeading, for: .alignment)` did not move it)
   — the text now takes at least the card's size from a `GeometryReader`, aligned top leading; the `openURL` call
   moved out of the button's closure into `send(to:)`. SOLID clean. Build, Release build, full tests (345), lint
+  green.
+
+- CL-45 (2026-11-26): built from `main` (CL-44 merged). As the CL-44 notes said: `StatsView(dependencies:)`,
+  RootView passes `dependencies`, a private `StatsReportRoute` (`month`, `today` read on the tap, `id` = month)
+  drives `.sheet(item:)`, a private `StatsReportButton` at `.topBarTrailing`, disabled without cleaned apartments.
+  Deviation: a `Label` with `.labelStyle(.titleAndIcon)` (on the label or on the button) still showed the icon
+  alone in the iOS 26 toolbar, so the button's label is an `HStack` of the glyph and the text. Checked on the
+  iPhone 16 simulator (iOS 26.1, the app launched temporarily on Stats with the preview fake): light, dark and
+  `accessibility5` show the glass «Report» capsule with the share glyph. Not driven by taps (no tap tool): opening
+  the sheet, the shown month after paging back, the disabled button on an empty month — check by hand. Review —
+  `swiftui-pro`: the icon-only toolbar label (above). SOLID clean. Build, Release build, full tests (345), lint
   green.
 
 Next free branch number: **CL-46** (CL-16…45 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
