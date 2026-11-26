@@ -621,11 +621,9 @@ Notes for the sessions:
   **not** driven by taps (no tap tool) — check by hand. Review — `swiftui-pro`: the bar's `GeometryReader`
   became a `visualEffect` offset clipped to the track. SOLID clean. Build, full tests, lint green.
 
-## Feature 8 — Report and WhatsApp
+## Feature 8 — Report and WhatsApp (done)
 
-Plan: `docs/superpowers/plans/2026-11-25-report.md` · Spec: `docs/superpowers/specs/2026-11-25-report-design.md`
-
-**NEXT session:** branch `feature/CL-45-report-button` from `main` (created; CL-44 merged) — plan Task 5 Step 2, the Statistics «Звіт» button and its `stats.action.report` key, moved off CL-44 (see its note).
+The plan file was deleted once the feature merged (CL-46). Spec: `docs/superpowers/specs/2026-11-25-report-design.md`
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -633,7 +631,7 @@ Plan: `docs/superpowers/plans/2026-11-25-report.md` · Spec: `docs/superpowers/s
 | 42 | `feature/CL-42-report-logic` | `main` | 1–3, `DayFormat.monthInTitle` from 4 | ~225 | merged (PR #44) | done — SOLID: 2 fixes (below) |
 | 43 | `feature/CL-43-report-view-model` | `main` | 4 (rest), view-model keys only | ~440 | merged (PR #45) | done — concurrency clean; SOLID: 1 fix (below) |
 | 44 | `feature/CL-44-report-screen` | `main` | 5 (Steps 1, 3, 4), the sheet's catalog keys | 494 | merged (PR #46) | done — `swiftui-pro`: 2 fixes; SOLID clean (below) |
-| 45 | `feature/CL-45-report-button` | `main` | 5 Step 2, `stats.action.report` | ~110 (the natural end of the feature) | PR open | done — `swiftui-pro`: 1 fix; SOLID clean (below) |
+| 45 | `feature/CL-45-report-button` | `main` | 5 Step 2, `stats.action.report` | ~110 (the natural end of the feature) | merged (PR #47) | done — `swiftui-pro`: 1 fix; SOLID clean (below) |
 
 Notes for the sessions:
 
@@ -695,7 +693,33 @@ Notes for the sessions:
   `swiftui-pro`: the icon-only toolbar label (above). SOLID clean. Build, Release build, full tests (345), lint
   green.
 
-Next free branch number: **CL-46** (CL-16…45 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
+## Feature 9 — Settings and reminders
+
+Spec: product spec → Settings (reminder on the last day of the month at 18:00, optional morning reminder,
+iCloud status line, privacy policy link and version). No feature spec or plan yet.
+
+**NEXT session:** branch `feature/CL-46-settings-spec` from `main` (created; holds only the commit that closes
+Feature 8 and deletes its plan). Brainstorm with the user first (`superpowers:brainstorming`) — the open
+questions are below — then write the feature spec and plan on this branch, as CL-41 did.
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 46 | `feature/CL-46-settings-spec` | `main` | — (spec, plan, product spec; deletes the Report plan) | — | **NEXT** | plan review |
+
+Open questions for the brainstorm (2026-11-26, from the product spec; not decided):
+
+- Where Settings opens: the product spec says a toolbar button on Apartments — still so, or a tab?
+- The month-end reminder: on by default or off; fixed at 18:00 or with a time picker; what if the month had
+  no cleaned apartment (skip it?); does tapping it open the report sheet for that month?
+- The morning reminder: every day, or only working days / days with nothing planned; its default time.
+- Where the reminder settings live: `UserDefaults` behind a `SettingsRepository` (not synced, per the iCloud
+  section) — confirm; what Settings shows when notification permission was denied (a link to the system
+  settings?).
+- The iCloud line: sync is Feature 10, so does Settings ship now without it, with it hidden until then?
+- The privacy policy URL does not exist yet (Feature 11): a placeholder, or the row added later?
+- Design: is there a Settings artboard on the design canvas, or does this feature need one first?
+
+Next free branch number: **CL-47** (CL-16…46 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
 ## Roadmap (v1)
 
@@ -710,7 +734,7 @@ branches as above.
 6. Calendar — done.
    Follow-up: the rectangle behind the day header's glass buttons (CL-35 notes).
 7. Statistics — done (CL-36…40).
-8. Report and WhatsApp — in progress (CL-41…45).
+8. Report and WhatsApp — done (CL-41…45).
 9. Settings and reminders. Logic, then UI.
 10. iCloud sync (spec: "iCloud sync"): private CloudKit database, remote-change refresh, duplicate
     merging, the iCloud status line in Settings. Logic, then UI.
