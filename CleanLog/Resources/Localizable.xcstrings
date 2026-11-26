@@ -953,6 +953,40 @@
         }
       }
     },
+    "reminder.monthEnd.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your %@ report is ready to send."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звіт за %@ готовий — надішли його у WhatsApp."
+          }
+        }
+      }
+    },
+    "reminder.monthEnd.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time to send the report"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Час надіслати звіт"
+          }
+        }
+      }
+    },
     "report.action.close" : {
       "extractionState" : "manual",
       "localizations" : {
