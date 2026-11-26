@@ -622,14 +622,14 @@ Notes for the sessions:
 
 Plan: `docs/superpowers/plans/2026-11-25-report.md` · Spec: `docs/superpowers/specs/2026-11-25-report-design.md`
 
-**NEXT session:** branch `feature/CL-43-report-view-model` from CL-42 (PR open, or `main` once merged) — plan Task 4, less `DayFormat.monthInTitle` (done on CL-42).
+**NEXT session:** branch `feature/CL-44-report-screen` from CL-43 (PR open, or `main` once merged) — plan Task 5, plus the eight screen catalog keys moved off CL-43 (see its note).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
 | 41 | `feature/CL-41-report-spec` | `main` | — (spec, plan, product spec; deletes the Statistics plan) | ~852 (docs, 358 of it the deleted plan, as in CL-36) | merged (PR #43) | plan review done (in the plan) |
-| 42 | `feature/CL-42-report-logic` | `main` | 1–3, `DayFormat.monthInTitle` from 4 | ~225 | PR open | done — SOLID: 2 fixes (below) |
-| 43 | `feature/CL-43-report-view-model` | CL-42 | 4 (rest) | ~410 | next | — `swift-concurrency-pro` + SOLID |
-| 44 | `feature/CL-44-report-screen` | CL-43 | 5 | ~350 | — | — `swiftui-pro` + SOLID |
+| 42 | `feature/CL-42-report-logic` | `main` | 1–3, `DayFormat.monthInTitle` from 4 | ~225 | merged (PR #44) | done — SOLID: 2 fixes (below) |
+| 43 | `feature/CL-43-report-view-model` | `main` | 4 (rest), view-model keys only | ~440 | PR open | done — concurrency clean; SOLID: 1 fix (below) |
+| 44 | `feature/CL-44-report-screen` | CL-43 | 5, the screen's catalog keys | ~500 | next | — `swiftui-pro` + SOLID |
 
 Notes for the sessions:
 
@@ -648,6 +648,18 @@ Notes for the sessions:
   `LSApplicationQueriesSchemes`; the built Info.plist keeps every generated key and the build has no "Multiple
   commands produce". Review (SOLID / clean code): a local `style` shadowed the `style(…)` builder in `monthInTitle`
   (renamed `format`); no test covered a Cyrillic apartment name in the WhatsApp link (`encodesCyrillicNamesAsUTF8`).
+- CL-43 (2026-11-25): built from `main` (CL-42 merged first). With all twelve catalog keys it came to 536, so the
+  eight only the screen uses (`report.empty`, `report.action.send` / `share` / `copy` / `copied` / `close`,
+  `report.text.label`, `stats.action.report`) move to CL-44, which adds them with the code that uses them, using
+  the copy in the plan's table. This branch keeps `report.title`, `report.subtitle`, `report.subtitle.days`, and
+  `report.subtitle.apartments`. `title` is a `let` (the month is fixed for the sheet's lifetime); `refresh(from:)`
+  in `init` sets the empty text and the `0 днів · 0 квартир` subtitle, so there is one rule. The catalog was
+  edited by a script that sorts only the top-level keys (Xcode keeps the plural order one/few/many/other); the
+  round-trip leaves the file byte-identical. `copyingAgainRestartsTheConfirmation` also checks that `isCopied`
+  holds after the cancelled wait, which is the check that catches a `try?` regression. Review — `swift-concurrency-pro`:
+  clean (cancellation returns without clearing; fixed month, no suspension between receiving and assigning; no
+  stored tasks; the tests wait on the first value instead of sleeping). SOLID: `title(of:today:calendar:locale:)`
+  had four arguments on one line (split). Build, full tests, lint green.
 
 Next free branch number: **CL-45** (CL-16…44 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
 
