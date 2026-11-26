@@ -693,12 +693,10 @@ Notes for the sessions:
   `swiftui-pro`: the icon-only toolbar label (above). SOLID clean. Build, Release build, full tests (345), lint
   green.
 
-## Feature 9 — Settings and reminders
+## Feature 9 — Settings and reminders (done)
 
-Spec: `docs/superpowers/specs/2026-11-26-settings-design.md` (product spec → Settings). Plan:
-`docs/superpowers/plans/2026-11-26-settings.md`.
-
-CL-51 (Plan Task 7) is the last branch of the feature.
+The plan file was deleted once the feature merged (CL-52). Spec:
+`docs/superpowers/specs/2026-11-26-settings-design.md` (product spec → Settings).
 
 | CL | Branch | Base | Plan tasks | Size | Status | Review |
 |---|---|---|---|---|---|---|
@@ -707,7 +705,7 @@ CL-51 (Plan Task 7) is the last branch of the feature.
 | 48 | `feature/CL-48-reminder-scheduler` | `main` | 3–4 | ~465 | merged (PR #50) | done — concurrency clean; SOLID: 1 fix (below) |
 | 49 | `feature/CL-49-settings-view-model` | `main` | 5 | ~470 | merged (PR #51) | done — concurrency: 1 fix; SOLID clean (below) |
 | 50 | `feature/CL-50-settings-screen` | `main` | 6 | ~420 | merged (PR #52) | done — `swiftui-pro`: 1 fix; SOLID: 1 fix (below) |
-| 51 | `feature/CL-51-reminder-tap` | `main` | 7 | ~155 (the natural end of the feature) | in review | done — concurrency clean; `swiftui-pro`: 1 fix; SOLID: 1 fix; simulator: 1 fix (below) |
+| 51 | `feature/CL-51-reminder-tap` | `main` | 7 | ~155 (the natural end of the feature) | merged (PR #53) | done — concurrency clean; `swiftui-pro`: 1 fix; SOLID: 1 fix; simulator: 1 fix (below) |
 
 Brainstorm decisions (the user, 2026-11-26; all in the spec):
 
@@ -795,7 +793,60 @@ Notes for the sessions:
   `StatsView` each declared the same route struct — now one `ReportRoute` in `Features/Report/`. Build, full tests
   (388 cases), lint and a Release build green.
 
-Next free branch number: **CL-52** (CL-16…51 are used or reserved above; CL-26 is the iCloud spec, merged as PR #24).
+## Feature 10 — iCloud sync
+
+Plan: `docs/superpowers/plans/2026-11-26-icloud-sync.md` · Spec: `docs/superpowers/specs/2026-11-26-icloud-sync-design.md`
+(product spec → iCloud sync, decided 2026-11-24 in CL-26).
+
+Brainstorm decisions (the user, 2026-11-26):
+
+- **Bundle ID `com.cleanlog`**, registered on the developer portal as an explicit App ID with iCloud
+  (CloudKit) enabled; Team ID `78HWZYA4DR` (Individual, paid Apple Developer Program). The CloudKit
+  container is `iCloud.com.cleanlog`; it is not created yet — the branch that turns sync on creates it.
+  This replaces the placeholder `-.CleanLog` and settles the Bundle ID for Feature 11 too.
+- **Duplicates made offline merge, the newer change wins.** Apartments with the same name, compared without
+  case and surrounding spaces, are one apartment; the one changed last keeps its price and report flag. Two
+  copies of one day become one: the entries are united, and the timer sessions are combined.
+  (Details the spec settles: what "changed last" is stored as; how overlapping sessions and two manual
+  durations combine.)
+- **The iCloud line in Settings is always shown**: "synced with iCloud" or "kept on this phone only"
+  (both languages in the spec).
+- **No migration of existing data: start fresh.** Nobody uses a build for real yet.
+- **Checked by hand on a phone plus a simulator** signed in to the same Apple ID.
+
+| CL | Branch | Base | Plan tasks | Size | Status | Review |
+|---|---|---|---|---|---|---|
+| 52 | `feature/CL-52-icloud-spec` | `main` | — (spec, plan, product spec; deletes the Settings plan) | ~620 (docs) | PR open | plan review done (in the plan) |
+| 53 | `feature/CL-53-merge-rules` | `main` | 1–2 | ~450 | **NEXT** | SOLID |
+| 54 | `feature/CL-54-store-merge` | CL-53 (or `main`) | 3–4 | ~420 | — | SOLID · **after it: delete the app from the simulator and the phone** (schema changed in place) |
+| 55 | `feature/CL-55-icloud-on` | CL-54 (or `main`) | 5–6 | ~380 | — **blocked on the user**: Xcode capabilities first (spec → Manual steps 1); the two-device pass needs the user too | `swift-concurrency-pro` + SOLID |
+| 56 | `feature/CL-56-icloud-line` | CL-55 (or `main`) | 7–8 | ~330 (the natural end of the feature) | — | `swift-concurrency-pro` + `swiftui-pro` + SOLID |
+
+Notes for the sessions:
+
+- CL-52 (2026-11-26): spec and plan written from the brainstorm. Claude's calls, which the user may still correct
+  (spec decisions 6–14): "changed last" is a `changedAt` on the apartment and day records, stamped by the
+  repositories and carried as `Revision<Value>` (the domain types stay as they are); the survivor of a merge keeps
+  the smallest `id`, so two devices merging independently agree; the merged apartment takes every editable field
+  from the copy changed last and the earliest `createdAt`; entries of removed apartment copies are re-pointed; for
+  the same apartment in two day copies a tick is never lost (cleaned if either copy is, earlier `cleanedAt`);
+  sessions that overlap or touch fold into one and an open one swallows later ones; two manual durations → the
+  newer; the timer flags from the newer copy; the merge runs on start and on every remote change and saves only
+  when it found a duplicate. The iCloud line is a section headed «iCloud» with an `icloud` / `iphone` glyph, shown
+  after the first account check and re-checked whenever the app becomes active; "synced" means
+  `CKAccountStatus.available`. Plan review: `swift-concurrency-pro` — a `Void` stream forwarding
+  `NSPersistentStoreRemoteChange` (the `Notification` never leaves its task, newest-1 buffer), a cancellation
+  check after `accountStatus()`, `CKContainer` built only inside the live check; `swiftui-pro` — a `Label` row,
+  the check joins the existing `.task(id: scenePhase)`. Known risk for CL-55: whether SwiftData's main context sees
+  imported changes and whether the remote-change notification arrives — the two-device pass checks it; the
+  fallback is in Task 6.
+- Manual steps (the user): **before CL-55** — Xcode Signing & Capabilities: Team, Bundle ID `com.cleanlog`, iCloud
+  with CloudKit and the new container `iCloud.com.cleanlog`, Background Modes → Remote notifications, Push
+  Notifications present (spec → Manual steps 1). **During CL-55** — the phone + simulator pass. **Before the first
+  TestFlight (Feature 11)** — deploy the CloudKit schema to Production in the CloudKit Console.
+
+Next free branch number: **CL-57** (CL-16…56 are used or reserved above; CL-26 is the iCloud product-spec
+decision, merged as PR #24).
 
 ## Roadmap (v1)
 
@@ -811,9 +862,10 @@ branches as above.
    Follow-up: the rectangle behind the day header's glass buttons (CL-35 notes).
 7. Statistics — done (CL-36…40).
 8. Report and WhatsApp — done (CL-41…45).
-9. Settings and reminders (CL-46…51). Logic, then UI.
+9. Settings and reminders — done (CL-46…51).
 10. iCloud sync (spec: "iCloud sync"): private CloudKit database, remote-change refresh, duplicate
     merging, the iCloud status line in Settings. Logic, then UI.
-11. First launch, app icon, Bundle ID, privacy policy, TestFlight.
+11. First launch, app icon, privacy policy, TestFlight (Bundle ID `com.cleanlog` settled in Feature 10; deploy the
+    CloudKit schema to Production before the first build).
 
 Later: Live Activity, home-screen widget, PDF/CSV export.
