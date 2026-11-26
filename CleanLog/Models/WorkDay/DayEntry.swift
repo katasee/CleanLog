@@ -22,4 +22,16 @@ extension DayEntry {
             cleanedAt: nil
         )
     }
+
+    nonisolated func pointing(to apartmentID: UUID) -> DayEntry {
+        DayEntry(
+            id: id,
+            apartmentID: apartmentID,
+            name: name,
+            price: price,
+            isReportedSeparately: isReportedSeparately,
+            isCleaned: isCleaned,
+            cleanedAt: cleanedAt
+        )
+    }
 }
