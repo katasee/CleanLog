@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 import os
 
-final class SwiftDataApartmentRepository: ApartmentRepository {
+final class SwiftDataApartmentRepository: ApartmentRepository, StoreRepublishing {
     private let container: ModelContainer
     private let now: () -> Date
     private let observers = StoreObservers()
@@ -46,6 +46,10 @@ final class SwiftDataApartmentRepository: ApartmentRepository {
     func delete(_ id: UUID) async throws {
         context.delete(try storedRecord(id))
         try save()
+    }
+
+    func republish() {
+        observers.notify()
     }
 
     private var context: ModelContext {

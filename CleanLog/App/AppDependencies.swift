@@ -13,6 +13,7 @@ final class AppDependencies {
     let reminderResponder = ReminderResponder()
     let notificationPermission: any NotificationPermission
     let appVersion: AppVersion
+    let storeSync: StoreSync?
 
     private init(
         apartments: any ApartmentRepository,
@@ -22,7 +23,8 @@ final class AppDependencies {
         pasteboard: any Pasteboard,
         reminderCenter: any ReminderCenter,
         notificationPermission: any NotificationPermission,
-        appVersion: AppVersion
+        appVersion: AppVersion,
+        storeSync: StoreSync?
     ) {
         self.apartments = apartments
         self.workDays = workDays
@@ -36,20 +38,27 @@ final class AppDependencies {
         )
         self.notificationPermission = notificationPermission
         self.appVersion = appVersion
+        self.storeSync = storeSync
     }
 
     static func live() throws -> AppDependencies {
-        let container = try ModelContainerFactory.make(inMemory: false)
+        let container = try ModelContainerFactory.make(.onDevice)
+        let apartments = SwiftDataApartmentRepository(container: container)
+        let workDays = SwiftDataWorkDayRepository(container: container)
         let notifications = SystemNotifications()
         let dependencies = AppDependencies(
-            apartments: SwiftDataApartmentRepository(container: container),
-            workDays: SwiftDataWorkDayRepository(container: container),
+            apartments: apartments,
+            workDays: workDays,
             settings: UserDefaultsSettingsRepository(defaults: .standard),
             urlAvailability: SystemURLAvailability(),
             pasteboard: SystemPasteboard(),
             reminderCenter: notifications,
             notificationPermission: notifications,
-            appVersion: AppVersion(bundle: .main)
+            appVersion: AppVersion(bundle: .main),
+            storeSync: StoreSync(
+                merger: StoreDuplicateMerger(container: container),
+                stores: [apartments, workDays]
+            )
         )
         notifications.deliverResponses(to: dependencies.reminderResponder)
         return dependencies
@@ -76,7 +85,8 @@ final class AppDependencies {
                 pasteboard: pasteboard,
                 reminderCenter: reminderCenter,
                 notificationPermission: notificationPermission,
-                appVersion: appVersion
+                appVersion: appVersion,
+                storeSync: nil
             )
         }
     }

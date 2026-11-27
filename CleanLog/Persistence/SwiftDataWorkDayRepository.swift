@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 import os
 
-final class SwiftDataWorkDayRepository: WorkDayRepository {
+final class SwiftDataWorkDayRepository: WorkDayRepository, StoreRepublishing {
     private let container: ModelContainer
     private let now: () -> Date
     private let observers = StoreObservers()
@@ -66,6 +66,10 @@ final class SwiftDataWorkDayRepository: WorkDayRepository {
         let record = stored ?? context.inserted(WorkDayRecord())
         record.apply(Revision(value: changed, changedAt: now()))
         try context.saveOrRollBack()
+        observers.notify()
+    }
+
+    func republish() {
         observers.notify()
     }
 
