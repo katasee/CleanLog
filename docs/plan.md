@@ -798,9 +798,9 @@ Notes for the sessions:
 Plan: `docs/superpowers/plans/2026-11-26-icloud-sync.md` · Spec: `docs/superpowers/specs/2026-11-26-icloud-sync-design.md`
 (product spec → iCloud sync, decided 2026-11-24 in CL-26).
 
-**NEXT session:** branch `feature/CL-54-store-merge` from `main` (CL-53 merged; created, holds only the commit
-that marks it NEXT). Plan Tasks 3–4; then delete the
-app from the simulator and the phone (the schema changes in place).
+**NEXT session:** branch `feature/CL-55-icloud-on` from `main` (CL-54 merged), plan Tasks 5–6 — **blocked on the
+user** until the Xcode Signing & Capabilities step is done (Manual steps below). **The user, now:** delete CleanLog
+from the simulator and the phone once (CL-54 changed the schema in place).
 
 Brainstorm decisions (the user, 2026-11-26):
 
@@ -822,8 +822,8 @@ Brainstorm decisions (the user, 2026-11-26):
 |---|---|---|---|---|---|---|
 | 52 | `feature/CL-52-icloud-spec` | `main` | — (spec, plan, product spec; deletes the Settings plan) | ~620 (docs) | merged (PR #54) | plan review done (in the plan) |
 | 53 | `feature/CL-53-merge-rules` | `main` | 1–2 | ~495 | merged (PR #55) | done — SOLID: 1 fix (below) |
-| 54 | `feature/CL-54-store-merge` | CL-53 (or `main`) | 3–4 | ~420 | **NEXT** | SOLID · **after it: delete the app from the simulator and the phone** (schema changed in place) |
-| 55 | `feature/CL-55-icloud-on` | CL-54 (or `main`) | 5–6 | ~380 | — **blocked on the user**: Xcode capabilities first (spec → Manual steps 1); the two-device pass needs the user too | `swift-concurrency-pro` + SOLID |
+| 54 | `feature/CL-54-store-merge` | `main` | 3–4 | ~310 | merged (PR #56) | done — SOLID: 1 fix (below) · **delete the app from the simulator and the phone** (schema changed in place) |
+| 55 | `feature/CL-55-icloud-on` | `main` | 5–6 | ~380 | **NEXT** — **blocked on the user**: Xcode capabilities first (spec → Manual steps 1); the two-device pass needs the user too | `swift-concurrency-pro` + SOLID |
 | 56 | `feature/CL-56-icloud-line` | CL-55 (or `main`) | 7–8 | ~330 (the natural end of the feature) | — | `swift-concurrency-pro` + `swiftui-pro` + SOLID |
 
 Notes for the sessions:
@@ -848,6 +848,13 @@ Notes for the sessions:
   tests: the earlier tick time, contained and touching sessions, a later open session, groups in name order.
   SOLID: the newest-first order and the smallest-id survivor were written twice — now `Revision.newestFirst(_:)` and
   `Revision.survivorID(among:)` beside `Revision`, used by both merges. Tests 413 passed, lint clean.
+- CL-54 (2026-11-27): Tasks 3–4 as planned. `add` stamps `changedAt` with the apartment's `createdAt` (one `now()`
+  call); `delete` has nothing to stamp; `AppDependencies` needed no change (the day repository's `now` defaults to
+  `Date.init`). One extra test, `aSecondPassFindsNothing`, split out of `aCleanStoreIsNotSaved`. SOLID: the
+  apartment merge did its deletes and survivor apply inline in the ID-map loop → `apply(_:to:)`, like the day side's
+  `merge(_:repointing:)`; `repointed(_:_:)` → `repointed(_:to:)`. Tests 424 passed (one earlier full run reported
+  a failure with no failing test; three runs after it were green), lint clean. Size ~310 with these notes, under
+  the estimate: the merger came out shorter than planned.
 - Manual steps (the user): **before CL-55** — Xcode Signing & Capabilities: Team, Bundle ID `com.cleanlog`, iCloud
   with CloudKit and the new container `iCloud.com.cleanlog`, Background Modes → Remote notifications, Push
   Notifications present (spec → Manual steps 1). **During CL-55** — the phone + simulator pass. **Before the first
