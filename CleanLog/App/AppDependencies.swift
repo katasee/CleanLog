@@ -41,8 +41,10 @@ final class AppDependencies {
         self.storeSync = storeSync
     }
 
+    private static let cloudContainerID = "iCloud.com.cleanlog"
+
     static func live() throws -> AppDependencies {
-        let container = try ModelContainerFactory.make(.onDevice)
+        let container = try ModelContainerFactory.make(.iCloud(containerID: cloudContainerID))
         let apartments = SwiftDataApartmentRepository(container: container)
         let workDays = SwiftDataWorkDayRepository(container: container)
         let notifications = SystemNotifications()
