@@ -21,6 +21,7 @@ enum SchemaV1: VersionedSchema {
         var accessCode: String?
         var isReportedSeparately = false
         var createdAt = Date.distantPast
+        var changedAt = Date.distantPast
 
         init() {}
     }
@@ -32,6 +33,7 @@ enum SchemaV1: VersionedSchema {
         var manualDurationSeconds: Int?
         var isTimerFinished = false
         var isTimeDropped = false
+        var changedAt = Date.distantPast
         @Relationship(deleteRule: .cascade, inverse: \DayEntryRecord.day)
         var entries: [DayEntryRecord]? = []
         @Relationship(deleteRule: .cascade, inverse: \WorkSessionRecord.day)

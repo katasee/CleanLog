@@ -4,11 +4,13 @@ import os
 
 final class SwiftDataWorkDayRepository: WorkDayRepository {
     private let container: ModelContainer
+    private let now: () -> Date
     private let observers = StoreObservers()
     private let logger = Logger(subsystem: "CleanLog", category: "SwiftDataWorkDayRepository")
 
-    init(container: ModelContainer) {
+    init(container: ModelContainer, now: @escaping () -> Date = Date.init) {
         self.container = container
+        self.now = now
     }
 
     func day(_ day: DayKey) -> AsyncStream<WorkDay> {
@@ -62,7 +64,7 @@ final class SwiftDataWorkDayRepository: WorkDayRepository {
         let changed = try change(stored?.domain ?? .empty(day))
         guard stored != nil || !changed.isBlank else { return }
         let record = stored ?? context.inserted(WorkDayRecord())
-        record.apply(changed)
+        record.apply(Revision(value: changed, changedAt: now()))
         try context.saveOrRollBack()
         observers.notify()
     }

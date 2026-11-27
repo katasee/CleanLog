@@ -28,7 +28,7 @@ final class SwiftDataApartmentRepository: ApartmentRepository {
         let existing = try storedRecords().map(\.domain)
         let valid = try draft.validated(against: existing)
         let apartment = Apartment(valid, createdAt: now())
-        context.inserted(ApartmentRecord()).apply(apartment)
+        context.inserted(ApartmentRecord()).apply(Revision(value: apartment, changedAt: apartment.createdAt))
         try save()
         return apartment
     }
@@ -39,7 +39,7 @@ final class SwiftDataApartmentRepository: ApartmentRepository {
             throw ApartmentError.notFound
         }
         let valid = try ApartmentDraft(apartment).validated(against: records.map(\.domain), excluding: apartment.id)
-        record.apply(record.domain.applying(valid))
+        record.apply(Revision(value: record.domain.applying(valid), changedAt: now()))
         try save()
     }
 

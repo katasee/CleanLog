@@ -17,6 +17,15 @@ extension WorkDayRecord {
         )
     }
 
+    var revision: Revision<WorkDay> {
+        Revision(value: domain, changedAt: changedAt)
+    }
+
+    func apply(_ revision: Revision<WorkDay>) {
+        apply(revision.value)
+        changedAt = revision.changedAt
+    }
+
     func apply(_ workDay: WorkDay) {
         guard let modelContext else {
             preconditionFailure("A work day is applied only to a record in a context")

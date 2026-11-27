@@ -81,4 +81,14 @@ struct WorkDayRecordMappingTests {
 
         #expect(try context.fetchCount(FetchDescriptor<WorkDayRecord>()) == 0)
     }
+
+    @Test
+    func revisionCarriesChangedAt() {
+        let revision = Revision(value: recordedDay(), changedAt: .warsaw(2026, 11, 13, 9))
+        let record = context.inserted(WorkDayRecord())
+
+        record.apply(revision)
+
+        #expect(record.revision == revision)
+    }
 }
