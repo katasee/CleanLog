@@ -23,4 +23,14 @@ struct ApartmentRecordMappingTests {
 
         #expect(record.domain == apartment)
     }
+
+    @Test
+    func revisionCarriesChangedAt() {
+        let revision = Revision(value: Apartment.fixture("100"), changedAt: .warsaw(2026, 11, 13, 9))
+        let record = container.mainContext.inserted(ApartmentRecord())
+
+        record.apply(revision)
+
+        #expect(record.revision == revision)
+    }
 }

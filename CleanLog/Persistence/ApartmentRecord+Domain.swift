@@ -12,6 +12,15 @@ extension ApartmentRecord {
         )
     }
 
+    var revision: Revision<Apartment> {
+        Revision(value: domain, changedAt: changedAt)
+    }
+
+    func apply(_ revision: Revision<Apartment>) {
+        apply(revision.value)
+        changedAt = revision.changedAt
+    }
+
     func apply(_ apartment: Apartment) {
         id = apartment.id
         name = apartment.name

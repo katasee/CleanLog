@@ -8,7 +8,7 @@ extension StoreUnderTest {
         let container = ModelContainer.inMemory()
         return StoreUnderTest(
             apartments: SwiftDataApartmentRepository(container: container, now: { now }),
-            workDays: SwiftDataWorkDayRepository(container: container)
+            workDays: SwiftDataWorkDayRepository(container: container, now: { now })
         )
     }
 }
