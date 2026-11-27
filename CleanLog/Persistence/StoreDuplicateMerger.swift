@@ -25,16 +25,19 @@ final class StoreDuplicateMerger {
         let records = try context.fetch(FetchDescriptor<ApartmentRecord>())
         var survivorIDs: [UUID: UUID] = [:]
         for merge in ApartmentDuplicates.merges(in: records.map(\.revision)) {
-            let survivorID = merge.survivor.value.id
-            for record in records where merge.removedIDs.contains(record.id) {
-                context.delete(record)
-            }
-            records.first { $0.id == survivorID }?.apply(merge.survivor)
+            apply(merge, to: records)
             for removedID in merge.removedIDs {
-                survivorIDs[removedID] = survivorID
+                survivorIDs[removedID] = merge.survivor.value.id
             }
         }
         return survivorIDs
+    }
+
+    private func apply(_ merge: ApartmentMerge, to records: [ApartmentRecord]) {
+        for record in records where merge.removedIDs.contains(record.id) {
+            context.delete(record)
+        }
+        records.first { $0.id == merge.survivor.value.id }?.apply(merge.survivor)
     }
 
     private func daysReferencing(_ apartmentIDs: [UUID]) throws -> Set<Int> {
@@ -54,14 +57,14 @@ final class StoreDuplicateMerger {
     }
 
     private func merge(_ copies: [WorkDayRecord], repointing survivorIDs: [UUID: UUID]) {
-        let merged = WorkDayDuplicates.merged(copies.map { repointed($0.revision, survivorIDs) })
+        let merged = WorkDayDuplicates.merged(copies.map { repointed($0.revision, to: survivorIDs) })
         for record in copies where record.id != merged.value.id {
             context.delete(record)
         }
         copies.first { $0.id == merged.value.id }?.apply(merged)
     }
 
-    private func repointed(_ revision: Revision<WorkDay>, _ survivorIDs: [UUID: UUID]) -> Revision<WorkDay> {
+    private func repointed(_ revision: Revision<WorkDay>, to survivorIDs: [UUID: UUID]) -> Revision<WorkDay> {
         var copy = revision
         copy.value.entries = revision.value.entries.map { entry in
             survivorIDs[entry.apartmentID].map(entry.pointing(to:)) ?? entry
