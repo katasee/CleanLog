@@ -798,8 +798,10 @@ Notes for the sessions:
 Plan: `docs/superpowers/plans/2026-11-26-icloud-sync.md` · Spec: `docs/superpowers/specs/2026-11-26-icloud-sync-design.md`
 (product spec → iCloud sync, decided 2026-11-24 in CL-26).
 
-**NEXT session:** branch `feature/CL-55-icloud-on` from `main` (CL-54 merged), plan Tasks 5–6 — **blocked on the
-user** until the Xcode Signing & Capabilities step is done (Manual steps below). **The user, now:** delete CleanLog
+**NEXT session:** branch `feature/CL-55-icloud-on` (exists, from `main`), plan Tasks 5–6. The Xcode capabilities are
+committed on it (`18b69dd`, done by Claude on 2026-11-27: Team, Bundle ID `com.cleanlog`, `Config/CleanLog.entitlements`,
+`UIBackgroundModes` → `remote-notification`; the device build with `-allowProvisioningUpdates` created the container
+`iCloud.com.cleanlog` and its profile). The two-device pass still needs the user. **The user, now:** delete CleanLog
 from the simulator and the phone once (CL-54 changed the schema in place).
 
 Brainstorm decisions (the user, 2026-11-26):
@@ -823,7 +825,7 @@ Brainstorm decisions (the user, 2026-11-26):
 | 52 | `feature/CL-52-icloud-spec` | `main` | — (spec, plan, product spec; deletes the Settings plan) | ~620 (docs) | merged (PR #54) | plan review done (in the plan) |
 | 53 | `feature/CL-53-merge-rules` | `main` | 1–2 | ~495 | merged (PR #55) | done — SOLID: 1 fix (below) |
 | 54 | `feature/CL-54-store-merge` | `main` | 3–4 | ~310 | merged (PR #56) | done — SOLID: 1 fix (below) · **delete the app from the simulator and the phone** (schema changed in place) |
-| 55 | `feature/CL-55-icloud-on` | `main` | 5–6 | ~380 | **NEXT** — **blocked on the user**: Xcode capabilities first (spec → Manual steps 1); the two-device pass needs the user too | `swift-concurrency-pro` + SOLID |
+| 55 | `feature/CL-55-icloud-on` | `main` | 5–6 | ~380 | **NEXT** — capabilities committed; the two-device pass needs the user | `swift-concurrency-pro` + SOLID |
 | 56 | `feature/CL-56-icloud-line` | CL-55 (or `main`) | 7–8 | ~330 (the natural end of the feature) | — | `swift-concurrency-pro` + `swiftui-pro` + SOLID |
 
 Notes for the sessions:
