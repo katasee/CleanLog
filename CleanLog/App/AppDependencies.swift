@@ -14,6 +14,7 @@ final class AppDependencies {
     let notificationPermission: any NotificationPermission
     let appVersion: AppVersion
     let storeSync: StoreSync?
+    let uploadMonitor: CloudUploadMonitor?
 
     private init(
         apartments: any ApartmentRepository,
@@ -24,7 +25,8 @@ final class AppDependencies {
         reminderCenter: any ReminderCenter,
         notificationPermission: any NotificationPermission,
         appVersion: AppVersion,
-        storeSync: StoreSync?
+        storeSync: StoreSync?,
+        uploadMonitor: CloudUploadMonitor?
     ) {
         self.apartments = apartments
         self.workDays = workDays
@@ -39,6 +41,7 @@ final class AppDependencies {
         self.notificationPermission = notificationPermission
         self.appVersion = appVersion
         self.storeSync = storeSync
+        self.uploadMonitor = uploadMonitor
     }
 
     private static let cloudContainerID = "iCloud.com.cleanlog"
@@ -60,7 +63,8 @@ final class AppDependencies {
             storeSync: StoreSync(
                 merger: StoreDuplicateMerger(container: container),
                 stores: [apartments, workDays]
-            )
+            ),
+            uploadMonitor: CloudUploadMonitor()
         )
         notifications.deliverResponses(to: dependencies.reminderResponder)
         return dependencies
@@ -88,7 +92,8 @@ final class AppDependencies {
                 reminderCenter: reminderCenter,
                 notificationPermission: notificationPermission,
                 appVersion: appVersion,
-                storeSync: nil
+                storeSync: nil,
+                uploadMonitor: nil
             )
         }
     }
