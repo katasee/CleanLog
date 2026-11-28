@@ -50,24 +50,13 @@ final class CloudUploadMonitor {
     }
 
     nonisolated static func exportOutcomes() -> AsyncStream<CloudUploadOutcome> {
-        let (stream, continuation) = AsyncStream.makeStream(of: CloudUploadOutcome.self)
-        let forwarding = Task {
-            let events = NotificationCenter.default.notifications(
-                named: NSPersistentCloudKitContainer.eventChangedNotification
-            )
-            for await notification in events {
-                let key = NSPersistentCloudKitContainer.eventNotificationUserInfoKey
-                guard let event = notification.userInfo?[key] as? NSPersistentCloudKitContainer.Event,
-                    event.type == .export,
-                    event.endDate != nil
-                else { continue }
-                continuation.yield(CloudUploadOutcome(error: event.error))
-            }
-            continuation.finish()
+        NotificationCenter.default.forwarded(NSPersistentCloudKitContainer.eventChangedNotification) { notification in
+            let key = NSPersistentCloudKitContainer.eventNotificationUserInfoKey
+            guard let event = notification.userInfo?[key] as? NSPersistentCloudKitContainer.Event,
+                event.type == .export,
+                event.endDate != nil
+            else { return nil }
+            return CloudUploadOutcome(error: event.error)
         }
-        continuation.onTermination = { _ in
-            forwarding.cancel()
-        }
-        return stream
     }
 }
