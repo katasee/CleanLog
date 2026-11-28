@@ -798,9 +798,8 @@ Notes for the sessions:
 Plan: `docs/superpowers/plans/2026-11-26-icloud-sync.md` · Spec: `docs/superpowers/specs/2026-11-26-icloud-sync-design.md`
 (product spec → iCloud sync, decided 2026-11-24 in CL-26).
 
-**NEXT session:** branch `feature/CL-55-icloud-on` from `main` (CL-54 merged), plan Tasks 5–6 — **blocked on the
-user** until the Xcode Signing & Capabilities step is done (Manual steps below). **The user, now:** delete CleanLog
-from the simulator and the phone once (CL-54 changed the schema in place).
+**NEXT session:** branch `feature/CL-56-icloud-line` from `main` (CL-55 merged), plan Tasks 6b, 7–8. Then
+the iCloud round trip on her phone once its iCloud storage has space (CL-55 notes).
 
 Brainstorm decisions (the user, 2026-11-26):
 
@@ -823,8 +822,8 @@ Brainstorm decisions (the user, 2026-11-26):
 | 52 | `feature/CL-52-icloud-spec` | `main` | — (spec, plan, product spec; deletes the Settings plan) | ~620 (docs) | merged (PR #54) | plan review done (in the plan) |
 | 53 | `feature/CL-53-merge-rules` | `main` | 1–2 | ~495 | merged (PR #55) | done — SOLID: 1 fix (below) |
 | 54 | `feature/CL-54-store-merge` | `main` | 3–4 | ~310 | merged (PR #56) | done — SOLID: 1 fix (below) · **delete the app from the simulator and the phone** (schema changed in place) |
-| 55 | `feature/CL-55-icloud-on` | `main` | 5–6 | ~380 | **NEXT** — **blocked on the user**: Xcode capabilities first (spec → Manual steps 1); the two-device pass needs the user too | `swift-concurrency-pro` + SOLID |
-| 56 | `feature/CL-56-icloud-line` | CL-55 (or `main`) | 7–8 | ~330 (the natural end of the feature) | — | `swift-concurrency-pro` + `swiftui-pro` + SOLID |
+| 55 | `feature/CL-55-icloud-on` | `main` | 5–6 (+ the storage-full spec) | ~400 | merged (PR #57) | done — concurrency clean; SOLID: 1 fix; phone round trip not checked (below) |
+| 56 | `feature/CL-56-icloud-line` | `main` | 6b, 7–8 | ~480 (the natural end of the feature; split 6b off if it passes 500) | **NEXT** | `swift-concurrency-pro` + `swiftui-pro` + SOLID |
 
 Notes for the sessions:
 
@@ -859,6 +858,25 @@ Notes for the sessions:
   with CloudKit and the new container `iCloud.com.cleanlog`, Background Modes → Remote notifications, Push
   Notifications present (spec → Manual steps 1). **During CL-55** — the phone + simulator pass. **Before the first
   TestFlight (Feature 11)** — deploy the CloudKit schema to Production in the CloudKit Console.
+
+- CL-55 (2026-11-28): Tasks 5–6 as planned, with one deviation: `StoreSync` takes `stores: [any
+  StoreRepublishing]` (both SwiftData repositories conform) instead of the two concrete repositories. The Xcode
+  capabilities were set by Claude (pbxproj + `Config/CleanLog.entitlements` + `UIBackgroundModes`); a device build
+  with `-allowProvisioningUpdates` created the container. The test host opens the iCloud store on a simulator
+  signed out of iCloud; the app launches there with CloudKit mirroring set up. Review: `swift-concurrency-pro` — no
+  findings (the remote-change `Task` is cancelled in `onTermination`, the `Notification` never leaves it, `run()`
+  ends with `RootView`'s `.task`, the merge is synchronous). SOLID: `StoreSync` depended on the concrete merger and
+  the "merge failed, still republish" path was untested → `DuplicateMerging` protocol and
+  `republishesWhenTheMergeFails`. **Not checked yet:** the round trip through iCloud (blocked by her full iCloud
+  storage, below), live refresh from a second device and the two-device merge (no second device; the simulator
+  would not sign in). Check them in CL-56 once space is freed, with a second iPhone or iPad if one turns up.
+- CL-55 (2026-11-28), phone check: nothing reached iCloud because the Apple ID on her phone has a **full iCloud
+  storage** — the CloudKit Console logs show the phone's `RecordSave` refused with `QUOTA_EXCEEDED` (the store's
+  last export event: `CKErrorDomain` 2, a partial failure), while the account reads available and the app works
+  locally. Not a code bug. Decided with the user: the app keeps working locally, and Settings gets a third line,
+  «Сховище iCloud заповнене — дані лише на цьому телефоні» (spec decision 15, plan Task 6b, added to CL-56).
+  Checking in the CloudKit Console needs the developer Apple ID of team `78HWZYA4DR` (not team `992YB2UC7R`) and
+  "Act as iCloud Account" with the phone's Apple ID; "Fetch Changes" lists the zone without a queryable index.
 
 Next free branch number: **CL-57** (CL-16…56 are used or reserved above; CL-26 is the iCloud product-spec
 decision, merged as PR #24).

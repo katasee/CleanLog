@@ -75,6 +75,9 @@ struct RootView: View {
             )
         }
         .modifier(MonthEndReminderRunner(scheduler: dependencies.reminderScheduler))
+        .task {
+            await dependencies.storeSync?.run()
+        }
         .onChange(of: dependencies.reminderResponder.requestedReport, initial: true) {
             openRequestedReport()
         }

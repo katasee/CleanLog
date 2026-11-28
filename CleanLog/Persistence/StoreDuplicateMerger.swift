@@ -1,7 +1,7 @@
 import Foundation
 import SwiftData
 
-final class StoreDuplicateMerger {
+final class StoreDuplicateMerger: DuplicateMerging {
     private let container: ModelContainer
 
     init(container: ModelContainer) {

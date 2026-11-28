@@ -16,7 +16,7 @@ extension StoreUnderTest {
 extension ModelContainer {
     static func inMemory() -> ModelContainer {
         do {
-            return try ModelContainerFactory.make(inMemory: true)
+            return try ModelContainerFactory.make(.inMemory)
         } catch {
             preconditionFailure("Could not open an in-memory store: \(error)")
         }

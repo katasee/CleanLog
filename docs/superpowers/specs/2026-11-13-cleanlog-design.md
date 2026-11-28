@@ -171,7 +171,9 @@ A sheet opened from a settings button in the Apartments toolbar. Details:
 - The app's version and build.
 - The reminder settings stay on the phone (not synced).
 - An iCloud line, always shown: «Синхронізовано з iCloud» ("Synced with iCloud") when the iCloud account is
-  available, «Зберігається лише на цьому телефоні» ("Kept on this phone only") otherwise (Feature 10).
+  available, «Зберігається лише на цьому телефоні» ("Kept on this phone only") otherwise, and «Сховище iCloud
+  заповнене — дані лише на цьому телефоні» ("iCloud storage is full — data kept on this phone only") when iCloud
+  refuses the upload for lack of space (Feature 10).
 - No morning reminder in v1 (dropped 2026-11-26). The privacy policy link comes with the App Store preparation
   (Feature 11).
 
@@ -245,6 +247,8 @@ Details: `2026-11-26-icloud-sync-design.md`.
   copy is kept) and its timer sessions combined (overlaps counted once).
 - No iCloud account or iCloud off for the app: the app works locally as before and Settings says so in a
   line that the data is kept on this phone only (added to Settings by this feature).
+- A full iCloud storage: the app keeps working locally, the changes wait and upload by themselves once space is
+  freed, and the Settings line says the storage is full (decided 2026-11-28, CL-55).
 - Not synced: the reminder settings — on a new phone they are switched on again (the notification
   permission has to be granted again anyway).
 - No migration of data from earlier builds: the store starts fresh (nobody used a build for real).
