@@ -1297,6 +1297,74 @@
         }
       }
     },
+    "settings.icloud.full" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud storage is full — data kept on this phone only"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сховище iCloud заповнене — дані лише на цьому телефоні"
+          }
+        }
+      }
+    },
+    "settings.icloud.header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        }
+      }
+    },
+    "settings.icloud.local" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kept on this phone only"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зберігається лише на цьому телефоні"
+          }
+        }
+      }
+    },
+    "settings.icloud.synced" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synced with iCloud"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Синхронізовано з iCloud"
+          }
+        }
+      }
+    },
     "settings.permission.denied" : {
       "extractionState" : "manual",
       "localizations" : {

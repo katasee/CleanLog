@@ -7,11 +7,13 @@
 
         static func viewModel(
             _ reminder: MonthEndReminderSettings,
-            authorization: NotificationAuthorization = .authorized
+            authorization: NotificationAuthorization = .authorized,
+            cloud: CloudStatus = .synced
         ) -> SettingsViewModel {
             SettingsViewModel(
                 settings: FakeSettingsRepository(reminder),
                 permission: FakeNotificationPermission(authorization),
+                cloudAccount: FakeCloudAccount(status: cloud),
                 version: AppVersion(number: "1.0", build: "7")
             )
         }

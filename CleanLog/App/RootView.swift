@@ -78,6 +78,9 @@ struct RootView: View {
         .task {
             await dependencies.storeSync?.run()
         }
+        .task {
+            await dependencies.uploadMonitor?.run()
+        }
         .onChange(of: dependencies.reminderResponder.requestedReport, initial: true) {
             openRequestedReport()
         }

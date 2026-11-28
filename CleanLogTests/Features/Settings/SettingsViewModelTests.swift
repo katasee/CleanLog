@@ -10,12 +10,14 @@ struct SettingsViewModelTests {
     private func makeViewModel(
         settings: any SettingsRepository = FakeSettingsRepository(),
         permission: any NotificationPermission = FakeNotificationPermission(),
+        cloudAccount: any CloudAccount = FakeCloudAccount(),
         version: AppVersion = AppVersion(number: "1.0", build: "7"),
         locale: Locale = Locale(identifier: "uk_UA")
     ) -> SettingsViewModel {
         SettingsViewModel(
             settings: settings,
             permission: permission,
+            cloudAccount: cloudAccount,
             version: version,
             calendar: .warsaw,
             locale: locale
@@ -161,5 +163,68 @@ struct SettingsViewModelTests {
     @Test func showsTheVersion() {
         #expect(makeViewModel().versionText == "Версія 1.0 (7)")
         #expect(makeViewModel(locale: Locale(identifier: "en_US")).versionText == "Version 1.0 (7)")
+    }
+
+    @Test func noStorageLineBeforeTheCheck() {
+        #expect(makeViewModel().storageLine == nil)
+    }
+
+    @Test func availableAccountReadsSynced() async {
+        let viewModel = makeViewModel(cloudAccount: FakeCloudAccount(status: .synced))
+
+        await viewModel.refreshCloudAccount()
+
+        #expect(viewModel.storageLine?.text == "Синхронізовано з iCloud")
+        #expect(viewModel.storageLine?.systemImage == "icloud")
+        #expect(viewModel.storageLine?.isWarning == false)
+    }
+
+    @Test func unavailableAccountReadsLocal() async {
+        let viewModel = makeViewModel(
+            cloudAccount: FakeCloudAccount(status: .local),
+            locale: Locale(identifier: "en_US")
+        )
+
+        await viewModel.refreshCloudAccount()
+
+        #expect(viewModel.storageLine?.text == "Kept on this phone only")
+        #expect(viewModel.storageLine?.systemImage == "iphone")
+    }
+
+    @Test func fullStorageReadsFull() async {
+        let viewModel = makeViewModel(
+            cloudAccount: FakeCloudAccount(status: .storageFull),
+            locale: Locale(identifier: "en_US")
+        )
+
+        await viewModel.refreshCloudAccount()
+
+        #expect(viewModel.storageLine?.text == "iCloud storage is full — data kept on this phone only")
+        #expect(viewModel.storageLine?.systemImage == "exclamationmark.icloud")
+        #expect(viewModel.storageLine?.isWarning == true)
+    }
+
+    @Test func reCheckFollowsTheAccount() async {
+        let account = FakeCloudAccount(status: .synced)
+        let viewModel = makeViewModel(cloudAccount: account)
+        await viewModel.refreshCloudAccount()
+
+        account.set(.local)
+        await viewModel.refreshCloudAccount()
+
+        #expect(viewModel.storageLine?.text == "Зберігається лише на цьому телефоні")
+    }
+
+    @Test func aCancelledCheckLeavesTheLine() async {
+        let account = GatedCloudAccount()
+        let viewModel = makeViewModel(cloudAccount: account)
+        let check = Task { await viewModel.refreshCloudAccount() }
+        await eventually { account.hasWaitingCheck }
+
+        check.cancel()
+        account.open()
+        await check.value
+
+        #expect(viewModel.storageLine == nil)
     }
 }

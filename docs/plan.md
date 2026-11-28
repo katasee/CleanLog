@@ -798,8 +798,8 @@ Notes for the sessions:
 Plan: `docs/superpowers/plans/2026-11-26-icloud-sync.md` · Spec: `docs/superpowers/specs/2026-11-26-icloud-sync-design.md`
 (product spec → iCloud sync, decided 2026-11-24 in CL-26).
 
-**NEXT session:** branch `feature/CL-56-icloud-line` from `main` (CL-55 merged), plan Tasks 6b, 7–8. Then
-the iCloud round trip on her phone once its iCloud storage has space (CL-55 notes).
+**Code done with CL-56.** Still open (the user, on her phone): the Settings line and the iCloud round trip once its
+iCloud storage has space (CL-55, CL-56 notes).
 
 Brainstorm decisions (the user, 2026-11-26):
 
@@ -823,7 +823,7 @@ Brainstorm decisions (the user, 2026-11-26):
 | 53 | `feature/CL-53-merge-rules` | `main` | 1–2 | ~495 | merged (PR #55) | done — SOLID: 1 fix (below) |
 | 54 | `feature/CL-54-store-merge` | `main` | 3–4 | ~310 | merged (PR #56) | done — SOLID: 1 fix (below) · **delete the app from the simulator and the phone** (schema changed in place) |
 | 55 | `feature/CL-55-icloud-on` | `main` | 5–6 (+ the storage-full spec) | ~400 | merged (PR #57) | done — concurrency clean; SOLID: 1 fix; phone round trip not checked (below) |
-| 56 | `feature/CL-56-icloud-line` | `main` | 6b, 7–8 | ~480 (the natural end of the feature; split 6b off if it passes 500) | **NEXT** | `swift-concurrency-pro` + `swiftui-pro` + SOLID |
+| 56 | `feature/CL-56-icloud-line` | `main` | 6b, 7–8 | ~490 (the natural end of the feature) | done, PR open | done — concurrency clean; SwiftUI clean; SOLID: 1 fix (below) |
 
 Notes for the sessions:
 
@@ -877,6 +877,21 @@ Notes for the sessions:
   «Сховище iCloud заповнене — дані лише на цьому телефоні» (spec decision 15, plan Task 6b, added to CL-56).
   Checking in the CloudKit Console needs the developer Apple ID of team `78HWZYA4DR` (not team `992YB2UC7R`) and
   "Act as iCloud Account" with the phone's Apple ID; "Fetch Changes" lists the zone without a queryable index.
+
+- CL-56 (2026-11-28): Tasks 6b, 7–8 as planned, with these deviations. `CloudUploadMonitor.exportOutcomes()` is
+  `nonisolated` (it is the default for a nonisolated stream factory, so a main-actor static would not convert) and
+  keeps the default unbounded buffer: the order of outcomes matters (full then failed keeps the flag), and export
+  events are rare. The monitor tests finish the stream and await `run()` instead of polling. `SystemCloudAccount`
+  takes `containerID:` from `AppDependencies` so the ID is written once. The row is `Label { Text } icon: { Image }`,
+  not `Label(_:systemImage:)`, so the full-storage glyph can be tinted `Warning` (others `AccentColor`); the monitor
+  runs in a second `.task` on `RootView`. Review: `swift-concurrency-pro` — no findings (the `Notification` never
+  leaves the forwarding task, `refreshCloudAccount` checks cancellation after its `await`, `run()` ends with its
+  task); `swiftui-pro` — no findings. SOLID: `exportOutcomes()` repeated `StoreRemoteChanges.signals()`'s
+  forwarding body → `NotificationCenter.forwarded(_:bufferingPolicy:transform:)` in `Persistence/`, used by both.
+  Kept: `SystemCloudAccount` reads the concrete `CloudUploadMonitor` — both are live adapters composed in `App/`.
+  Debug and Release build, full tests and lint green. **Not checked:** the Settings line on a simulator (no way to
+  open Settings without taps) and on her phone — open Settings there: it should read the full-storage line while
+  her iCloud is full, and «Синхронізовано з iCloud» once space is freed; then the iCloud round trip (CL-55 notes).
 
 Next free branch number: **CL-57** (CL-16…56 are used or reserved above; CL-26 is the iCloud product-spec
 decision, merged as PR #24).

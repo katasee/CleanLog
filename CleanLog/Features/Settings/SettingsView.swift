@@ -27,6 +27,7 @@ struct SettingsView: View {
             viewModel: SettingsViewModel(
                 settings: dependencies.settings,
                 permission: dependencies.notificationPermission,
+                cloudAccount: dependencies.cloudAccount,
                 version: dependencies.appVersion
             )
         )
@@ -42,6 +43,9 @@ struct SettingsView: View {
                 SettingsReminderSection(viewModel: viewModel)
                 if viewModel.isPermissionDenied {
                     SettingsPermissionSection(settingsURL: viewModel.notificationSettingsURL)
+                }
+                if let line = viewModel.storageLine {
+                    SettingsStorageSection(line: line)
                 }
                 SettingsVersionFooter(versionText: viewModel.versionText)
             }
@@ -68,6 +72,7 @@ struct SettingsView: View {
         .task(id: scenePhase) {
             if scenePhase == .active {
                 await viewModel.refreshPermission()
+                await viewModel.refreshCloudAccount()
             }
         }
     }
@@ -131,6 +136,26 @@ private struct SettingsPermissionSection: View {
     }
 }
 
+private struct SettingsStorageSection: View {
+    let line: SettingsStorageLine
+
+    var body: some View {
+        Section {
+            Label {
+                Text(verbatim: line.text)
+                    .foregroundStyle(Color.ink)
+            } icon: {
+                Image(systemName: line.systemImage)
+                    .foregroundStyle(line.isWarning ? Color.warning : Color.accent)
+            }
+            .listRowBackground(Color.card)
+        } header: {
+            Text(.settingsIcloudHeader)
+                .foregroundStyle(Color.inkSecondary)
+        }
+    }
+}
+
 private struct SettingsVersionFooter: View {
     let versionText: String
 
@@ -171,6 +196,21 @@ private struct SettingsVersionFooter: View {
                         authorization: .denied
                     )
                 )
+            }
+    }
+
+    #Preview("Kept on this phone") {
+        Color.background
+            .sheet(isPresented: .constant(true)) {
+                SettingsView(viewModel: SettingsPreviewData.viewModel(SettingsPreviewData.off, cloud: .local))
+            }
+            .preferredColorScheme(.dark)
+    }
+
+    #Preview("iCloud storage full") {
+        Color.background
+            .sheet(isPresented: .constant(true)) {
+                SettingsView(viewModel: SettingsPreviewData.viewModel(SettingsPreviewData.off, cloud: .storageFull))
             }
     }
 #endif
