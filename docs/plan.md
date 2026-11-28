@@ -826,7 +826,7 @@ Brainstorm decisions (the user, 2026-11-26):
 | 53 | `feature/CL-53-merge-rules` | `main` | 1–2 | ~495 | merged (PR #55) | done — SOLID: 1 fix (below) |
 | 54 | `feature/CL-54-store-merge` | `main` | 3–4 | ~310 | merged (PR #56) | done — SOLID: 1 fix (below) · **delete the app from the simulator and the phone** (schema changed in place) |
 | 55 | `feature/CL-55-icloud-on` | `main` | 5–6 | ~380 | **NEXT** — capabilities committed; the two-device pass needs the user | `swift-concurrency-pro` + SOLID |
-| 56 | `feature/CL-56-icloud-line` | CL-55 (or `main`) | 7–8 | ~330 (the natural end of the feature) | — | `swift-concurrency-pro` + `swiftui-pro` + SOLID |
+| 56 | `feature/CL-56-icloud-line` | CL-55 (or `main`) | 6b, 7–8 | ~480 (the natural end of the feature; split 6b off if it passes 500) | — | `swift-concurrency-pro` + `swiftui-pro` + SOLID |
 
 Notes for the sessions:
 
@@ -861,6 +861,14 @@ Notes for the sessions:
   with CloudKit and the new container `iCloud.com.cleanlog`, Background Modes → Remote notifications, Push
   Notifications present (spec → Manual steps 1). **During CL-55** — the phone + simulator pass. **Before the first
   TestFlight (Feature 11)** — deploy the CloudKit schema to Production in the CloudKit Console.
+
+- CL-55 (2026-11-28), phone check: nothing reached iCloud because the Apple ID on her phone has a **full iCloud
+  storage** — the CloudKit Console logs show the phone's `RecordSave` refused with `QUOTA_EXCEEDED` (the store's
+  last export event: `CKErrorDomain` 2, a partial failure), while the account reads available and the app works
+  locally. Not a code bug. Decided with the user: the app keeps working locally, and Settings gets a third line,
+  «Сховище iCloud заповнене — дані лише на цьому телефоні» (spec decision 15, plan Task 6b, added to CL-56).
+  Checking in the CloudKit Console needs the developer Apple ID of team `78HWZYA4DR` (not team `992YB2UC7R`) and
+  "Act as iCloud Account" with the phone's Apple ID; "Fetch Changes" lists the zone without a queryable index.
 
 Next free branch number: **CL-57** (CL-16…56 are used or reserved above; CL-26 is the iCloud product-spec
 decision, merged as PR #24).

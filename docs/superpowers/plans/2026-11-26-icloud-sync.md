@@ -22,14 +22,16 @@ change notification name only), SwiftUI, Swift Testing. No new dependencies.
 
 - iOS 18.0+, Swift 6, default `MainActor` isolation; every type in `Models/` is `nonisolated`. Anything else
   `nonisolated` carries its reason in the commit message.
-- `SwiftData` and `CoreData` only in `Persistence/` and `App/`; `CloudKit` only in `App/SystemCloudAccount.swift`.
+- `SwiftData` and `CoreData` only in `Persistence/` and `App/`; `CloudKit` only in `App/SystemCloudAccount.swift` and
+  `Persistence/CloudUploadMonitor.swift` (to read `CKError` codes).
 - Container `iCloud.com.cleanlog`, Bundle ID `com.cleanlog`, tests `com.cleanlog.tests`, Team `78HWZYA4DR`.
 - Records stay CloudKit-compatible: every new attribute defaulted (`changedAt = Date.distantPast`), no unique
   constraints. `SchemaV1` changes in place (start fresh, no TestFlight yet).
 - A merge is deterministic: survivor = smallest `id.uuidString`; merged `changedAt` = latest of the copies.
 - Copy (uk / en): header `settings.icloud.header` «iCloud» / "iCloud"; `settings.icloud.synced`
   «Синхронізовано з iCloud» / "Synced with iCloud"; `settings.icloud.local` «Зберігається лише на цьому телефоні» /
-  "Kept on this phone only".
+  "Kept on this phone only"; `settings.icloud.full` «Сховище iCloud заповнене — дані лише на цьому телефоні» /
+  "iCloud storage is full — data kept on this phone only".
 - Tests pin `now`, `Calendar` (`.warsaw`) and `Locale`; no sleeps (`eventually`, gates, manual streams).
 - No comments in Swift; one argument per line for 3+ arguments; `swift-format lint --strict` clean.
 
@@ -53,7 +55,7 @@ change notification name only), SwiftUI, Swift Testing. No new dependencies.
 | 53 | `feature/CL-53-merge-rules` | `main` | 1–2 | — |
 | 54 | `feature/CL-54-store-merge` | CL-53 (or `main`) | 3–4 | delete the app after it (start fresh) |
 | 55 | `feature/CL-55-icloud-on` | CL-54 (or `main`) | 5–6 | **before**: Xcode capabilities (spec → Manual steps 1); **during**: two-device pass |
-| 56 | `feature/CL-56-icloud-line` | CL-55 (or `main`) | 7–8 | — |
+| 56 | `feature/CL-56-icloud-line` | CL-55 (or `main`) | 6b, 7–8 | — |
 
 Reviews: CL-53 — SOLID / clean code; CL-54 — SOLID; CL-55 — `swift-concurrency-pro` + SOLID; CL-56 —
 `swift-concurrency-pro` + `swiftui-pro` + SOLID. Estimates (tests included): CL-53 ~450, CL-54 ~420, CL-55 ~380,
@@ -300,31 +302,68 @@ only when `context.hasChanges`.
   `NSPersistentCloudKitContainer.eventChangedNotification` with an ended `.import` event and record it.
 - [ ] **Step 5: Commit** `Sync the store with iCloud`
 
+### Task 6b: Notice when iCloud storage is full (added 2026-11-28, spec decision 15)
+
+**Files:**
+- Create: `CleanLog/Persistence/CloudUploadMonitor.swift`
+- Modify: `App/AppDependencies.swift` (`let uploadMonitor: CloudUploadMonitor?`, nil in `preview`),
+  `App/RootView.swift` (runs `uploadMonitor?.run()` beside `storeSync?.run()`: a second `.task`, or one `.task`
+  with a discarding task group, whichever the SwiftUI review prefers)
+- Test: `CleanLogTests/Persistence/CloudUploadMonitorTests.swift`
+
+**Interfaces:**
+- Produces:
+  - `nonisolated enum CloudUploadOutcome: Sendable, Equatable { case succeeded, storageFull, failed }` with
+    `init(error: (any Error)?)` — `nil` → `.succeeded`; `CKError.quotaExceeded`, or a `.partialFailure` whose
+    `partialErrorsByItemID` holds one → `.storageFull`; anything else → `.failed`.
+  - `@Observable final class CloudUploadMonitor { private(set) var isStorageFull = false;
+    init(outcomes: @escaping () -> AsyncStream<CloudUploadOutcome> = CloudUploadMonitor.exportOutcomes);
+    func run() async }` — `.storageFull` sets the flag, `.succeeded` clears it, `.failed` leaves it.
+  - `static func exportOutcomes() -> AsyncStream<CloudUploadOutcome>` — like `StoreRemoteChanges.signals()`: a
+    forwarding `Task` over `NotificationCenter.default.notifications(named:
+    NSPersistentCloudKitContainer.eventChangedNotification)` reads the `Event` from
+    `userInfo[NSPersistentCloudKitContainer.eventNotificationUserInfoKey]` inside the task and yields only ended
+    `.export` events as `CloudUploadOutcome(error: event.error)`; the `Notification` never leaves the task.
+
+- [ ] **Step 1: Write the failing tests**: `noErrorIsASuccess`; `quotaExceededIsStorageFull`
+  (`CKError(.quotaExceeded)`); `quotaInsideAPartialFailureIsStorageFull` (an `NSError` in `CKErrorDomain`, code
+  `.partialFailure`, `CKPartialErrorsByItemIDKey` → `[recordID: CKError(.quotaExceeded)]`);
+  `otherErrorsAreFailures` (`CKError(.networkUnavailable)`); the monitor with a manual stream:
+  `storageFullSetsTheFlag`, `aSuccessClearsTheFlag`, `anOtherFailureKeepsTheFlag`, `runEndsWhenItsTaskIsCancelled`.
+- [ ] **Step 2: Run** `-only-testing:CleanLogTests/CloudUploadMonitorTests` — fails to compile.
+- [ ] **Step 3: Implement**; `live()` builds the monitor, `RootView` runs it.
+- [ ] **Step 4: Run** the full tests and build — pass.
+- [ ] **Step 5: Commit** `Notice when iCloud refuses uploads for lack of space`
+
 ### Task 7: The iCloud account in the settings view model
 
 **Files:**
 - Create: `CleanLog/Features/Settings/CloudAccount.swift` (protocol + `#if DEBUG` `FakeCloudAccount`),
   `CleanLog/App/SystemCloudAccount.swift`
 - Modify: `Features/Settings/SettingsViewModel.swift`, `App/AppDependencies.swift` (`let cloudAccount: any CloudAccount`,
-  preview default `FakeCloudAccount(isAvailable: true)`), `Features/Settings/SettingsView.swift` (pass it in
-  `init(dependencies:)` only), `SettingsPreviewData.swift`, `Resources/Localizable.xcstrings` (the two row keys)
+  preview default `FakeCloudAccount(status: .synced)`), `Features/Settings/SettingsView.swift` (pass it in
+  `init(dependencies:)` only), `SettingsPreviewData.swift`, `Resources/Localizable.xcstrings` (the three row keys)
 - Test: `CleanLogTests/Features/Settings/SettingsViewModelTests.swift`
 
 **Interfaces:**
 - Produces:
-  - `protocol CloudAccount: AnyObject { func isAvailable() async -> Bool }`.
-  - `final class SystemCloudAccount: CloudAccount` — `CKContainer(identifier: "iCloud.com.cleanlog")
-    .accountStatus() == .available`; a thrown error logs and returns `false`.
+  - `nonisolated enum CloudStatus: Sendable, Equatable { case synced, local, storageFull }` in `CloudAccount.swift`.
+  - `protocol CloudAccount: AnyObject { func status() async -> CloudStatus }`.
+  - `final class SystemCloudAccount: CloudAccount` — `init(uploads: CloudUploadMonitor)`;
+    `CKContainer(identifier: "iCloud.com.cleanlog").accountStatus() == .available` → `uploads.isStorageFull ?
+    .storageFull : .synced`; any other status → `.local`; a thrown error logs and returns `.local`.
   - `SettingsViewModel(settings:permission:cloudAccount:version:calendar:locale:)`;
     `private(set) var storageLine: SettingsStorageLine?` (nil until checked);
     `func refreshCloudAccount() async`.
-  - `struct SettingsStorageLine: Equatable { let text: String; let systemImage: String }` in the view model's file —
-    `icloud` + `settings.icloud.synced`, or `iphone` + `settings.icloud.local`.
+  - `struct SettingsStorageLine: Equatable { let text: String; let systemImage: String; let isWarning: Bool }` in the view model's file —
+    `icloud` + `settings.icloud.synced`, `iphone` + `settings.icloud.local`, or `exclamationmark.icloud` +
+    `settings.icloud.full` with `isWarning` (the view tints that glyph `Warning`).
 
 - [ ] **Step 1: Write the failing tests**: `noStorageLineBeforeTheCheck`; `availableAccountReadsSynced`
   (`uk_UA` → «Синхронізовано з iCloud», glyph `icloud`); `unavailableAccountReadsLocal` (`en_US` →
   "Kept on this phone only", glyph `iphone`); `reCheckFollowsTheAccount` (fake flips to unavailable → second
-  refresh shows local); `aCancelledCheckLeavesTheLine` (a gated fake: start a refresh, cancel its task, open
+  refresh shows local); `fullStorageReadsFull` (`en_US` → "iCloud storage is full — data kept on this phone
+  only", glyph `exclamationmark.icloud`, `isWarning`); `aCancelledCheckLeavesTheLine` (a gated fake: start a refresh, cancel its task, open
   the gate → `storageLine` stays nil).
 - [ ] **Step 2: Run** `-only-testing:CleanLogTests/SettingsViewModelTests` — fails to compile.
 - [ ] **Step 3: Implement** (catalog keys in both languages).
@@ -345,6 +384,7 @@ only when `context.hasChanges`.
   background, `Ink` text, `InkSecondary` header; shown `if let line = viewModel.storageLine`, after the reminder and
   permission sections, before the version footer.
 - [ ] **Step 2:** the existing `.task(id: scenePhase)` also awaits `viewModel.refreshCloudAccount()` when `.active`.
-- [ ] **Step 3: Previews** — synced (light), local (dark).
-- [ ] **Step 4: Run it** on the iPhone 16 simulator signed out and signed in to iCloud, uk and en, `accessibility5`.
+- [ ] **Step 3: Previews** — synced (light), local (dark), storage full (light).
+- [ ] **Step 4: Run it** on the iPhone 16 simulator signed out and signed in to iCloud, uk and en, `accessibility5`;
+  the storage-full line on her phone while its iCloud is full (it was in CL-55), then again after space is freed.
 - [ ] **Step 5: Build, full tests, lint; commit** `Show in Settings whether the data syncs with iCloud`

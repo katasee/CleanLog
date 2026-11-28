@@ -18,7 +18,9 @@ runs on a server and there is no sign-in screen.
 - Two devices that created the same apartment or the same day while offline end up with one apartment and one day,
   and no cleaned apartment and no worked minute is lost.
 - Settings always shows one iCloud line: «Синхронізовано з iCloud» / "Synced with iCloud" when the iCloud account
-  is available, «Зберігається лише на цьому телефоні» / "Kept on this phone only" otherwise.
+  is available, «Зберігається лише на цьому телефоні» / "Kept on this phone only" otherwise, and «Сховище iCloud
+  заповнене — дані лише на цьому телефоні» / "iCloud storage is full — data kept on this phone only" when the
+  account is available but iCloud refuses the upload for lack of space (decision 15).
 - Without an iCloud account, or with iCloud off for the app, the app works locally exactly as before.
 
 ## Non-goals
@@ -28,7 +30,9 @@ runs on a server and there is no sign-in screen.
 - Syncing the reminder settings (product spec → Settings: they stay on the phone).
 - A sync progress indicator, a "sync now" button, conflict screens, or sharing data with another person.
 - Showing *why* iCloud is unavailable (no account, restricted, off for the app): the line only says the data stays
-  on this phone.
+  on this phone. The one exception is a full iCloud storage (decision 15): the account looks available, so without
+  it the line would say "synced" while nothing reaches iCloud.
+- Any alert, banner or mark outside Settings about the storage, and any other upload error on the line.
 
 ## Anti-goals
 
@@ -78,6 +82,15 @@ Claude's calls (the user may correct them):
     permission is re-read). No footer.
 14. **The account check** is `CKContainer(identifier: "iCloud.com.cleanlog").accountStatus()`: `.available` is
     "synced"; every other status, and an error, is "on this phone only".
+15. **A full iCloud storage** (found in CL-55 on her phone: CloudKit refused every upload with `QUOTA_EXCEEDED`,
+    so nothing synced while the app kept working locally and the account read "available"). The app keeps working
+    as before: every write lands in the local store and waits in the upload queue, which goes out by itself once
+    space is freed. Only the Settings line changes: with the account available and the **last finished upload**
+    refused for lack of space, it reads «Сховище iCloud заповнене — дані лише на цьому телефоні» / "iCloud storage
+    is full — data kept on this phone only" with the `exclamationmark.icloud` glyph in `Warning`; the next upload
+    that succeeds turns it back to "synced". Uploads are watched from launch on (an upload can fail while Settings
+    is closed); the flag is not stored, so after a relaunch it reappears with the first refused upload. A refused
+    upload is an export event whose error is `CKError.quotaExceeded`, directly or inside a `.partialFailure`.
 
 ## How sync works
 
@@ -88,6 +101,9 @@ Claude's calls (the user may correct them):
 - A remote change is the store's `NSPersistentStoreRemoteChange` notification. `StoreSync` (`Persistence/`)
   listens from `RootView`'s `.task`: on start and on every change it merges duplicates in the main context and then
   tells both SwiftData repositories to re-yield their streams.
+- Upload outcomes are `NSPersistentCloudKitContainer.eventChangedNotification` events of type `.export` that have
+  ended. `CloudUploadMonitor` (`Persistence/`) listens from `RootView`'s `.task` beside `StoreSync` and keeps
+  `isStorageFull` (decision 15); `SystemCloudAccount` reads it when Settings checks the account.
 - Uniqueness stays the repositories' job (records keep no unique constraints): local writes never create a
   duplicate (`add` validates the name, a day `update` writes the stored record); only an import can.
 
