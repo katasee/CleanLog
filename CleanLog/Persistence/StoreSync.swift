@@ -4,14 +4,18 @@ protocol StoreRepublishing: AnyObject {
     func republish()
 }
 
+protocol DuplicateMerging: AnyObject {
+    func mergeDuplicates() throws -> Bool
+}
+
 final class StoreSync {
-    private let merger: StoreDuplicateMerger
+    private let merger: any DuplicateMerging
     private let stores: [any StoreRepublishing]
     private let remoteChanges: () -> AsyncStream<Void>
     private let logger = Logger(subsystem: "CleanLog", category: "StoreSync")
 
     init(
-        merger: StoreDuplicateMerger,
+        merger: any DuplicateMerging,
         stores: [any StoreRepublishing],
         remoteChanges: @escaping () -> AsyncStream<Void> = StoreRemoteChanges.signals
     ) {

@@ -19,9 +19,9 @@ struct StoreSyncTests {
         workDays = SwiftDataWorkDayRepository(container: container)
     }
 
-    private func startSync() -> Task<Void, Never> {
+    private func startSync(merger: (any DuplicateMerging)? = nil) -> Task<Void, Never> {
         let sync = StoreSync(
-            merger: StoreDuplicateMerger(container: container),
+            merger: merger ?? StoreDuplicateMerger(container: container),
             stores: [apartments, workDays],
             remoteChanges: { [signals] in signals }
         )
@@ -95,6 +95,20 @@ struct StoreSyncTests {
     }
 
     @Test
+    func republishesWhenTheMergeFails() async {
+        let task = startSync(merger: FailingMerger())
+        defer { task.cancel() }
+        let stream = apartments.apartments()
+        _ = await value(of: stream) { _ in true }
+
+        importApartment("101")
+        signal.yield()
+
+        let republished = await value(of: stream) { !$0.isEmpty }
+        #expect(republished?.map(\.name) == ["101"])
+    }
+
+    @Test
     func runEndsWhenItsTaskIsCancelled() async {
         let task = startSync()
 
@@ -113,5 +127,13 @@ struct StoreSyncTests {
         #expect(cloud.cloudKitContainerIdentifier == "iCloud.com.cleanlog")
         #expect(memory.cloudKitContainerIdentifier == nil)
         #expect(memory.isStoredInMemoryOnly)
+    }
+}
+
+private final class FailingMerger: DuplicateMerging {
+    struct MergeFailed: Error {}
+
+    func mergeDuplicates() throws -> Bool {
+        throw MergeFailed()
     }
 }
