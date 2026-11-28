@@ -12,6 +12,7 @@ final class AppDependencies {
     let reminderScheduler: MonthEndReminderScheduler
     let reminderResponder = ReminderResponder()
     let notificationPermission: any NotificationPermission
+    let cloudAccount: any CloudAccount
     let appVersion: AppVersion
     let storeSync: StoreSync?
     let uploadMonitor: CloudUploadMonitor?
@@ -24,6 +25,7 @@ final class AppDependencies {
         pasteboard: any Pasteboard,
         reminderCenter: any ReminderCenter,
         notificationPermission: any NotificationPermission,
+        cloudAccount: any CloudAccount,
         appVersion: AppVersion,
         storeSync: StoreSync?,
         uploadMonitor: CloudUploadMonitor?
@@ -39,6 +41,7 @@ final class AppDependencies {
             center: reminderCenter
         )
         self.notificationPermission = notificationPermission
+        self.cloudAccount = cloudAccount
         self.appVersion = appVersion
         self.storeSync = storeSync
         self.uploadMonitor = uploadMonitor
@@ -51,6 +54,7 @@ final class AppDependencies {
         let apartments = SwiftDataApartmentRepository(container: container)
         let workDays = SwiftDataWorkDayRepository(container: container)
         let notifications = SystemNotifications()
+        let uploadMonitor = CloudUploadMonitor()
         let dependencies = AppDependencies(
             apartments: apartments,
             workDays: workDays,
@@ -59,12 +63,13 @@ final class AppDependencies {
             pasteboard: SystemPasteboard(),
             reminderCenter: notifications,
             notificationPermission: notifications,
+            cloudAccount: SystemCloudAccount(containerID: cloudContainerID, uploads: uploadMonitor),
             appVersion: AppVersion(bundle: .main),
             storeSync: StoreSync(
                 merger: StoreDuplicateMerger(container: container),
                 stores: [apartments, workDays]
             ),
-            uploadMonitor: CloudUploadMonitor()
+            uploadMonitor: uploadMonitor
         )
         notifications.deliverResponses(to: dependencies.reminderResponder)
         return dependencies
@@ -81,6 +86,7 @@ final class AppDependencies {
             pasteboard: any Pasteboard = FakePasteboard(),
             reminderCenter: any ReminderCenter = FakeReminderCenter(),
             notificationPermission: any NotificationPermission = FakeNotificationPermission(),
+            cloudAccount: any CloudAccount = FakeCloudAccount(status: .synced),
             appVersion: AppVersion = AppVersion(number: "1.0", build: "1")
         ) -> AppDependencies {
             AppDependencies(
@@ -91,6 +97,7 @@ final class AppDependencies {
                 pasteboard: pasteboard,
                 reminderCenter: reminderCenter,
                 notificationPermission: notificationPermission,
+                cloudAccount: cloudAccount,
                 appVersion: appVersion,
                 storeSync: nil,
                 uploadMonitor: nil

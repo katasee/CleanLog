@@ -2,12 +2,19 @@ import Foundation
 import Observation
 import os
 
+struct SettingsStorageLine: Equatable {
+    let text: String
+    let systemImage: String
+    let isWarning: Bool
+}
+
 @Observable @MainActor
 final class SettingsViewModel {
     private static let referenceDay = DayKey(year: 2001, month: 1, day: 1)
 
     private let settings: any SettingsRepository
     private let permission: any NotificationPermission
+    private let cloudAccount: any CloudAccount
     private let calendar: Calendar
     private let locale: Locale
     private let logger = Logger(subsystem: "CleanLog", category: "SettingsViewModel")
@@ -17,17 +24,20 @@ final class SettingsViewModel {
     var isReminderOn: Bool
     var reminderTime: Date
     private(set) var isPermissionDenied = false
+    private(set) var storageLine: SettingsStorageLine?
     private(set) var errorMessage: String?
 
     init(
         settings: any SettingsRepository,
         permission: any NotificationPermission,
+        cloudAccount: any CloudAccount,
         version: AppVersion,
         calendar: Calendar = .current,
         locale: Locale = .current
     ) {
         self.settings = settings
         self.permission = permission
+        self.cloudAccount = cloudAccount
         self.calendar = calendar
         self.locale = locale
         versionText = String(localized: .settingsVersion(version.number, version.build), locale: locale)
@@ -56,6 +66,12 @@ final class SettingsViewModel {
         isPermissionDenied = await permission.authorization() == .denied
     }
 
+    func refreshCloudAccount() async {
+        let status = await cloudAccount.status()
+        guard !Task.isCancelled else { return }
+        storageLine = line(for: status)
+    }
+
     func reminderSwitchChanged() async {
         guard isReminderOn != stored.isOn else { return }
         guard isReminderOn else {
@@ -73,6 +89,29 @@ final class SettingsViewModel {
         let time = ReminderTime(reminderTime, calendar: calendar)
         guard time != stored.time else { return }
         await save { $0.time = time }
+    }
+
+    private func line(for status: CloudStatus) -> SettingsStorageLine {
+        switch status {
+        case .synced:
+            SettingsStorageLine(
+                text: String(localized: .settingsIcloudSynced, locale: locale),
+                systemImage: "icloud",
+                isWarning: false
+            )
+        case .local:
+            SettingsStorageLine(
+                text: String(localized: .settingsIcloudLocal, locale: locale),
+                systemImage: "iphone",
+                isWarning: false
+            )
+        case .storageFull:
+            SettingsStorageLine(
+                text: String(localized: .settingsIcloudFull, locale: locale),
+                systemImage: "exclamationmark.icloud",
+                isWarning: true
+            )
+        }
     }
 
     private func isNotificationAllowed() async -> Bool {

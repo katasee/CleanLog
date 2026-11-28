@@ -27,6 +27,7 @@ struct SettingsView: View {
             viewModel: SettingsViewModel(
                 settings: dependencies.settings,
                 permission: dependencies.notificationPermission,
+                cloudAccount: dependencies.cloudAccount,
                 version: dependencies.appVersion
             )
         )
